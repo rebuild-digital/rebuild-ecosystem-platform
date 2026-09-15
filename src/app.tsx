@@ -1,19 +1,76 @@
-import { MetaProvider, Title } from "@solidjs/meta";
-import { Router } from "@solidjs/router";
+import { MetaProvider, Title, Meta, Link } from "@solidjs/meta";
+import { Router, useLocation } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
-import { Suspense } from "solid-js";
+import { Suspense, Show } from "solid-js";
+import Header from "~/components/Header";
+import Footer from "~/components/Footer";
+import site from "~/data/site";
 import "./app.css";
+
+function Layout(props: { children: any }) {
+  const location = useLocation();
+  const isHome = () => location.pathname === "/";
+
+  return (
+    <MetaProvider>
+      <Title>{site.title}</Title>
+      <Meta name="description" content={site.description} />
+      <Meta property="og:title" content={site.title} />
+      <Meta property="og:description" content={site.description} />
+      <Meta
+        property="og:image"
+        content={`${site.url}${site.defaultImage}`}
+      />
+      <Meta property="og:type" content="website" />
+      <Meta name="twitter:card" content="summary_large_image" />
+      <Link
+        rel="preload"
+        as="font"
+        type="font/woff2"
+        crossorigin=""
+        href="/fonts/ABCSocialMono-Book.woff2"
+      />
+
+      <a
+        href="#main-content"
+        class="skip-link"
+        onClick={(e) => {
+          e.preventDefault();
+          const t = document.getElementById("main-content");
+          if (t) {
+            t.focus();
+            t.scrollIntoView();
+          }
+        }}
+      >
+        Skip to main content
+      </a>
+
+      <Header />
+
+      <Show
+        when={isHome()}
+        fallback={
+          <main
+            id="main-content"
+            tabindex="-1"
+            class="lg:max-w-[1400px] mx-auto px-md pt-48"
+          >
+            <Suspense>{props.children}</Suspense>
+          </main>
+        }
+      >
+        <Suspense>{props.children}</Suspense>
+      </Show>
+
+      <Footer />
+    </MetaProvider>
+  );
+}
 
 export default function App() {
   return (
-    <Router
-      root={(props) => (
-        <MetaProvider>
-          <Title>Rebuild</Title>
-          <Suspense>{props.children}</Suspense>
-        </MetaProvider>
-      )}
-    >
+    <Router root={(props) => <Layout>{props.children}</Layout>}>
       <FileRoutes />
     </Router>
   );

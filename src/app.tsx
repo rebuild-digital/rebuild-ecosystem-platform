@@ -4,6 +4,7 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense, Show } from "solid-js";
 import Header from "~/components/Header";
 import Footer from "~/components/Footer";
+import FormSidebar from "~/components/FormSidebar";
 import site from "~/data/site";
 import "./app.css";
 
@@ -64,6 +65,7 @@ function Layout(props: { children: any }) {
       </Show>
 
       <Footer />
+      <FormSidebar />
     </MetaProvider>
   );
 }

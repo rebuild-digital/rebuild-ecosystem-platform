@@ -1,0 +1,35 @@
+export default function HalfCircle() {
+  return (
+    <div
+      class="w-full bg-orange lg:bg-transparent pt-xl lg:pt-0 overflow-hidden"
+      style={{
+        "margin-left": "calc(-50vw + 50%)",
+        "margin-right": "calc(-50vw + 50%)",
+        width: "100vw",
+      }}
+    >
+      <h2 class="text-center text-2xl lg:text-7xl mb-2xl w-2/3 mx-auto">
+        Rebuild is a sprint for European social platforms
+      </h2>
+      <div class="relative">
+        <img
+          src="/assets/images/half-circle.png"
+          alt=""
+          aria-hidden="true"
+          class="w-full h-auto hidden lg:block"
+          loading="lazy"
+        />
+        <p class="relative bg-orange lg:bg-transparent lg:absolute pb-lg lg:top-2/5 text-lg md:text-xl lg:text-2xl left-1/2 -translate-x-1/2 lg:-translate-y-1/2 px-md text-center lg:max-w-[50ch] text-dark pt-lg lg:pt-0">
+          We are moving fast in order to catch a critical momentum, with the
+          intention of creating space for a new industry – not to take space.
+          <br />
+          <br />
+          For the same reason, Rebuild is intentionally designed to close down
+          after exactly one year. On 15 December 2026, Rebuild will host the
+          last gathering in Paris, open-sourcing all frameworks, tools, and
+          resources back to a strengthened industry.
+        </p>
+      </div>
+    </div>
+  );
+}

@@ -1,12 +1,17 @@
-import { Title } from "@solidjs/meta";
+import { Title, Meta } from "@solidjs/meta";
+import BlockRenderer from "~/components/blocks/BlockRenderer";
+import homeBlocks from "~/data/homeBlocks";
 
 export default function Home() {
   return (
     <main id="main-content" tabindex="-1">
       <Title>Rebuild</Title>
-      <section class="min-h-screen flex items-center justify-center">
-        <h1 class="text-4xl text-dark">Rebuild</h1>
-      </section>
+      <Meta
+        name="description"
+        content="Twelve months to catalyse European social platforms."
+      />
+
+      <BlockRenderer blocks={homeBlocks} />
     </main>
   );
 }

@@ -1,0 +1,63 @@
+export interface GatheringCta {
+  text: string;
+  url?: string;
+  dataForm?: string;
+}
+
+export interface Gathering {
+  id: string;
+  slug: string;
+  title: string;
+  overlayText: string;
+  status: "past" | "future";
+  location: string;
+  startDate: string;
+  endDate: string;
+  image: string;
+  imageCredit?: string;
+  titleColor: string;
+  ctaPrimary?: GatheringCta;
+  ctaSecondary?: GatheringCta;
+}
+
+export const gatherings: Gathering[] = [
+  {
+    id: "rebuild-1",
+    slug: "rebuild-1",
+    title: "Rebuild 1",
+    overlayText: "Rebuild 1",
+    status: "past",
+    location: "Copenhagen, Denmark",
+    startDate: "Mar 01",
+    endDate: "Mar 03",
+    image: "/assets/images/rebuild1-pic.jpg",
+    imageCredit: "Fernanda Cebrián",
+    titleColor: "#669e67",
+  },
+  {
+    id: "rebuild-2",
+    slug: "rebuild-2",
+    title: "Rebuild 2",
+    overlayText: "Rebuild 2",
+    status: "past",
+    location: "Helsinki, Finland",
+    startDate: "Aug 30",
+    endDate: "Sep 01",
+    image: "/assets/images/splash-7.jpeg",
+    titleColor: "#6ba1cc",
+  },
+  {
+    id: "rebuild-3",
+    slug: "rebuild-3",
+    title: "Rebuild 3",
+    overlayText: "Rebuild 3",
+    status: "future",
+    location: "Paris, France",
+    startDate: "Dec 13",
+    endDate: "Dec 15",
+    image: "/assets/images/paris.jpg",
+    imageCredit: "HANVIN CHEONG",
+    titleColor: "#e1aeb0",
+    ctaSecondary: { text: "Get notified", dataForm: "newsletter" },
+  },
+];

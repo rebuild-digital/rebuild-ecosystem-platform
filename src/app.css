@@ -1,3 +1,982 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind CSS v4 */
+@import "tailwindcss";
+
+
+/* Font Face Declarations */
+@font-face {
+  font-family: "ABC Social Mono";
+  src: url("/fonts/ABCSocialMono-Book.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: optional;
+}
+
+/* Theme Configuration */
+@theme {
+  /* ===========================================
+     COLORS
+     =========================================== */
+
+  /* Primary Colors */
+  --color-red: #ac1d24;
+  --color-red-shade: #8a1f1f;
+  --color-red-tint: #d16b6b;
+
+  --color-blue: #6ba1cc;
+  --color-blue-shade: #3d5f83;
+  --color-blue-tint: #8fb5d9;
+
+  --color-green: #669e67;
+  --color-green-shade: #316139;
+  --color-green-tint: #73b088;
+
+  --color-blush: #e1aeb0;
+  --color-blush-shade: #b17d7d;
+  --color-blush-tint: #e8cdcd;
+
+  --color-blonde: #f4e2d2;
+  --color-blonde-shade: #d4b59a;
+  --color-blonde-tint: #f7ebe0;
+
+  --color-orange: #bf6e36;
+  --color-orange-shade: #9a5e2e;
+  --color-orange-tint: #d4a77a;
+
+  /* Neutrals */
+  --color-white: #f7f8f9;
+  --color-light: #e8e8e8;
+  --color-lighter: #d9d9e0;
+  --color-muted: #9c9cb4;
+  --color-darker: #5f5f79;
+  --color-dark: #22223e;
+
+  /* ===========================================
+     SPACING
+     =========================================== */
+
+  --spacing-xxs: 0.25rem; /* 4px */
+  --spacing-xs: 0.5rem; /* 8px */
+  --spacing-sm: 1rem; /* 16px */
+  --spacing-md: 1.5rem; /* 24px */
+  --spacing-lg: 2rem; /* 32px */
+  --spacing-xl: 3rem; /* 48px */
+  --spacing-2xl: 4rem; /* 64px */
+  --spacing-3xl: 6rem; /* 96px */
+  --spacing-4xl: 8rem; /* 128px */
+  --spacing-5xl: 12rem; /* 192px */
+  --spacing-6xl: 16rem; /* 256px */
+  --spacing-7xl: 20rem; /* 320px */
+  --spacing-8xl: 24rem; /* 384px */
+  --spacing-9xl: 32rem; /* 512px */
+
+  /* ===========================================
+     TYPOGRAPHY
+     =========================================== */
+
+  /* Font Families */
+  --font-custom:
+    "ABC Social Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: system-ui, -apple-system, sans-serif;
+  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
+  --font-mono: "ABC Social Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Font Sizes */
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+  --font-size-7xl: 4.5rem; /* 72px */
+  --font-size-8xl: 6rem; /* 96px */
+  --font-size-9xl: 8rem; /* 128px */
+
+  /* Font Weights */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+
+  /* Line Heights */
+  --line-height-none: 1;
+  --line-height-tight: 1.25;
+  --line-height-snug: 1.375;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  /* Letter Spacing */
+  --letter-spacing-tighter: -0.05em;
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0em;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+  --letter-spacing-widest: 0.1em;
+
+  /* ===========================================
+     BORDER RADIUS
+     =========================================== */
+
+  --radius-none: 0px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+  --radius-full: 9999px;
+
+  /* ===========================================
+     BORDERS
+     =========================================== */
+
+  --border-width-0: 0px;
+  --border-width-1: 1px;
+  --border-width-2: 2px;
+  --border-width-4: 4px;
+  --border-width-8: 8px;
+
+  /* ===========================================
+     SHADOWS
+     =========================================== */
+
+  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+  --shadow-none: 0 0 #0000;
+
+  /* ===========================================
+     TRANSITIONS
+     =========================================== */
+
+  --transition-duration-fast: 150ms;
+  --transition-duration-base: 250ms;
+  --transition-duration-slow: 350ms;
+  --transition-duration-slower: 500ms;
+
+  /* Timing Functions */
+  --ease-linear: linear;
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ===========================================
+     Z-INDEX
+     =========================================== */
+
+  --z-0: 0;
+  --z-10: 10;
+  --z-20: 20;
+  --z-30: 30;
+  --z-40: 40;
+  --z-50: 50;
+  --z-auto: auto;
+
+  /* ===========================================
+     BREAKPOINTS
+     =========================================== */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ===========================================
+     CONTAINER
+     =========================================== */
+
+  --container-max-width: 1400px;
+  --container-padding: 1.5rem;
+
+  /* ===========================================
+     OPACITY
+     =========================================== */
+
+  --opacity-0: 0;
+  --opacity-5: 0.05;
+  --opacity-10: 0.1;
+  --opacity-20: 0.2;
+  --opacity-25: 0.25;
+  --opacity-30: 0.3;
+  --opacity-40: 0.4;
+  --opacity-50: 0.5;
+  --opacity-60: 0.6;
+  --opacity-70: 0.7;
+  --opacity-75: 0.75;
+  --opacity-80: 0.8;
+  --opacity-90: 0.9;
+  --opacity-95: 0.95;
+  --opacity-100: 1;
+}
+
+/* Custom Transition Utilities */
+@utility transition-fast {
+  transition-duration: var(--transition-duration-fast);
+}
+
+@utility transition-base {
+  transition-duration: var(--transition-duration-base);
+}
+
+@utility transition-slow {
+  transition-duration: var(--transition-duration-slow);
+}
+
+@utility transition-slower {
+  transition-duration: var(--transition-duration-slower);
+}
+
+/* Base Layer - Global styles and resets */
+@layer base {
+  /* Skip Navigation Link */
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 9999;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-dark);
+    color: var(--color-light);
+    border: 2px solid var(--color-light);
+    text-decoration: none;
+    font-size: 1rem;
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus,
+  .skip-link:focus-visible {
+    transform: translateY(0);
+    outline: 2px solid var(--color-blue);
+    outline-offset: 2px;
+  }
+
+  #main-content:focus {
+    outline: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-custom text-dark min-h-screen;
+    line-height: 1.6;
+    letter-spacing: -0.02em;
+  }
+
+  /* Ensure form inputs don't overflow */
+  input,
+  textarea,
+  select {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  /* Placeholder styling for form inputs */
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-darker);
+    opacity: 1; /* Firefox applies opacity by default */
+  }
+
+  /* Style the placeholder option in select elements */
+  select option[value=""] {
+    color: var(--color-muted);
+  }
+
+  /* Reset select text color when valid option is selected */
+  select:valid {
+    color: var(--color-dark);
+  }
+
+  /* Links */
+  a {
+    @apply transition-fast;
+  }
+
+  a:focus-visible {
+    @apply outline-2 outline-blue outline-offset-2;
+  }
+
+  /* Images */
+  img {
+    @apply max-w-full h-auto block;
+  }
+
+  /* Buttons */
+  button {
+    @apply cursor-pointer bg-transparent;
+    font-family: inherit;
+  }
+
+  button:focus-visible {
+    @apply outline-2 outline-blue outline-offset-2;
+  }
+
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Checkboxes */
+  input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-dark);
+    background-color: transparent;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  input[type="checkbox"]:focus-visible {
+    outline: 1px solid var(--color-dark);
+    outline-offset: 2px;
+  }
+
+  input[type="checkbox"]:checked::after {
+    content: "✕";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--color-dark);
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1;
+  }
+
+  /* Lists */
+  ul,
+  ol {
+    list-style-position: inside;
+  }
+
+  /* Typography */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    /* @apply font-bold mb-md; */
+    line-height: 1.2;
+  }
+
+  h1 {
+    @apply text-4xl;
+  }
+
+  h2 {
+    @apply text-3xl;
+  }
+
+  h3 {
+    @apply text-2xl;
+  }
+
+  h4 {
+    @apply text-xl;
+  }
+
+  h5 {
+    @apply text-lg;
+  }
+
+  h6 {
+    @apply text-base;
+  }
+
+  /* p {
+    @apply mb-md;
+  } */
+
+  /* Responsive typography */
+  @media (max-width: 767px) {
+    h1 {
+      @apply text-3xl;
+    }
+
+    h2 {
+      @apply text-2xl;
+    }
+
+    h3 {
+      @apply text-xl;
+    }
+
+    h4 {
+      @apply text-lg;
+    }
+  }
+}
+
+/* Components Layer - Reusable component patterns */
+@layer components {
+  /* Filter Button Component */
+  .filter-button {
+    @apply inline-flex items-center gap-xs px-md lg:px-lg py-xs lg:py-sm text-sm rounded-4xl;
+    @apply border-2 border-dark text-dark;
+    @apply transition-colors duration-200 cursor-pointer;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
+  }
+
+  /* Hidden X icon within filter buttons */
+  .filter-x {
+    @apply text-lg leading-none;
+  }
+
+  /* Rich Text Component - Keep this as a semantic wrapper for markdown content */
+  .rich-text {
+    line-height: 1.7;
+  }
+
+  /* Headings */
+  .rich-text h1,
+  .rich-text h2,
+  .rich-text h3,
+  .rich-text h4,
+  .rich-text h5,
+  .rich-text h6 {
+    @apply mb-md mt-xl;
+    line-height: 1.3;
+  }
+
+  .rich-text h1 {
+    @apply text-5xl mt-0;
+  }
+
+  .rich-text h2 {
+    @apply text-4xl border-b-2 border-muted pb-xs;
+  }
+
+  .rich-text h3 {
+    @apply text-3xl;
+  }
+
+  .rich-text h4 {
+    @apply text-lg md:text-2xl;
+    @apply mb-xl;
+  }
+
+  .rich-text h5 {
+    @apply text-xl;
+  }
+
+  .rich-text h6 {
+    @apply text-lg text-darker;
+  }
+
+  /* Paragraphs and text formatting */
+  .rich-text p {
+    @apply mb-md text-base lg:text-lg;
+    line-height: 1.7;
+  }
+
+  .rich-text li p {
+    @apply mb-0;
+  }
+
+  .rich-text strong {
+    @apply font-bold text-dark;
+  }
+
+  .rich-text small {
+    @apply text-sm text-darker block mt-md;
+  }
+
+  /* Lists */
+  .rich-text ul,
+  .rich-text ol {
+    @apply mb-xl space-y-xs;
+  }
+
+  .rich-text ul {
+    list-style-type: "●";
+    list-style-position: outside;
+  }
+
+  .rich-text ol {
+    list-style-type: decimal;
+  }
+
+  .rich-text li {
+    @apply mb-xs pl-md;
+    line-height: 1.7;
+  }
+
+  .rich-text li > ul,
+  .rich-text li > ol {
+    @apply mt-xs ml-md;
+  }
+
+  .rich-text li > ul {
+    list-style-type: circle;
+  }
+
+  /* Links */
+  .rich-text a {
+    @apply text-dark underline hover:text-blue-shade transition-fast;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .rich-text a:hover {
+    text-decoration-thickness: 2px;
+  }
+
+  /* Images */
+  .rich-text img {
+    @apply max-w-full h-auto my-2xl;
+  }
+
+  .rich-text figure {
+    @apply my-lg;
+  }
+
+  .rich-text figcaption {
+    @apply text-sm text-darker mt-xs text-center;
+  }
+
+  /* Blockquotes */
+  .rich-text blockquote {
+    @apply border-l-4 border-blue pl-md my-lg lg:my-2xl bg-light;
+    quotes: "" " " "" "'" "'";
+  }
+
+  .rich-text blockquote p {
+    @apply mb-xs text-xl md:text-3xl;
+  }
+
+  .rich-text blockquote p:last-child {
+    @apply mb-0;
+  }
+
+  .rich-text blockquote cite {
+    @apply text-sm block mt-lg not-italic;
+  }
+
+  .rich-text blockquote cite::before {
+    content: "— ";
+  }
+
+  /* Code blocks */
+  .rich-text code {
+    @apply bg-dark text-green px-1.5 py-0.5 font-mono;
+    font-size: 0.9em;
+  }
+
+  .rich-text pre {
+    @apply bg-dark text-light p-md overflow-x-auto my-lg shadow-md;
+    line-height: 1.5;
+  }
+
+  .rich-text pre code {
+    @apply bg-transparent text-light p-0;
+  }
+
+  /* Syntax highlighting support */
+  .rich-text pre[class*="language-"] {
+    @apply my-lg;
+  }
+
+  /* Tables */
+  .rich-text table {
+    @apply w-full my-lg border-collapse;
+  }
+
+  .rich-text thead {
+    @apply bg-dark text-light;
+  }
+
+  .rich-text th {
+    @apply px-md py-xs text-left font-bold border-2 border-dark;
+  }
+
+  .rich-text td {
+    @apply px-md py-xs border border-muted;
+  }
+
+  .rich-text tbody tr:nth-child(even) {
+    @apply bg-light;
+  }
+
+  .rich-text tbody tr:hover {
+    @apply bg-blush transition-fast;
+  }
+
+  /* Horizontal rules */
+  .rich-text hr {
+    @apply my-xl border-0 border-t-2 border-muted;
+  }
+
+  /* Callout boxes */
+  .rich-text .callout {
+    @apply p-md my-lg border-l-4;
+  }
+
+  .rich-text .callout-info {
+    @apply bg-blue-tint border-blue;
+  }
+
+  .rich-text .callout-warning {
+    @apply bg-orange-tint border-orange;
+  }
+
+  .rich-text .callout-error {
+    @apply bg-blush border-red;
+  }
+
+  .rich-text .callout-success {
+    @apply bg-green-tint border-green;
+  }
+
+  /* Definition lists */
+  .rich-text dl {
+    @apply my-lg;
+  }
+
+  .rich-text dt {
+    @apply font-bold text-dark mt-md mb-xs;
+  }
+
+  .rich-text dd {
+    @apply ml-lg mb-md text-darker;
+  }
+
+  /* Keyboard and abbreviation elements */
+  .rich-text kbd {
+    @apply bg-muted text-dark px-xs py-xxs font-mono text-sm border border-dark;
+  }
+
+  .rich-text abbr[title] {
+    @apply cursor-help border-b-2 border-dotted border-blue;
+    text-decoration: none;
+  }
+
+  /* Mark/highlight */
+  .rich-text mark {
+    @apply bg-orange px-xs;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    .rich-text h1 {
+      @apply text-4xl;
+    }
+
+    .rich-text h2 {
+      @apply text-3xl;
+    }
+
+    .rich-text h3 {
+      @apply text-2xl;
+    }
+
+    .rich-text p {
+      @apply text-base;
+    }
+
+    .rich-text table {
+      @apply text-sm;
+    }
+
+    .rich-text th,
+    .rich-text td {
+      @apply px-xs py-xxs;
+    }
+  }
+
+  /* Category Filters Wrapper - horizontal scroll on mobile */
+  #category-filters-wrapper {
+    @media (max-width: 767px) {
+      overflow-x: auto;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+    }
+  }
+
+  /* Hide scrollbar for wrapper on WebKit browsers */
+  #category-filters-wrapper::-webkit-scrollbar {
+    @media (max-width: 767px) {
+      display: none;
+    }
+  }
+
+  /* Category Filters Component */
+  #category-filters {
+    @media (max-width: 767px) {
+      width: 200vw;
+    }
+  }
+
+  /* Beta Banner Component */
+  .beta-banner {
+    @apply bg-light text-dark py-xs overflow-hidden border-t border-dark;
+  }
+
+  .marquee {
+    @apply relative w-full overflow-hidden;
+  }
+
+  .marquee-content {
+    @apply flex gap-sm whitespace-nowrap;
+    animation: marquee-reverse 60s linear infinite;
+  }
+
+  .marquee-text {
+    @apply inline-block text-sm px-sm;
+  }
+
+  /* Pause animation on hover */
+  .beta-banner:hover .marquee-content {
+    animation-play-state: paused;
+  }
+
+  /* Hero Splash Alternative Component */
+  .hero-splash-alt {
+    @apply relative overflow-hidden;
+    height: 100vh;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    z-index: 1;
+  }
+
+  /* Background Images Container */
+  .splash-images {
+    @apply absolute top-0 left-0 w-full h-full;
+    z-index: 1;
+  }
+
+  /* Individual Background Image */
+  .splash-image {
+    @apply absolute top-0 left-0 w-full h-full;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transition: opacity 1500ms ease-in-out;
+  }
+
+  .splash-image.active {
+    opacity: 1;
+  }
+
+  /* Gradient Overlay - #22223E saturated at top and bottom, transparent in middle */
+  .splash-gradient {
+    @apply absolute bottom-0 left-0 w-full h-full pointer-events-none;
+    background: linear-gradient(
+      to bottom,
+      rgba(34, 34, 62, 0.9) 0%,
+      rgba(34, 34, 62, 0.7) 15%,
+      rgba(34, 34, 62, 0.3) 30%,
+      rgba(34, 34, 62, 0.1) 50%,
+      rgba(34, 34, 62, 0.3) 70%,
+      rgba(34, 34, 62, 0.7) 85%,
+      rgba(34, 34, 62, 0.95) 100%
+    );
+    z-index: 2;
+  }
+
+  /* Splash Alternative Content - Positioned at bottom left */
+  .hero-splash-alt .hero-content {
+    @apply absolute bottom-0 left-0 w-full;
+    @apply flex flex-col items-start justify-end;
+    @apply max-w-[1400px] mx-auto px-md pb-2xl md:pb-3xl;
+    padding-top: 0;
+    z-index: 3;
+  }
+
+  /* Splash Alternative Title - Left aligned, lowercase */
+  .splash-alt-title {
+    @apply text-light text-4xl md:text-5xl lg:text-7xl font-normal leading-tight mb-lg md:mb-xl;
+    text-align: left;
+    max-width: 800px;
+  }
+
+  /* CTA Wrapper - Desktop: 2x2 grid, Mobile: vertical stack with overflow */
+  .splash-cta-wrapper {
+    @apply w-full;
+    max-width: 800px;
+  }
+
+  .splash-cta-container {
+    @apply grid grid-cols-2 gap-sm;
+  }
+
+  /* Mobile: Vertical stack with horizontal scroll */
+  @media (max-width: 767px) {
+    .splash-cta-wrapper {
+      @apply overflow-x-auto overflow-y-visible;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .splash-cta-wrapper::-webkit-scrollbar {
+      display: none;
+    }
+
+    .splash-cta-container {
+      @apply flex flex-col gap-sm;
+      width: max-content;
+      min-width: 100%;
+    }
+
+    .splash-alt-title {
+      @apply text-3xl mb-md;
+    }
+  }
+
+  /* CTA Buttons */
+  .splash-cta-button {
+    @apply border-2 border-light px-md py-sm text-light text-base no-underline;
+    @apply transition-all duration-fast hover:bg-light hover:text-dark;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
+    @apply cursor-pointer bg-transparent whitespace-nowrap;
+    flex-shrink: 0;
+    width: auto;
+    justify-self: start;
+  }
+
+  /* Header Transitions */
+  header {
+    @apply bg-white;
+    transition: background-color 300ms ease, border-color 300ms ease;
+  }
+
+  header a,
+  header button,
+  header span {
+    @apply text-dark;
+  }
+
+  header p {
+    @apply text-red;
+  }
+
+  header .border-b-2 {
+    @apply border-dark;
+  }
+
+  header.transparent {
+    @apply bg-transparent;
+  }
+
+  header.transparent .border-b-2 {
+    @apply border-light;
+  }
+
+  header.transparent a:not(#mobile-menu a):not([role="menu"] a),
+  header.transparent button:not(#mobile-menu button),
+  header.transparent span:not(#mobile-menu span),
+  header.transparent p:not(#mobile-menu p) {
+    @apply text-light;
+  }
+
+  header.transparent ul[role="menu"] a {
+    @apply text-dark;
+  }
+
+  header.transparent img:not(#mobile-menu img) {
+    filter: brightness(0) invert(1);
+  }
+
+  header.transparent .beta-banner {
+    @apply bg-transparent border-light;
+  }
+
+  header.transparent .marquee-text {
+    @apply text-light;
+  }
+
+  /* Ensure smooth transitions — only animate color-related properties, never layout */
+  header a,
+  header button,
+  header span,
+  header p,
+  header img,
+  header .border-b-2,
+  header .beta-banner,
+  header .marquee-text {
+    transition: color 300ms ease, border-color 300ms ease, filter 300ms ease, background-color 300ms ease;
+  }
+}
+
+/* Utilities Layer - Custom animations */
+@layer utilities {
+  @keyframes marquee-reverse {
+    0% {
+      transform: translateX(-50%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes subtle-pulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.3;
+    }
+  }
+
+  /* Programmes Animation */
+  .programme-item-visible {
+    opacity: 1 !important;
+    transform: translateX(0) !important;
+  }
+
+  /* Carousel Slide Transitions */
+  .carousel-slide {
+    transition:
+      opacity var(--transition-duration-slow) var(--ease-in-out),
+      visibility 0s linear var(--transition-duration-slow);
+  }
+
+  .carousel-slide.opacity-100\!,
+  .carousel-slide.visible\! {
+    transition:
+      opacity var(--transition-duration-slow) var(--ease-in-out),
+      visibility 0s linear 0s;
+  }
+
+  /* Beta Pulse Animation - Desktop only */
+  @media (min-width: 1024px) {
+    .beta-pulse {
+      animation: subtle-pulse 5s ease-in-out infinite;
+    }
+  }
+
+  /* Splash Button Background - 25% opacity dark */
+  .bg-splash-button {
+    background-color: rgba(34, 34, 62, 0.25);
+  }
+}

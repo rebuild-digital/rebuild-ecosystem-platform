@@ -24,6 +24,14 @@ function Layout(props: { children: any }) {
       />
       <Meta property="og:type" content="website" />
       <Meta name="twitter:card" content="summary_large_image" />
+      <Link rel="canonical" href={`${site.url}${location.pathname}`} />
+      <Link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`${site.title} — Insights`}
+        href="/feed.xml"
+      />
+      <Meta name="robots" content="noindex, nofollow" />
       <Link
         rel="preload"
         as="font"

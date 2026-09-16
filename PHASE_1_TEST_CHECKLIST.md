@@ -94,13 +94,35 @@ VITE_SITE_URL=http://localhost:3000       # or staging URL
 - [ ] Submit button disables during submission (no double-submit)
 - [ ] `API_URL` does NOT appear in browser network tab as a client-side request origin
 
-## Step 8 — SEO & URL preservation (not yet built)
-- [ ] Redirect map: every old URL either works or 301s to the new one
-- [ ] Canonical tags present and correct on every page
-- [ ] `sitemap.xml` generates and validates
-- [ ] RSS feed generates at the correct path
-- [ ] Meta/OG tags on every page
-- [ ] Staging returns `noindex` robots meta
+## Step 8 — SEO & URL preservation
+
+### Redirects (middleware)
+- [ ] `/forms/newsletter.html` → 301 to `/`
+- [ ] `/forms/builder-application.html` → 301 to `/directory/`
+- [ ] `/forms/builder-promo.html` → 301 to `/directory/`
+- [ ] `/forms/gathering-invitation.html` → 301 to `/`
+- [ ] `/forms/gathering-invitation-rebuild3.html` → 301 to `/`
+- [ ] `/forms/application-rebuild1.html` → 301 to `/`
+
+### Generated files
+- [ ] `/robots.txt` serves plain text (not HTML)
+- [ ] `/robots.txt` blocks AI crawlers (GPTBot, ChatGPT-User, CCBot, anthropic-ai, Claude-Web, Google-Extended)
+- [ ] `/robots.txt` includes `Sitemap:` directive with correct base URL
+- [ ] `/sitemap.xml` serves valid XML with correct `Content-Type: application/xml`
+- [ ] `/sitemap.xml` includes static pages (`/`, `/directory/`, `/insights/`)
+- [ ] `/sitemap.xml` includes all insight article URLs
+- [ ] `/feed.xml` serves valid RSS 2.0 with `Content-Type: application/rss+xml`
+- [ ] `/feed.xml` includes up to 20 most recent insights
+
+### Meta tags (check page source)
+- [ ] `<meta name="robots" content="noindex, nofollow">` present on every page (staging only)
+- [ ] `<link rel="canonical" href="...">` present with correct full URL on every page
+- [ ] `<link rel="alternate" type="application/rss+xml" ...>` RSS autodiscovery in `<head>`
+- [ ] `<meta property="og:title">` present with site title
+- [ ] `<meta property="og:description">` present with site description
+- [ ] `<meta property="og:image">` present with default image
+- [ ] `<title>` tag renders correctly
+- [ ] Font preload link present for ABCSocialMono-Book
 
 ## Step 9 — Deploy & acceptance (not yet built)
 - [ ] Deployed to Risved staging URL

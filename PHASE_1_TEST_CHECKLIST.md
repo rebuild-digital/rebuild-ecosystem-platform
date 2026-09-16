@@ -124,9 +124,34 @@ VITE_SITE_URL=http://localhost:3000       # or staging URL
 - [ ] `<title>` tag renders correctly
 - [ ] Font preload link present for ABCSocialMono-Book
 
-## Step 9 — Deploy & acceptance (not yet built)
-- [ ] Deployed to Risved staging URL
+## Step 9 — Deploy to Risved staging & parallel-run
+
+### Deployment
+- [ ] Repo connected to Risved (git-push deploy)
+- [ ] Risved auto-detects SolidStart `node-server` preset
+- [ ] Build succeeds on Risved (`vinxi build` → `.output/server/index.mjs`)
+- [ ] Staging URL reachable over HTTPS
+
+### Environment variables (set in Risved, encrypted)
+- [ ] `NOTION_TOKEN` — Notion integration token
+- [ ] `NOTION_BUILDERS_DB_ID` — Builders database ID
+- [ ] `API_URL` — `https://rebuild-production.b-cdn.net` (Bunny Edge Script)
+- [ ] `VITE_SITE_URL` — staging URL (e.g. `https://next.rebuild.net`)
+- [ ] `BUNNY_CDN_URL` — (if used for asset URLs)
+- [ ] `PIRSCH_CODE` — analytics snippet code
+- [ ] `MAILERLITE_API_KEY` — (if needed beyond Edge Script)
+
+### Acceptance criteria (ALL must pass on staging)
 - [ ] Every page renders at parity with live site (desktop + mobile)
+- [ ] Directory filters 100+ entries without lag (requires Notion creds)
+- [ ] Insights sort/filter works
+- [ ] Carousel autoplays + keyboard nav works
+- [ ] Mobile menu works
+- [ ] All six forms submit successfully to existing backends
+- [ ] RSS + sitemap generate at correct paths
+- [ ] Meta/OG tags present on every page
+- [ ] Redirect map complete and tested
+- [ ] Canonicals correct; staging is `noindex`
 - [ ] Lighthouse ≥ 90 on homepage
-- [ ] No console errors
 - [ ] Notion cache fallback works (site still serves if Notion is down)
+- [ ] No console errors

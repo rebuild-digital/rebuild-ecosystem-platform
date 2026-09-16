@@ -1,0 +1,96 @@
+import { Title, Meta } from "@solidjs/meta";
+import ImageCarousel from "~/components/ImageCarousel";
+
+export default function About() {
+  return (
+    <>
+      <Title>About | Rebuild</Title>
+      <Meta
+        name="description"
+        content="Rebuild is a twelve-month sprint for European social platforms, connecting entrepreneurs and fostering innovation before sunsetting."
+      />
+
+      <section class="lg:pt-xl pt-0 pb-2xl">
+        <header class="mb-xl text-center w-full">
+          <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">About</h1>
+        </header>
+      </section>
+
+      <section class="pb-6xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mx-auto">
+          <div class="w-full lg:sticky lg:top-8">
+            <ImageCarousel />
+          </div>
+
+          <div class="rich-text max-w-[600px]">
+            <h4 style="margin-top: 0px">
+              Social platforms are the critical communication infrastructure in
+              our lives, communities, and democracies.
+            </h4>
+            <p>
+              From how we communicate with our loved ones and connect with our
+              neighbourhoods to exchanging ideas and sharing our thoughts.
+            </p>
+            <p>
+              More than 20 years ago, Europe was buzzing. People were coming
+              together from across the continent to build our social digital
+              future — to make the internet social rather than transactional
+              through innovation. A new type of platform emerged, pioneered by
+              entrepreneurs also in European countries: social platforms.
+              Creating new design patterns, new behaviours, new cultures, new
+              concepts — the world we live in today.
+            </p>
+            <p>
+              Today, social platforms are how we connect with new people, how we
+              keep our families updated, how we socialise, how we organise, how
+              we share, how we build relationships, how we find love, and how we
+              exchange goods. Digital social groups are the fabric of our
+              relationships, our neighbourhoods, our cities, our sports clubs,
+              our communities of interest — our societies.
+            </p>
+            <p>
+              They are critical infrastructure and an important industry that
+              should employ hundreds of thousands of people in Europe. But in the
+              2000s, Europe lost the battle to a few centralised foreign
+              platforms. We lost our social platform industry and our capacity to
+              innovate.
+            </p>
+            <p>
+              Luckily, new seeds of social platforms are popping up all over
+              Europe. It's time to support and grow this new generation of
+              builders.
+            </p>
+            <p>
+              We've talked and reflected a lot in Europe; now it's time to
+              rebuild. To regain our sovereignty. To rebuild an industry. To lead
+              by innovating social platforms. To create a diversity of platforms.
+              To build on every type of model — from start-up to NGO and open
+              source. To create solutions instead of pointing fingers at the old,
+              broken ones. To bring all forces in Europe together — the
+              generations that pioneered, the new builders, the thinkers, the
+              investors, the experienced entrepreneurs — to make it happen.
+            </p>
+            <p>
+              On 15 December 2026, Rebuild will host the last gathering in
+              Paris, open-sourcing all frameworks, tools and resources back to
+              the industry.
+            </p>
+            <hr />
+            <p class="mt-xl">
+              Rebuild is an NGO, registered in Denmark, supported and funded by
+              European entrepreneurs and the Danish Industry Foundation.
+            </p>
+            <p>
+              Founded by Thomas Madsen-Mygdal, patroned by Margrethe Vestager.
+            </p>
+            <p class="text-sm text-darker">
+              CVR 46007670
+              <br />
+              Linnésgade 25, 1361 Copenhagen.
+            </p>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}

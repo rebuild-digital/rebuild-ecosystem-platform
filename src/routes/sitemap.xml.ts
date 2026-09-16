@@ -6,6 +6,17 @@ const staticPages = [
   { url: "/", priority: "1.0", changefreq: "weekly" },
   { url: "/directory/", priority: "0.8", changefreq: "weekly" },
   { url: "/insights/", priority: "0.8", changefreq: "weekly" },
+  { url: "/about/", priority: "0.7", changefreq: "monthly" },
+  { url: "/data/", priority: "0.7", changefreq: "monthly" },
+  { url: "/tools/", priority: "0.7", changefreq: "monthly" },
+  { url: "/people/", priority: "0.7", changefreq: "monthly" },
+  { url: "/get-in-touch/", priority: "0.7", changefreq: "monthly" },
+  { url: "/gatherings/", priority: "0.8", changefreq: "monthly" },
+  { url: "/gatherings/rebuild-2/", priority: "0.7", changefreq: "monthly" },
+  { url: "/gatherings/rebuild-3/", priority: "0.7", changefreq: "monthly" },
+  { url: "/privacy/", priority: "0.3", changefreq: "yearly" },
+  { url: "/changelog/", priority: "0.3", changefreq: "monthly" },
+  { url: "/open-positions/", priority: "0.5", changefreq: "weekly" },
 ];
 
 export async function GET({ request }: APIEvent) {

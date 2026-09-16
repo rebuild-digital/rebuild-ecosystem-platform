@@ -1,21 +1,17 @@
-import { createSignal, onMount, onCleanup } from "solid-js";
-
-const formTitles: Record<string, string> = {
-  newsletter: "Stay involved",
-  "builder-promo": "Suggest a platform",
-  "builder-application": "Join the directory",
-  "gathering-invitation": "Request an invitation",
-  "gathering-invitation-rebuild3": "Request an invitation",
-};
+import { createSignal, onMount, onCleanup, Show } from "solid-js";
+import { formConfigs } from "~/lib/formConfig";
+import FormRenderer from "~/components/FormRenderer";
 
 export default function FormSidebar() {
   const [isOpen, setIsOpen] = createSignal(false);
   const [formId, setFormId] = createSignal("");
+  const [formKey, setFormKey] = createSignal(0);
   let panelRef: HTMLDivElement | undefined;
   let closeRef: HTMLButtonElement | undefined;
 
   function open(id: string) {
     setFormId(id);
+    setFormKey((k) => k + 1);
     setIsOpen(true);
     document.body.style.overflow = "hidden";
     requestAnimationFrame(() => closeRef?.focus());
@@ -52,6 +48,8 @@ export default function FormSidebar() {
     });
   });
 
+  const config = () => formConfigs[formId()];
+
   return (
     <div
       class="fixed inset-0 z-[999] transition-all duration-base"
@@ -72,12 +70,12 @@ export default function FormSidebar() {
         }}
         role="dialog"
         aria-modal={isOpen() ? "true" : undefined}
-        aria-label={formTitles[formId()] ?? "Form"}
+        aria-label={config()?.title ?? "Form"}
       >
         <div class="p-md md:p-xl">
           <div class="flex justify-between items-start mb-xl">
             <h2 class="text-2xl md:text-3xl font-normal text-dark">
-              {formTitles[formId()] ?? formId()}
+              {config()?.title ?? formId()}
             </h2>
             <button
               ref={closeRef}
@@ -88,9 +86,22 @@ export default function FormSidebar() {
               ✕
             </button>
           </div>
-          <p class="text-darker text-lg">
-            This form will be connected in a future update.
-          </p>
+
+          <Show
+            when={config()}
+            fallback={
+              <p class="text-darker text-lg">
+                This form is not available.
+              </p>
+            }
+          >
+            {(cfg) => (
+              <FormRenderer
+                resetKey={formKey()}
+                config={cfg()}
+              />
+            )}
+          </Show>
         </div>
       </div>
     </div>

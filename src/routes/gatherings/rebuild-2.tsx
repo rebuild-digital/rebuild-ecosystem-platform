@@ -34,6 +34,8 @@ export default function Rebuild2() {
         name="description"
         content="The second gathering for the people building Europe's future social platforms. Helsinki, Finland — Aug 30 to Sep 01, 2026."
       />
+      <Meta property="og:title" content="Rebuild 2" />
+      <Meta property="og:description" content="The second gathering for the people building Europe's future social platforms. Helsinki, Finland — Aug 30 to Sep 01, 2026." />
 
       {/* Hero header */}
       <section class="pt-xl pb-lg">

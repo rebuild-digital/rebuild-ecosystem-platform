@@ -12,6 +12,8 @@ export default function OpenPositions() {
         name="description"
         content="Rebuild is a twelve-month sprint for European social platforms. We're always open for volunteers and people looking to contribute."
       />
+      <Meta property="og:title" content="Open positions" />
+      <Meta property="og:description" content="Rebuild is a twelve-month sprint for European social platforms. We're always open for volunteers and people looking to contribute." />
 
       <Show
         when={activeJobs().length > 0}

@@ -12,16 +12,13 @@ export default function Header() {
 
   onMount(() => {
     const header = document.querySelector("header") as HTMLElement | null;
-    const hero =
-      document.getElementById("hero-splash-alt") ??
-      document.getElementById("hero-splash");
+    if (!header) return;
 
-    if (!header || !hero) return;
-
+    // Hero is h-[90vh]; use viewport height as threshold so this works
+    // even if the hero element isn't in the DOM yet (e.g. inside Suspense).
     function handleScroll() {
-      const heroBottom = hero!.offsetTop + hero!.offsetHeight;
-      const scrollPos = window.scrollY + header!.offsetHeight;
-      setScrolledPastHero(scrollPos >= heroBottom);
+      const heroHeight = window.innerHeight * 0.9;
+      setScrolledPastHero(window.scrollY + header!.offsetHeight >= heroHeight);
     }
 
     // Suppress initial transition to avoid FOUC
@@ -145,7 +142,7 @@ export default function Header() {
 
           {/* Mobile Menu Button */}
           <button
-            class="lg:hidden text-dark flex items-center gap-xs text-lg font-normal bg-transparent border-none cursor-pointer p-0"
+            class="lg:hidden flex items-center gap-xs text-lg font-normal bg-transparent border-none cursor-pointer p-0"
             aria-expanded={mobileOpen()}
             aria-controls="mobile-menu"
             aria-label="Toggle navigation menu"

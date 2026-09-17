@@ -8,6 +8,8 @@ export default function Changelog() {
         name="description"
         content="The digital platform changelog, where we keep you up to date about what we're improving."
       />
+      <Meta property="og:title" content="Changelog" />
+      <Meta property="og:description" content="The digital platform changelog, where we keep you up to date about what we're improving." />
 
       <div class="mx-auto max-w-[75ch]">
         <section class="pt-xl">

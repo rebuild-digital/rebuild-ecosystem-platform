@@ -104,6 +104,8 @@ export default function People() {
         name="description"
         content="The people supporting and driving the catalyst"
       />
+      <Meta property="og:title" content="People" />
+      <Meta property="og:description" content="The people supporting and driving the catalyst" />
 
       <section class="lg:pt-xl pt-0 md:pb-2xl">
         <header class="mb-sm md:mb-xl text-center w-full">

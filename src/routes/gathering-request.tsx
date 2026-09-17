@@ -10,6 +10,8 @@ export default function GatheringRequest() {
         name="description"
         content="Show interest in joining Rebuild 3 in Paris. Share your details and tell us what you would like to contribute."
       />
+      <Meta property="og:title" content="Request an Invitation to Rebuild 3" />
+      <Meta property="og:description" content="Show interest in joining Rebuild 3 in Paris. Share your details and tell us what you would like to contribute." />
 
       <section class="pb-6xl">
         <div class="max-w-[600px] mx-auto">

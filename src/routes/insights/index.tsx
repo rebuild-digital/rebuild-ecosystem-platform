@@ -28,6 +28,8 @@ export default function InsightsListing() {
         name="description"
         content="Insights, stories, and frameworks from European social platform builders."
       />
+      <Meta property="og:title" content="Insights" />
+      <Meta property="og:description" content="Insights, stories, and frameworks from European social platform builders." />
 
       <PageHeader
         title="Insights"

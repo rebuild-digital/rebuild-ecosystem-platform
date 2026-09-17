@@ -9,6 +9,8 @@ export default function About() {
         name="description"
         content="Rebuild is a twelve-month sprint for European social platforms, connecting entrepreneurs and fostering innovation before sunsetting."
       />
+      <Meta property="og:title" content="About" />
+      <Meta property="og:description" content="Rebuild is a twelve-month sprint for European social platforms, connecting entrepreneurs and fostering innovation before sunsetting." />
 
       <section class="lg:pt-xl pt-0 pb-2xl">
         <header class="mb-xl text-center w-full">

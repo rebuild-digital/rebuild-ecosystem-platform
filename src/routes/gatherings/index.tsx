@@ -30,6 +30,8 @@ export default function Gatherings() {
         name="description"
         content="Gatherings are at the foundation of the Rebuild initiative. By bringing platform entrepreneurs, talent, pioneers, media and investors from all parts of the continent together, we have a shot at rebuilding European social platforms."
       />
+      <Meta property="og:title" content="Gatherings" />
+      <Meta property="og:description" content="Gatherings are at the foundation of the Rebuild initiative. By bringing platform entrepreneurs, talent, pioneers, media and investors from all parts of the continent together, we have a shot at rebuilding European social platforms." />
 
       {/* Header */}
       <section class="pt-xl pb-2xl">

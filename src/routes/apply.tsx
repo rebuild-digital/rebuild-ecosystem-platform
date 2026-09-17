@@ -10,6 +10,8 @@ export default function Apply() {
         name="description"
         content="Are you building a social platform in Europe? Join our directory."
       />
+      <Meta property="og:title" content="Join the Directory" />
+      <Meta property="og:description" content="Are you building a social platform in Europe? Join our directory." />
 
       <section class="pb-6xl">
         <div class="max-w-[600px] mx-auto">

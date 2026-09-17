@@ -5,6 +5,7 @@ import { submitForm } from "~/lib/formSubmit";
 const inputClass =
   "w-full px-sm py-xs border border-dark/30 bg-white text-dark text-base focus:border-dark focus:outline-none transition-fast";
 const labelClass = "block text-sm text-darker mb-[4px]";
+const helpClass = "text-xs text-dark/60 mt-[3px]";
 const errorClass = "text-sm text-red-600 mt-[2px]";
 
 function validateEmail(v: string) {
@@ -83,10 +84,12 @@ export default function FormRenderer(props: {
       }
 
       if (f.type === "url" && v && String(v).trim() !== "") {
+        const raw = String(v).trim();
+        const testUrl = raw.includes("://") ? raw : `https://${raw}`;
         try {
-          new URL(String(v));
+          new URL(testUrl);
         } catch {
-          errs[f.name] = "Please enter a valid URL (e.g. https://...)";
+          errs[f.name] = "Please enter a valid URL (e.g. https://... or www.example.com)";
         }
       }
     }
@@ -111,7 +114,7 @@ export default function FormRenderer(props: {
     for (const f of props.config.fields) {
       const v = merged[f.name];
       if (f.type === "checkbox") {
-        data[f.name] = !!v;
+        if (v) data[f.name] = "on";
       } else if (v != null && String(v).trim() !== "") {
         data[f.name] = String(v).trim();
       }
@@ -199,6 +202,9 @@ function FieldInput(props: {
             </Show>
           </span>
         </label>
+        <Show when={f().helpText}>
+          <p class={helpClass}>{f().helpText}</p>
+        </Show>
         <Show when={props.error}>
           <p class={errorClass}>{props.error}</p>
         </Show>
@@ -259,6 +265,9 @@ function FieldInput(props: {
           />
         </Show>
 
+        <Show when={f().helpText}>
+          <p class={helpClass}>{f().helpText}</p>
+        </Show>
         <Show when={props.error}>
           <p class={errorClass}>{props.error}</p>
         </Show>

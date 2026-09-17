@@ -26,6 +26,8 @@ export default function Rebuild3() {
         name="description"
         content="The third gathering for the people building Europe's future social platforms."
       />
+      <Meta property="og:title" content="Rebuild 3" />
+      <Meta property="og:description" content="The third gathering for the people building Europe's future social platforms." />
 
       {/* Hero header */}
       <section class="pt-xl pb-lg">

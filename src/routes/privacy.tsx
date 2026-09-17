@@ -8,6 +8,8 @@ export default function Privacy() {
         name="description"
         content="How we use cookies and treat data."
       />
+      <Meta property="og:title" content="Privacy and Cookie Policy" />
+      <Meta property="og:description" content="How we use cookies and treat data." />
 
       <div class="max-w-[800px] mx-auto pb-6xl">
         <div class="rich-text">

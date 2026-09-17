@@ -10,6 +10,8 @@ export default function Suggest() {
         name="description"
         content="Do you know of a social platform that should be in our directory?"
       />
+      <Meta property="og:title" content="Suggest a Platform" />
+      <Meta property="og:description" content="Do you know of a social platform that should be in our directory?" />
 
       <section class="pb-6xl">
         <div class="max-w-[600px] mx-auto">

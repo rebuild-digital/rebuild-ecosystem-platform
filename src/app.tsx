@@ -1,4 +1,4 @@
-import { MetaProvider, Title, Meta, Link } from "@solidjs/meta";
+import { MetaProvider, Meta, Link } from "@solidjs/meta";
 import { Router, useLocation } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Suspense, Show } from "solid-js";
@@ -14,10 +14,6 @@ function Layout(props: { children: any }) {
 
   return (
     <MetaProvider>
-      <Title>{site.title}</Title>
-      <Meta name="description" content={site.description} />
-      <Meta property="og:title" content={site.title} />
-      <Meta property="og:description" content={site.description} />
       <Meta
         property="og:image"
         content={`${site.url}${site.defaultImage}`}
@@ -32,13 +28,6 @@ function Layout(props: { children: any }) {
         href="/feed.xml"
       />
       <Meta name="robots" content="noindex, nofollow" />
-      <Link
-        rel="preload"
-        as="font"
-        type="font/woff2"
-        crossorigin=""
-        href="/fonts/ABCSocialMono-Book.woff2"
-      />
 
       <a
         href="#main-content"

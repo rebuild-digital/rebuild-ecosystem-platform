@@ -21,6 +21,8 @@ export default function GetInTouch() {
         name="description"
         content="Don't hesitate to get involved and start following. Get in touch if you want to share a social platform project, apply to join directory or simply share a thought."
       />
+      <Meta property="og:title" content="Get in touch" />
+      <Meta property="og:description" content="Don't hesitate to get involved and start following. Get in touch if you want to share a social platform project, apply to join directory or simply share a thought." />
 
       <PageHeader
         title="Get in touch"

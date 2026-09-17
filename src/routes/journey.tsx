@@ -41,6 +41,8 @@ export default function Journey() {
         name="description"
         content="The core approach to catalysing social platforms in Europe"
       />
+      <Meta property="og:title" content="Journey" />
+      <Meta property="og:description" content="The core approach to catalysing social platforms in Europe" />
 
       {/* Page title */}
       <section class="pt-xl md:pb-2xl">

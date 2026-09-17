@@ -50,6 +50,8 @@ export default function Tools() {
         name="description"
         content="We need more qualified ways to grasp social platforms. Therefore, we're sharing working models and tools for the entire industry to work with, use, challenge and qualify."
       />
+      <Meta property="og:title" content="Tools" />
+      <Meta property="og:description" content="We need more qualified ways to grasp social platforms. Therefore, we're sharing working models and tools for the entire industry to work with, use, challenge and qualify." />
 
       <PageHeader
         title="Tools"

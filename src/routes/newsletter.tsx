@@ -10,6 +10,8 @@ export default function Newsletter() {
         name="description"
         content="Get updates about new platforms, insights and gatherings."
       />
+      <Meta property="og:title" content="Stay Updated" />
+      <Meta property="og:description" content="Get updates about new platforms, insights and gatherings." />
 
       <section class="pb-6xl">
         <div class="max-w-[600px] mx-auto">

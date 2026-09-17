@@ -102,6 +102,8 @@ export default function Directory() {
         name="description"
         content="We are mapping all the social platforms in Europe. This directory is growing every day based on input from people all around Europe."
       />
+      <Meta property="og:title" content="Directory" />
+      <Meta property="og:description" content="We are mapping all the social platforms in Europe. This directory is growing every day based on input from people all around Europe." />
 
       <div class="mb-3xl">
         {/* Header */}

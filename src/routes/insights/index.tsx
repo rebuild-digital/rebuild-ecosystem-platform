@@ -34,14 +34,21 @@ export default function InsightsListing() {
         description="Our growing library of insights. Stories from early founders, current entrepreneurs, and insights from the Rebuild journey."
       />
 
+      <hr class="border-dark mb-md" />
+
+      <div class="flex justify-between mb-md mt-lg">
+        <div class="mb-sm">
+          <button class="inline-block text-sm" aria-label="Sort by recency">
+            Most recent ↓
+          </button>
+        </div>
+      </div>
+
       <Suspense>
-        <div
-          class="columns-1 md:columns-2 lg:columns-3 pb-6xl"
-          style="column-gap: 1.5rem"
-        >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-xl pb-6xl">
           <For each={data() ?? []}>
             {(insight) => (
-              <article class="overflow-hidden mb-xl break-inside-avoid">
+              <article class="overflow-hidden mb-xl">
                 <Show when={insight.featured_image}>
                   <a href={insight.url}>
                     <img

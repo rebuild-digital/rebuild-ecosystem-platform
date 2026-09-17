@@ -161,7 +161,7 @@ export default function Directory() {
             </div>
 
             {/* CTAs */}
-            <div class="flex justify-end items-start gap-sm md:gap-md lg:w-1/2 h-16 md:h-20 leading-tight">
+            <div class="flex justify-end gap-sm md:gap-md md:w-1/2 h-16 md:h-20 leading-tight">
               <button
                 data-form="builder-application"
                 class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"

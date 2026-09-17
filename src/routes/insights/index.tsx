@@ -1,6 +1,7 @@
 import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
+import PageHeader from "~/components/PageHeader";
 import { getAllInsights } from "~/data/insights";
 
 const getInsightsData = cache(async () => {
@@ -42,9 +43,10 @@ export default function InsightsListing() {
         content="Insights, stories, and frameworks from European social platform builders."
       />
 
-      <h1 class="text-4xl md:text-5xl font-normal text-dark mb-xl">
-        Insights
-      </h1>
+      <PageHeader
+        title="Insights"
+        description="Our growing library of insights. Stories from early founders, current entrepreneurs, and insights from the Rebuild journey."
+      />
 
       <Suspense>
         <div

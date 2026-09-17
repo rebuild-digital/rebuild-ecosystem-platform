@@ -23,32 +23,30 @@ These 5 pages have all their content missing in the local build. They each show 
 
 ---
 
-## LAYOUT — Insight post pages
+## LAYOUT — Insight post pages ✅ ALL FIXED
 
-| # | What | Live | Local |
-|---|---|---|---|
-| L1 | Featured image position | Full-bleed hero image at the very top (edge-to-edge, no padding, sits flush under the nav bar) | Image appears below the title, constrained width, not full-bleed |
-| L2 | Tag label position | Tags appear below the title | Tag label appears above the title |
-| L3 | Title area | Title below the image, left-aligned | Title above the image |
-
-**Affected routes:** All 15 `/insights/<slug>/` pages.
+| # | What | Fix applied |
+|---|---|---|
+| L1 | Featured image position | `[slug].tsx`: image moved before title, `aspect-video` replaced with `max-h-225 overflow-hidden`, `h-auto` — fills full container width |
+| L2 | Tag label position | `[slug].tsx`: tags moved into separate `<div>` below the date/author row, styled `bg-light border border-dark text-xs p-xs` |
+| L3 | Title area | `[slug].tsx`: title now renders after the featured image, inside `max-w-[75ch]` container |
 
 ---
 
-## LAYOUT — Insights listing page (`/insights/`)
+## LAYOUT — Insights listing page (`/insights/`) ✅ ALL FIXED
 
-| # | What | Live | Local |
-|---|---|---|---|
-| L4 | Card grid layout | Masonry (Pinterest-style staggered heights, cards fill available vertical space) | Uniform 3-column grid (all rows same height) |
-| L5 | Filter controls | Not visible at page top / hidden or absent | Filter tag buttons visible prominently at the top of the page |
+| # | What | Fix applied |
+|---|---|---|
+| L4 | Card grid layout | `index.tsx`: changed from `grid grid-cols-3` to CSS columns (`columns-1 md:columns-2 lg:columns-3`) with `break-inside-avoid` per card — masonry stagger |
+| L5 | Filter controls | `index.tsx`: removed filter tag buttons and active-filter state entirely; listing is now unfiltered matching live |
 
 ---
 
-## LAYOUT — Rebuild 3 countdown (`/gatherings/rebuild-3/`)
+## LAYOUT — Rebuild 3 countdown (`/gatherings/rebuild-3/`) ✅ FIXED
 
-| # | What | Live | Local |
-|---|---|---|---|
-| L6 | Countdown display | Stacked vertical: "87 days / 29 minutes / 59 seconds" (one unit per line, large monospace, labels inline) | Horizontal 4-column row: `87 | 01 | 28 | 58` with `Days Hours Minutes Seconds` labels below each number |
+| # | What | Fix applied |
+|---|---|---|
+| L6 | Countdown display | `GatheringCountdown.tsx`: changed from horizontal `flex gap-lg` to `flex flex-col gap-xs`; each unit is a `<p>` with large number + inline `text-base` label on the same line |
 
 ---
 

@@ -35,39 +35,22 @@ export default function GatheringCountdown(props: GatheringCountdownProps) {
   return (
     <Show when={remaining()}>
       {(r) => (
-        <div class="flex gap-lg text-center">
-          <div>
-            <span class="text-4xl md:text-5xl lg:text-6xl font-normal block">
-              {r().days}
-            </span>
-            <span class="text-xs uppercase tracking-widest text-darker">
-              Days
-            </span>
-          </div>
-          <div>
-            <span class="text-4xl md:text-5xl lg:text-6xl font-normal block">
-              {String(r().hours).padStart(2, "0")}
-            </span>
-            <span class="text-xs uppercase tracking-widest text-darker">
-              Hours
-            </span>
-          </div>
-          <div>
-            <span class="text-4xl md:text-5xl lg:text-6xl font-normal block">
-              {String(r().minutes).padStart(2, "0")}
-            </span>
-            <span class="text-xs uppercase tracking-widest text-darker">
-              Minutes
-            </span>
-          </div>
-          <div>
-            <span class="text-4xl md:text-5xl lg:text-6xl font-normal block">
-              {String(r().seconds).padStart(2, "0")}
-            </span>
-            <span class="text-xs uppercase tracking-widest text-darker">
-              Seconds
-            </span>
-          </div>
+        <div class="flex flex-col gap-xs">
+          <p class="text-4xl md:text-5xl font-normal leading-none">
+            {r().days} <span class="text-base">days</span>
+          </p>
+          <p class="text-4xl md:text-5xl font-normal leading-none">
+            {String(r().hours).padStart(2, "0")}{" "}
+            <span class="text-base">hours</span>
+          </p>
+          <p class="text-4xl md:text-5xl font-normal leading-none">
+            {String(r().minutes).padStart(2, "0")}{" "}
+            <span class="text-base">minutes</span>
+          </p>
+          <p class="text-4xl md:text-5xl font-normal leading-none">
+            {String(r().seconds).padStart(2, "0")}{" "}
+            <span class="text-base">seconds</span>
+          </p>
         </div>
       )}
     </Show>

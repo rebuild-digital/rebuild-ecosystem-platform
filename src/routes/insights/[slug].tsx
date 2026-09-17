@@ -1,6 +1,6 @@
 import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache, useParams } from "@solidjs/router";
-import { Suspense, Show } from "solid-js";
+import { For, Show, Suspense } from "solid-js";
 import { getInsightBySlug } from "~/data/insights";
 
 const getInsightData = cache(async (slug: string) => {
@@ -62,7 +62,7 @@ export default function InsightDetail() {
               <Meta property="og:image" content={insight().featured_image!} />
             </Show>
 
-            <article class="pb-3xl">
+            <article class="pb-2xl">
               <a
                 href="/insights/"
                 class="text-sm text-darker hover:text-dark underline mb-xl inline-block"
@@ -70,26 +70,14 @@ export default function InsightDetail() {
                 ← Back to insights
               </a>
 
-              <h1 class="text-3xl md:text-5xl font-normal text-dark mb-md leading-tight">
-                {insight().title}
-              </h1>
-
-              <div class="flex flex-wrap items-center gap-sm mb-xl text-sm text-darker">
-                <span>{insight().author}</span>
-                <span>·</span>
-                <span>{formatDate(insight().date)}</span>
-                <Show when={insight().tags.length > 0}>
-                  <span>·</span>
-                  <span>{insight().tags.join(", ")}</span>
-                </Show>
-              </div>
-
+              {/* Featured image — full container width, before title */}
               <Show when={insight().featured_image}>
-                <div class="relative mb-2xl">
+                <div class="featured-image mb-xl w-full max-h-225 overflow-hidden relative">
                   <img
                     src={insight().featured_image}
                     alt={insight().title}
-                    class="w-full aspect-video object-cover"
+                    loading="lazy"
+                    class="w-full h-auto object-cover"
                   />
                   <Show when={insight().featured_image_credit}>
                     <div
@@ -107,7 +95,37 @@ export default function InsightDetail() {
                 </div>
               </Show>
 
-              <div class="rich-text max-w-[75ch]" innerHTML={insight().html} />
+              <div class="mx-auto max-w-[75ch]">
+                <header>
+                  <h1 class="text-3xl md:text-5xl leading-none mb-md">
+                    {insight().title}
+                  </h1>
+
+                  <div class="flex gap-md text-sm items-center mb-md text-darker">
+                    <Show when={insight().date}>
+                      <time>{formatDate(insight().date)}</time>
+                    </Show>
+                    <Show when={insight().author}>
+                      <span>|</span>
+                      <span>By {insight().author}</span>
+                    </Show>
+                  </div>
+
+                  <Show when={insight().tags.length > 0}>
+                    <div class="flex gap-xs flex-wrap mb-2xl">
+                      <For each={insight().tags}>
+                        {(tag) => (
+                          <span class="p-xs bg-light border border-dark text-xs">
+                            {tag}
+                          </span>
+                        )}
+                      </For>
+                    </div>
+                  </Show>
+                </header>
+
+                <div class="rich-text" innerHTML={insight().html} />
+              </div>
             </article>
           </>
         )}

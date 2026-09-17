@@ -8,13 +8,8 @@ const getInsightsData = cache(async () => {
   "use server";
   const insights = await getAllInsights();
   return insights.map((i) => ({
-    slug: i.slug,
     url: i.url,
     title: i.title,
-    date: i.date,
-    author: i.author,
-    tags: i.tags,
-    excerpt: i.excerpt,
     featured_image: i.featured_image,
   }));
 }, "insights-data");
@@ -25,15 +20,6 @@ export const route = {
 
 export default function InsightsListing() {
   const data = createAsync(() => getInsightsData());
-
-  function formatDate(dateStr: string) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-GB", {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
-    });
-  }
 
   return (
     <>
@@ -55,39 +41,28 @@ export default function InsightsListing() {
         >
           <For each={data() ?? []}>
             {(insight) => (
-              <div class="break-inside-avoid mb-lg">
-                <a href={insight.url} class="group block no-underline">
-                  <Show
-                    when={insight.featured_image}
-                    fallback={
-                      <div class="w-full aspect-4/3 bg-lighter mb-md" />
-                    }
-                  >
+              <article class="overflow-hidden mb-xl break-inside-avoid">
+                <Show when={insight.featured_image}>
+                  <a href={insight.url}>
                     <img
                       src={insight.featured_image}
                       alt={insight.title}
                       loading="lazy"
-                      class="w-full h-auto mb-md"
+                      class="w-full object-cover"
                     />
-                  </Show>
-                  <Show when={insight.tags.length > 0}>
-                    <div class="flex flex-wrap gap-xs mb-xs">
-                      <For each={insight.tags}>
-                        {(tag) => (
-                          <span class="text-xs text-darker">{tag}</span>
-                        )}
-                      </For>
-                    </div>
-                  </Show>
-                  <h2 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-fast mb-xs">
-                    {insight.title}
-                  </h2>
-                  <p class="text-sm text-darker mb-xs">{insight.excerpt}</p>
-                  <p class="text-xs text-muted">
-                    {insight.author} · {formatDate(insight.date)}
-                  </p>
-                </a>
-              </div>
+                  </a>
+                </Show>
+                <div class="mt-md">
+                  <h3 class="text-xl lg:text-3xl">
+                    <a
+                      href={insight.url}
+                      class="text-dark no-underline hover:underline"
+                    >
+                      {insight.title}
+                    </a>
+                  </h3>
+                </div>
+              </article>
             )}
           </For>
         </div>

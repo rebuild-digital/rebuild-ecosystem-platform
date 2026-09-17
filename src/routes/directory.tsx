@@ -3,6 +3,48 @@ import { createAsync, cache } from "@solidjs/router";
 import { createSignal, createMemo, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
 
+const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
+  Bundled: { bg: "bg-red-tint", text: "text-dark" },
+  Community: { bg: "bg-blue-tint", text: "text-dark" },
+  Groups: { bg: "bg-green-tint", text: "text-dark" },
+  Networking: { bg: "bg-orange-tint", text: "text-dark" },
+  Messaging: { bg: "bg-blue-tint", text: "text-dark" },
+  Microblogging: { bg: "bg-red-tint", text: "text-dark" },
+  Forum: { bg: "bg-red-tint", text: "text-dark" },
+  Dating: { bg: "bg-blush-tint", text: "text-dark" },
+  Events: { bg: "bg-orange-tint", text: "text-dark" },
+  Location: { bg: "bg-green-tint", text: "text-dark" },
+  "Resource sharing": { bg: "bg-blonde-tint", text: "text-dark" },
+  "Photo sharing": { bg: "bg-blush-tint", text: "text-dark" },
+  "Video sharing": { bg: "bg-blonde-tint", text: "text-dark" },
+  "Creator platform": { bg: "bg-blue-tint", text: "text-dark" },
+  "Social marketplace": { bg: "bg-orange-tint", text: "text-dark" },
+  Other: { bg: "bg-blonde-tint", text: "text-dark" },
+};
+
+const CATEGORY_ORDER = [
+  "Bundled",
+  "Social marketplace",
+  "Creator platform",
+  "Location",
+  "Resource sharing",
+  "Dating",
+  "Networking",
+  "Forum",
+  "Messaging",
+  "Groups",
+  "Video sharing",
+  "Photo sharing",
+  "Microblogging",
+  "Community",
+  "Events",
+  "Other",
+];
+
+function getCategoryColors(cat: string) {
+  return CATEGORY_COLORS[cat] ?? CATEGORY_COLORS["Other"];
+}
+
 const getDirectoryData = cache(async () => {
   "use server";
   const builders = await getBuilders();
@@ -11,6 +53,8 @@ const getDirectoryData = cache(async () => {
     name: b.name,
     link: b.link,
     category: b.category,
+    description: b.description,
+    country: b.country,
   }));
 }, "directory-data");
 
@@ -21,13 +65,21 @@ export const route = {
 export default function Directory() {
   const data = createAsync(() => getDirectoryData());
   const [activeCategories, setActiveCategories] = createSignal<string[]>([]);
+  const [tooltipOpen, setTooltipOpen] = createSignal(false);
 
   const allCategories = createMemo(() => {
     const cats = new Set<string>();
     for (const b of data() ?? []) {
       for (const c of b.category) cats.add(c);
     }
-    return [...cats].sort();
+    return [...cats].sort((a, b) => {
+      const ia = CATEGORY_ORDER.indexOf(a);
+      const ib = CATEGORY_ORDER.indexOf(b);
+      if (ia !== -1 && ib !== -1) return ia - ib;
+      if (ia !== -1) return -1;
+      if (ib !== -1) return 1;
+      return a.localeCompare(b);
+    });
   });
 
   const filtered = createMemo(() => {
@@ -43,126 +95,228 @@ export default function Directory() {
     );
   }
 
-  function clearFilters() {
-    setActiveCategories([]);
-  }
-
   return (
     <>
       <Title>Directory — Rebuild</Title>
       <Meta
         name="description"
-        content="European social platform directory. Browse and filter platforms by category."
+        content="We are mapping all the social platforms in Europe. This directory is growing every day based on input from people all around Europe."
       />
 
-      <h1 class="text-4xl md:text-5xl font-normal text-dark mb-md">
-        Social Platform Directory
-      </h1>
-      <p class="text-darker mb-xl">
-        {filtered().length} platform{filtered().length !== 1 ? "s" : ""}
-        <Show when={activeCategories().length > 0}>
-          {" "}
-          (of {(data() ?? []).length} total)
-        </Show>
-      </p>
-
-      <Suspense>
-        <Show when={allCategories().length > 0}>
-          <div id="category-filters-wrapper" class="mb-2xl">
-            <div id="category-filters" class="flex flex-wrap gap-xs">
-              <For each={allCategories()}>
-                {(cat) => (
-                  <button
-                    class="filter-button"
-                    classList={{
-                      "bg-dark! text-light!": activeCategories().includes(cat),
-                    }}
-                    onClick={() => toggleCategory(cat)}
-                    aria-pressed={activeCategories().includes(cat)}
-                  >
-                    {cat}
-                    <Show when={activeCategories().includes(cat)}>
-                      <span class="filter-x" aria-hidden="true">
-                        ×
-                      </span>
-                    </Show>
-                  </button>
-                )}
-              </For>
-              <Show when={activeCategories().length > 0}>
+      <div class="mb-3xl">
+        {/* Header */}
+        <section class="md:pt-xl mb-lg lg:mb-4xl">
+          <div class="flex flex-col lg:flex-row gap-md">
+            {/* Title + tooltip */}
+            <div class="flex-col lg:w-1/2">
+              <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-7xl">
+                Directory
+              </h1>
+              <div class="relative mt-md">
                 <button
-                  class="filter-button border-transparent! text-darker hover:text-dark"
-                  onClick={clearFilters}
+                  class="inline-flex items-center gap-xs text-lg text-dark hover:underline cursor-pointer"
+                  aria-label="Show more information"
+                  aria-expanded={tooltipOpen()}
+                  aria-controls="info-tooltip"
+                  onClick={() => setTooltipOpen((v) => !v)}
                 >
-                  Clear all
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle cx="12" cy="12" r="10" stroke-width="2" />
+                    <path
+                      d="M12 16v-4M12 8h.01"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <span>What is this?</span>
                 </button>
-              </Show>
+                <Show when={tooltipOpen()}>
+                  <div
+                    id="info-tooltip"
+                    class="absolute top-full left-0 mt-xs z-10 bg-light border-2 border-dark p-md"
+                  >
+                    <div class="flex lg:w-[55ch] flex-col gap-md text-lg leading-tight text-dark">
+                      <p>
+                        We are mapping all the social platforms in Europe. Our
+                        directory is growing based on input from people all
+                        around Europe. It is a collective piece of work. The
+                        platforms mapped are here because someone told us about
+                        their existence or directed us to a list, where they
+                        were mentioned. All are mapped as precisely as possible
+                        based on publicly available information.
+                      </p>
+                      <p>
+                        Is there a platform we should know about, or some
+                        information that should be adjusted? Let us know
+                      </p>
+                    </div>
+                  </div>
+                </Show>
+              </div>
+            </div>
+
+            {/* CTAs */}
+            <div class="flex justify-end items-start gap-sm md:gap-md lg:w-1/2 h-16 md:h-20 leading-tight">
+              <button
+                data-form="builder-application"
+                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+              >
+                Join the directory
+              </button>
+              <button
+                data-form="builder-promo"
+                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+              >
+                Suggest a platform
+              </button>
             </div>
           </div>
-        </Show>
+        </section>
 
-        <div class="space-y-0">
-          <For each={filtered()}>
-            {(builder) => (
-              <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-dark py-sm">
-                <h2 class="text-2xl md:text-4xl font-normal text-dark mb-0">
-                  <Show
-                    when={builder.link}
-                    fallback={<span>{builder.name}</span>}
-                  >
-                    <a
-                      href={builder.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="hover:underline transition-fast break-all"
-                    >
-                      {builder.name}
-                    </a>
-                  </Show>
-                </h2>
-                <div class="flex flex-wrap md:justify-end gap-xs">
-                  <For each={builder.category}>
-                    {(cat, i) => (
-                      <span class="text-sm text-dark">
-                        {cat}
-                        {i() < builder.category.length - 1 ? ", " : ""}
-                      </span>
-                    )}
-                  </For>
+        <Suspense>
+          {/* Filters */}
+          <section class="mt-xl">
+            <div class="w-full lg:w-2/3">
+              <p class="text-sm text-darker">Filter by category</p>
+              <Show when={allCategories().length > 0}>
+                <div class="mt-lg mb-lg" id="category-filters-wrapper">
+                  <div class="flex gap-xs flex-wrap" id="category-filters">
+                    <For each={allCategories()}>
+                      {(cat) => {
+                        const colors = getCategoryColors(cat);
+                        const isActive = () => activeCategories().includes(cat);
+                        return (
+                          <button
+                            class={`filter-button${isActive() ? ` ${colors.bg} ${colors.text}` : ""}`}
+                            onClick={() => toggleCategory(cat)}
+                            aria-pressed={isActive()}
+                          >
+                            <span>{cat}</span>
+                            <Show when={isActive()}>
+                              <span class="filter-x" aria-hidden="true">
+                                ×
+                              </span>
+                            </Show>
+                          </button>
+                        );
+                      }}
+                    </For>
+                  </div>
                 </div>
+              </Show>
+            </div>
+          </section>
+
+          {/* Masonry grid */}
+          <section class="mt-0 mb-xl">
+            <Show
+              when={(data() ?? []).length > 0}
+              fallback={
+                <p class="text-lg text-darker py-xl">
+                  No platforms available. This is definitely an error.
+                </p>
+              }
+            >
+              <div
+                class="columns-1 md:columns-2 lg:columns-3"
+                style="column-gap: 0.5rem;"
+              >
+                <For each={filtered()}>
+                  {(builder) => (
+                    <div class="break-inside-avoid mb-xs">
+                      <div class="bg-white space-y-md p-5 lg:p-md rounded border-2">
+                        {/* Name + URL */}
+                        <div class="builder-row-header">
+                          <h3 class="text-2xl lg:text-3xl">
+                            <Show
+                              when={builder.link}
+                              fallback={
+                                <span class="text-dark break-all">
+                                  {builder.name}
+                                </span>
+                              }
+                            >
+                              <a
+                                href={builder.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-dark break-all"
+                              >
+                                {builder.name}
+                              </a>
+                            </Show>
+                          </h3>
+                          <Show when={builder.link}>
+                            <div>
+                              <a
+                                href={builder.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-dark text-xs hover:underline break-all"
+                              >
+                                {builder.link}
+                              </a>
+                            </div>
+                          </Show>
+                        </div>
+
+                        {/* Description */}
+                        <Show when={builder.description}>
+                          <div class="text-base max-w-[55ch] leading-relaxed">
+                            <p>{builder.description}</p>
+                          </div>
+                        </Show>
+
+                        {/* Category badges + country */}
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-xs lg:gap-0">
+                          <Show when={builder.category.length > 0}>
+                            <div class="flex gap-xs flex-wrap">
+                              <For each={builder.category}>
+                                {(cat) => {
+                                  const colors = getCategoryColors(cat);
+                                  return (
+                                    <span
+                                      class={`inline-block rounded-lg px-3 py-2 ${colors.bg} ${colors.text} text-sm`}
+                                    >
+                                      {cat}
+                                    </span>
+                                  );
+                                }}
+                              </For>
+                            </div>
+                          </Show>
+                          <Show
+                            when={
+                              builder.country && builder.country.length > 0
+                            }
+                          >
+                            <div class="text-sm bg-light px-3 py-2 rounded-lg text-dark">
+                              {builder.country.join(", ")}
+                            </div>
+                          </Show>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </For>
+                <Show
+                  when={
+                    filtered().length === 0 && (data() ?? []).length > 0
+                  }
+                >
+                  <p class="text-lg text-darker py-xl">
+                    No platforms match the selected filters.
+                  </p>
+                </Show>
               </div>
-            )}
-          </For>
-        </div>
-
-        <Show when={filtered().length === 0 && (data() ?? []).length > 0}>
-          <p class="text-lg text-darker py-xl">
-            No platforms match the selected filters.
-          </p>
-        </Show>
-
-        <Show when={(data() ?? []).length === 0}>
-          <p class="text-lg text-darker py-xl">
-            Directory data is currently unavailable.
-          </p>
-        </Show>
-      </Suspense>
-
-      <div class="mt-xl md:mt-3xl flex flex-col md:flex-row justify-end items-start md:items-center gap-lg pb-3xl">
-        <div class="flex gap-sm md:gap-md">
-          <button
-            data-form="builder-application"
-            class="inline-block px-sm md:px-lg py-xs md:py-md bg-dark border-2 border-dark text-light hover:underline transition-all duration-fast cursor-pointer"
-          >
-            Join the directory
-          </button>
-          <button
-            data-form="builder-promo"
-            class="inline-block px-sm md:px-lg py-xs md:py-md bg-transparent border-2 border-dark text-dark hover:underline transition-all duration-fast cursor-pointer"
-          >
-            Suggest a platform
-          </button>
-        </div>
+            </Show>
+          </section>
+        </Suspense>
       </div>
     </>
   );

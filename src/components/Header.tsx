@@ -1,12 +1,51 @@
-import { createSignal, createEffect, onCleanup, For, Show } from "solid-js";
+import { createSignal, createEffect, onMount, onCleanup, For, Show } from "solid-js";
 import { useLocation } from "@solidjs/router";
 import site from "~/data/site";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = createSignal(false);
+  const [scrolledPastHero, setScrolledPastHero] = createSignal(false);
   const location = useLocation();
 
   const isHome = () => location.pathname === "/";
+  const isTransparent = () => isHome() && !scrolledPastHero();
+
+  onMount(() => {
+    const header = document.querySelector("header") as HTMLElement | null;
+    const hero =
+      document.getElementById("hero-splash-alt") ??
+      document.getElementById("hero-splash");
+
+    if (!header || !hero) return;
+
+    function handleScroll() {
+      const heroBottom = hero!.offsetTop + hero!.offsetHeight;
+      const scrollPos = window.scrollY + header!.offsetHeight;
+      setScrolledPastHero(scrollPos >= heroBottom);
+    }
+
+    // Suppress initial transition to avoid FOUC
+    header.style.transition = "none";
+    handleScroll();
+    header.offsetHeight; // force reflow
+    requestAnimationFrame(() => {
+      header.style.transition = "";
+    });
+
+    let ticking = false;
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onCleanup(() => window.removeEventListener("scroll", onScroll));
+  });
 
   createEffect(() => {
     if (!mobileOpen()) return;
@@ -19,9 +58,9 @@ export default function Header() {
   return (
     <header
       class="fixed z-50 w-full top-0 left-0 pt-md"
-      classList={{ transparent: isHome() }}
+      classList={{ transparent: isTransparent() }}
     >
-      <div class="container max-w-[1400px] mx-auto px-md">
+      <div class="container max-w-max-width mx-auto px-md">
         <div class="h-16 flex justify-between items-center gap-lg md:gap-sm border-b-2 pb-md">
           <div class="flex gap-sm">
             <div class="w-auto self-center">
@@ -130,7 +169,7 @@ export default function Header() {
         classList={{ hidden: !mobileOpen() }}
         aria-hidden={!mobileOpen()}
       >
-        <div class="container max-w-[1400px] mx-auto px-md py-lg">
+        <div class="container max-w-max-width mx-auto px-md py-lg">
           {/* Mobile Menu Header */}
           <div class="flex h-16 justify-between items-center border-b-2 border-dark pb-md mb-lg translate-y-[-8px]">
             <a href="/">

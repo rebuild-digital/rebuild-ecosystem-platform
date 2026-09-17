@@ -38,13 +38,16 @@ export const route = {
 export default function Home() {
   const data = createAsync(() => getHomeData());
 
-  const blocks = (): BlockDefinition[] => {
+  const heroBlock = (): BlockDefinition[] => [
+    {
+      type: "HeroSplash",
+      props: { images: splashImages, interval: 4000 },
+    },
+  ];
+
+  const contentBlocks = (): BlockDefinition[] => {
     const d = data();
     return [
-      {
-        type: "HeroSplash",
-        props: { images: splashImages, interval: 4000 },
-      },
       {
         type: "TextSection",
         props: {
@@ -103,7 +106,12 @@ export default function Home() {
         content="Twelve months to catalyse European social platforms."
       />
       <Suspense>
-        <BlockRenderer blocks={blocks()} />
+        {/* HeroSplash is full-viewport — rendered outside the content container */}
+        <BlockRenderer blocks={heroBlock()} />
+        {/* All other blocks sit inside a max-width container matching the Eleventy layout */}
+        <div class="lg:max-w-max-width mx-auto px-md">
+          <BlockRenderer blocks={contentBlocks()} />
+        </div>
       </Suspense>
     </main>
   );

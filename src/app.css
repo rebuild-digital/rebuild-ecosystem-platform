@@ -949,6 +949,12 @@
   }
 
   /* Programmes Animation */
+  .programme-item {
+    opacity: 0;
+    transform: translateX(-1rem);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
   .programme-item-visible {
     opacity: 1 !important;
     transform: translateX(0) !important;

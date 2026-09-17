@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For, onMount, onCleanup } from "solid-js";
 import type { Programme } from "~/data/programmes";
 
 export interface ProgrammesPreviewProps {
@@ -6,9 +6,33 @@ export interface ProgrammesPreviewProps {
 }
 
 export default function ProgrammesPreview(props: ProgrammesPreviewProps) {
+  onMount(() => {
+    const items = document.querySelectorAll<HTMLElement>(".programme-item");
+    if (!items.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const el = entry.target as HTMLElement;
+            const index = parseInt(el.dataset.index ?? "0");
+            setTimeout(() => {
+              el.classList.add("programme-item-visible");
+            }, index * 100);
+            obs.unobserve(el);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    items.forEach((item) => observer.observe(item));
+    onCleanup(() => observer.disconnect());
+  });
+
   return (
     <section class="relative w-full py-xl md:py-3xl">
-      <div class="max-w-[1400px] mx-auto">
+      <div class="max-w-max-width mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-start mb-4xl gap-lg">
           <h2 class="text-4xl md:text-5xl font-normal text-dark">Programmes</h2>
           <p class="text-lg md:text-lg text-dark max-w-[50ch]">
@@ -20,8 +44,11 @@ export default function ProgrammesPreview(props: ProgrammesPreviewProps) {
 
         <div class="space-y-lg">
           <For each={props.programmes}>
-            {(programme) => (
-              <div class="programme-item flex flex-col md:flex-row md:items-center md:gap-0 gap-md">
+            {(programme, i) => (
+              <div
+                class="programme-item flex flex-col md:flex-row md:items-center md:gap-0 gap-md"
+                data-index={String(i())}
+              >
                 <div
                   class="shrink-0 px-md py-sm w-fit"
                   style={{ "background-color": programme.color }}

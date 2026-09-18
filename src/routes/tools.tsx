@@ -9,7 +9,7 @@ const tools: Tool[] = [
     title: "Social Design Framework",
     description:
       "The Social Design Framework is a practical lens for designing and evaluating social platforms around genuine human connection rather than pure engagement metrics.",
-    thumbnail: "/assets/images/frameworks/new-sdf-thumbnail.png",
+    thumbnail: "/assets/images/frameworks/new-sdf-thumbnail.webp",
     thumbnailAlt: "Social Design Framework",
     secondaryAction: {
       text: "Learn more",
@@ -21,7 +21,7 @@ const tools: Tool[] = [
     title: "Social Platform Taxonomy",
     description:
       "Social platforms take many shapes. Many more than today's monopoly situation lets us believe. The Social Platform taxonomy is a step in unbundling and navigating the landscape.",
-    thumbnail: "/assets/images/frameworks/social-platform-taxonomy.png",
+    thumbnail: "/assets/images/frameworks/social-platform-taxonomy.webp",
     thumbnailAlt: "Social Platform Taxonomy",
   },
   {

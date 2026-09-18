@@ -1,0 +1,16 @@
+# Rebuild
+
+Rebuild is a sprint for European social platforms — mapping, connecting, and growing the ecosystem of builders creating alternatives to Big Tech social infrastructure.
+
+## Key pages
+
+- [Home](https://next.rebuild.net/)
+- [Directory](https://next.rebuild.net/directory)
+- [Gatherings](https://next.rebuild.net/gatherings)
+- [Insights](https://next.rebuild.net/insights)
+- [About](https://next.rebuild.net/about)
+
+## Feeds
+
+- [RSS Feed](https://next.rebuild.net/feed.xml)
+- [Sitemap](https://next.rebuild.net/sitemap.xml)

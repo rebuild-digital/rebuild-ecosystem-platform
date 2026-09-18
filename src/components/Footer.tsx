@@ -12,6 +12,8 @@ export default function Footer() {
                 class="h-6 w-auto"
                 src={site.logo}
                 alt="Rebuild logo."
+                width="95"
+                height="16"
               />
             </div>
             <p class="text-sm">{site.description}</p>

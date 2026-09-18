@@ -68,7 +68,7 @@ export default function Journey() {
       <section class="pb-4xl lg:pb-8xl">
         <div class="overflow-x-scroll md:overflow-hidden">
           <img
-            src="/assets/images/kill-slide-graphic.png"
+            src="/assets/images/kill-slide-graphic.webp"
             alt="The Rebuild approach in one diagram: gatherings, programmes and tools distributed on a one year timeline."
             class="w-full h-auto"
           />

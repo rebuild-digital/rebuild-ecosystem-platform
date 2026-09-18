@@ -54,7 +54,7 @@ export default function Rebuild3() {
       <section class="pb-xl sm:pb-3xl">
         <div class="relative w-full aspect-auto md:aspect-video">
           <img
-            src="/assets/images/paris.jpg"
+            src="/assets/images/paris.webp"
             alt="Paris, France"
             class="w-full h-full object-cover"
             style="object-position: center 75%"

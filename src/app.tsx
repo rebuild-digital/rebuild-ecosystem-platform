@@ -27,7 +27,7 @@ function Layout(props: { children: any }) {
         title={`${site.title} — Insights`}
         href="/feed.xml"
       />
-      <Meta name="robots" content="noindex, nofollow" />
+      <Meta name="robots" content="index, follow" />
 
       <a
         href="#main-content"
@@ -52,7 +52,7 @@ function Layout(props: { children: any }) {
           <main
             id="main-content"
             tabindex="-1"
-            class="lg:max-w-[1400px] mx-auto px-md pt-48"
+            class="lg:max-w-[1400px] mx-auto px-md pt-48 min-h-[60vh]"
           >
             <Suspense>{props.children}</Suspense>
           </main>

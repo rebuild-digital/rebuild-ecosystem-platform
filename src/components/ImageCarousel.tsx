@@ -7,9 +7,9 @@ interface ImageCarouselProps {
 }
 
 const defaultImages = [
-  "/assets/images/social-1.jpg",
-  "/assets/images/social-2.jpg",
-  "/assets/images/social-3.jpg",
+  "/assets/images/social-1.webp",
+  "/assets/images/social-2.webp",
+  "/assets/images/social-3.webp",
 ];
 
 const defaultCredits = ["Egor Myznik", "Mathias Reding", "Sebastien Lavalaye"];

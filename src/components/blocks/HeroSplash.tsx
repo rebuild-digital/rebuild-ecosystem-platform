@@ -28,13 +28,30 @@ export default function HeroSplash(props: HeroSplashProps) {
       <div class="absolute top-0 left-0 w-full h-full z-10" aria-hidden="true">
         <For each={props.images}>
           {(image, i) => (
-            <div
-              class="splash-image absolute top-0 left-0 w-full h-full bg-cover bg-center"
-              classList={{ active: i() === activeIndex() }}
-              style={{ "background-image": `url('${image.src}')` }}
+            <Show
+              when={i() === 0}
+              fallback={
+                <div
+                  class="splash-image absolute top-0 left-0 w-full h-full bg-cover bg-center"
+                  classList={{ active: i() === activeIndex() }}
+                  style={{ "background-image": `url('${image.src}')` }}
+                />
+              }
             >
-              <img src={image.src} alt={image.alt} class="sr-only" />
-            </div>
+              {/* First image uses a real <img> so the browser discovers it in the HTML stream */}
+              <div
+                class="splash-image absolute top-0 left-0 w-full h-full overflow-hidden"
+                classList={{ active: i() === activeIndex() }}
+              >
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  // @ts-ignore fetchpriority is valid HTML but missing from JSX types
+                  fetchpriority="high"
+                  class="absolute inset-0 w-full h-full object-cover"
+                />
+              </div>
+            </Show>
           )}
         </For>
       </div>

@@ -33,7 +33,7 @@ export default function Data() {
       <Meta property="og:description" content="Key numbers on the European social platform economy — revenue, market concentration, and economic outflows." />
       <Meta
         property="og:image"
-        content="/assets/images/thumbnail_platformeconomy.png"
+        content="/assets/images/thumbnail_platformeconomy.webp"
       />
 
       <Suspense>

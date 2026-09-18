@@ -6,22 +6,22 @@ export interface SplashImage {
 
 const splashImages: SplashImage[] = [
   {
-    src: "/assets/images/splash-7.jpeg",
+    src: "/assets/images/splash-7.webp",
     alt: "Rebuild gathering participants collaborating",
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-9.jpeg",
+    src: "/assets/images/splash-9.webp",
     alt: "Rebuild community building connections",
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-11.jpeg",
+    src: "/assets/images/splash-11.webp",
     alt: "Collaborative innovation at Rebuild",
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-13.jpeg",
+    src: "/assets/images/splash-13.webp",
     alt: "More collaborative innovation at Rebuild",
     showOnMobile: true,
   },
@@ -31,17 +31,17 @@ const splashImages: SplashImage[] = [
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-8.jpeg",
+    src: "/assets/images/splash-8.webp",
     alt: "European social platforms ecosystem",
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-10.jpeg",
+    src: "/assets/images/splash-10.webp",
     alt: "Social platform builders in action",
     showOnMobile: true,
   },
   {
-    src: "/assets/images/splash-12.jpeg",
+    src: "/assets/images/splash-12.webp",
     alt: "More collaborative innovation at Rebuild",
     showOnMobile: true,
   },

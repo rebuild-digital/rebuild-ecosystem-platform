@@ -33,7 +33,7 @@ const site: SiteConfig = {
   title: "Rebuild",
   description: "A sprint for European social platforms",
   url: import.meta.env.VITE_SITE_URL ?? "http://localhost:3000",
-  defaultImage: "/assets/images/social-3.jpg",
+  defaultImage: "/assets/images/social-3.webp",
   logo: "/assets/images/logo.svg",
   author: "Rebuild",
   language: "en",

@@ -14,7 +14,7 @@ export const carouselSlides: CarouselSlide[] = [
     headline: "Sign the Rebuild Letter",
     subheader:
       "Add your public support to European Social Platforms by signing the Rebuild Letter - today!",
-    image: "/assets/images/letter-rb1.jpg",
+    image: "/assets/images/letter-rb1.webp",
     ctaText: "Sign here",
     ctaLink: "https://letter.rebuild.net",
     bgColor: "#E7ECF0",
@@ -24,7 +24,7 @@ export const carouselSlides: CarouselSlide[] = [
     headline: "Gatherings",
     subheader:
       "Three 48-hour gatherings across 2026, tailored to the entrepreneurs building the next generation of social platforms. Designed to connect, build, and act.",
-    image: "/assets/images/gatherings-main/gatherings-main-1.jpg",
+    image: "/assets/images/gatherings-main/gatherings-main-1.webp",
     ctaText: "Learn more",
     ctaLink: "/gatherings",
     bgColor: "#dce0e4",
@@ -34,7 +34,7 @@ export const carouselSlides: CarouselSlide[] = [
     headline: "Directory",
     subheader:
       "Rebuild is building a directory of every social platform in Europe. More than 300 platforms identified so far. Who are we missing?",
-    image: "/assets/images/gatherings-carousel.jpg",
+    image: "/assets/images/gatherings-carousel.webp",
     ctaText: "Explore it here",
     ctaLink: "/directory",
     bgColor: "#8fb5d9",
@@ -44,7 +44,7 @@ export const carouselSlides: CarouselSlide[] = [
     headline: "Margrethe Vestager on the Rebuild purpose",
     subheader:
       "Why Europe needs social platforms built for people, in the words of our patron",
-    image: "/assets/images/margrethe.jpg",
+    image: "/assets/images/margrethe.webp",
     ctaText: "Read more",
     ctaLink: "/insights/a-word-from-margrethe",
     bgColor: "#dde2de",

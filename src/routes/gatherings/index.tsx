@@ -5,12 +5,12 @@ import ImageCarousel from "~/components/ImageCarousel";
 import Engage from "~/components/blocks/Engage";
 
 const carouselImages = [
-  "/assets/images/gatherings-main/gatherings-main-1.jpg",
-  "/assets/images/gatherings-main/gatherings-main-2.jpg",
-  "/assets/images/gatherings-main/gatherings-main-3.jpg",
-  "/assets/images/gatherings-main/gatherings-main-4.jpg",
-  "/assets/images/gatherings-main/gatherings-main-5.jpg",
-  "/assets/images/gatherings-main/gatherings-main-6.jpg",
+  "/assets/images/gatherings-main/gatherings-main-1.webp",
+  "/assets/images/gatherings-main/gatherings-main-2.webp",
+  "/assets/images/gatherings-main/gatherings-main-3.webp",
+  "/assets/images/gatherings-main/gatherings-main-4.webp",
+  "/assets/images/gatherings-main/gatherings-main-5.webp",
+  "/assets/images/gatherings-main/gatherings-main-6.webp",
 ];
 
 const carouselCredits = [

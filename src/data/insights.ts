@@ -1,11 +1,13 @@
 "use server";
 
-import * as fs from "node:fs";
-import * as path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 
-const INSIGHTS_DIR = path.join(process.cwd(), "src/content/insights");
+const insightFiles = import.meta.glob<string>("/src/content/insights/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+});
 
 export interface InsightFrontmatter {
   title: string;
@@ -38,36 +40,21 @@ export interface InsightSummary {
   published: boolean;
 }
 
-function parseInsightFile(filename: string): Insight | null {
-  const filePath = path.join(INSIGHTS_DIR, filename);
-  const raw = fs.readFileSync(filePath, "utf-8");
+function parseInsightRaw(slug: string, raw: string): Insight | null {
   const { data, content } = matter(raw);
-
   const frontmatter = data as InsightFrontmatter;
   if (!frontmatter.published) return null;
-
-  const slug = filename.replace(/\.md$/, "");
   const html = marked.parse(content) as string;
-
-  return {
-    slug,
-    url: `/insights/${slug}/`,
-    frontmatter,
-    html,
-  };
+  return { slug, url: `/insights/${slug}/`, frontmatter, html };
 }
 
 export async function getAllInsights(): Promise<InsightSummary[]> {
-  const files = fs
-    .readdirSync(INSIGHTS_DIR)
-    .filter((f) => f.endsWith(".md"));
-
   const insights: InsightSummary[] = [];
 
-  for (const file of files) {
-    const parsed = parseInsightFile(file);
+  for (const [filePath, raw] of Object.entries(insightFiles)) {
+    const slug = filePath.replace(/^.*\//, "").replace(/\.md$/, "");
+    const parsed = parseInsightRaw(slug, raw);
     if (!parsed) continue;
-
     insights.push({
       slug: parsed.slug,
       url: parsed.url,
@@ -89,8 +76,8 @@ export async function getAllInsights(): Promise<InsightSummary[]> {
 export async function getInsightBySlug(
   slug: string
 ): Promise<Insight | null> {
-  const filename = `${slug}.md`;
-  const filePath = path.join(INSIGHTS_DIR, filename);
-  if (!fs.existsSync(filePath)) return null;
-  return parseInsightFile(filename);
+  const key = `/src/content/insights/${slug}.md`;
+  const raw = insightFiles[key];
+  if (!raw) return null;
+  return parseInsightRaw(slug, raw);
 }

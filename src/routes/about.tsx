@@ -24,7 +24,7 @@ export default function About() {
             <ImageCarousel />
           </div>
 
-          <div class="rich-text max-w-[600px]">
+          <div class="rich-text max-w-150">
             <h4 style="margin-top: 0px">
               Social platforms are the critical communication infrastructure in
               our lives, communities, and democracies.

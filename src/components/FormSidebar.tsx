@@ -52,7 +52,7 @@ export default function FormSidebar() {
 
   return (
     <div
-      class="fixed inset-0 z-[999] transition-all duration-base"
+      class="fixed inset-0 z-999 transition-all duration-base"
       classList={{
         "opacity-100 visible pointer-events-auto": isOpen(),
         "opacity-0 invisible pointer-events-none": !isOpen(),
@@ -63,7 +63,7 @@ export default function FormSidebar() {
 
       <div
         ref={panelRef}
-        class="absolute top-0 right-0 h-full w-full max-w-[600px] bg-white overflow-y-auto shadow-2xl transition-transform duration-base"
+        class="absolute top-0 right-0 h-full w-full max-w-150 bg-white overflow-y-auto shadow-2xl transition-transform duration-base"
         classList={{
           "translate-x-0": isOpen(),
           "translate-x-full": !isOpen(),

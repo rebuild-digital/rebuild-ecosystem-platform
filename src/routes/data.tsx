@@ -46,7 +46,7 @@ export default function Data() {
                 <br class="hidden lg:inline" /> Platform
                 <br class="hidden lg:inline" /> Economy
               </h1>
-              <p class="max-w-[460px] text-xl text-darker">
+              <p class="max-w-115 text-xl text-darker">
                 Key figures illustrating the state of social platforms in Europe
                 — where the money flows, who captures it, and what stays.
               </p>
@@ -90,7 +90,7 @@ export default function Data() {
               class="font-normal leading-none"
               style="font-size: clamp(6rem, 12vw, 12rem);"
             />
-            <p class="text-xl md:text-2xl text-darker mt-md max-w-[480px]">
+            <p class="text-xl md:text-2xl text-darker mt-md max-w-120">
               Annual social platform revenue generated in Europe.
             </p>
           </div>
@@ -145,7 +145,7 @@ export default function Data() {
           <h2 class="text-2xl md:text-3xl font-normal mb-xl">
             Notes and assumptions
           </h2>
-          <div class="rich-text text-sm text-darker max-w-[720px] leading-relaxed">
+          <div class="rich-text text-sm text-darker max-w-180 leading-relaxed">
             <p>
               Hereof non-European company revenue. Percentage of non-European
               company revenue. All revenue figures are in USD billions (B). EUR

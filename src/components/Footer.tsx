@@ -3,7 +3,7 @@ import site from "~/data/site";
 
 export default function Footer() {
   return (
-    <footer class="max-w-[800px] md:max-w-full lg:max-w-[1400px] mx-auto px-md pb-md">
+    <footer class="max-w-200 md:max-w-full lg:max-w-max-width mx-auto px-md pb-md">
       <div class="mx-auto pt-md">
         <div class="flex flex-col lg:flex-row justify-between">
           <div class="flex flex-col">

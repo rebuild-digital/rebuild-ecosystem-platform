@@ -70,7 +70,7 @@ export default function Rebuild3() {
             platforms, the takeoff of The Shift.
           </h2>
 
-          <div class="w-[204px]">
+          <div class="w-51">
             <p class="text-xs tracking-widest uppercase mb-sm">Opening in</p>
             <GatheringCountdown targetDate="2026-12-13T09:00:00Z" />
           </div>

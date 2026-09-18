@@ -75,12 +75,12 @@ export default function HeroSplash(props: HeroSplashProps) {
 
       {/* Content */}
       <div class="absolute bottom-0 left-0 w-full pb-2xl md:pb-xl z-30">
-        <div class="container max-w-[1400px] mx-auto px-md flex flex-col lg:flex-row items-start justify-end lg:justify-between">
-          <h1 class="text-light text-3xl md:text-5xl font-normal leading-none mb-lg md:mb-xl text-left max-w-[560px]">
+        <div class="container max-w-max-width mx-auto px-md flex flex-col lg:flex-row items-start justify-end lg:justify-between">
+          <h1 class="text-light text-3xl md:text-5xl font-normal leading-none mb-lg md:mb-xl text-left max-w-140">
             A sprint for european social platforms.
           </h1>
 
-          <div class="w-full md:max-w-[560px] overflow-x-auto overflow-y-visible md:overflow-visible scrollbar-none [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div class="w-full md:max-w-140 overflow-x-auto overflow-y-visible md:overflow-visible scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
             <div class="flex flex-row flex-wrap gap-sm w-max md:w-full min-w-full md:min-w-0">
               <button
                 data-form="builder-promo"

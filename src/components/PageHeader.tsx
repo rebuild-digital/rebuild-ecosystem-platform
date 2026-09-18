@@ -13,7 +13,7 @@ export default function PageHeader(props: PageHeaderProps) {
           {props.title}
         </h1>
         <Show when={props.description}>
-          <div class="max-w-[460px] text-xl text-dark mt-lg md:mt-0">
+          <div class="max-w-115 text-xl text-dark mt-lg md:mt-0">
             {props.description}
           </div>
         </Show>

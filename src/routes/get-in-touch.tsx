@@ -30,7 +30,7 @@ export default function GetInTouch() {
       />
 
       <section class="pt-4xl pb-0 lg:pb-6xl">
-        <div class="max-w-[1400px] mx-auto">
+        <div class="max-w-max-width mx-auto">
           <div class="flex flex-col gap-y-xl">
             <For each={links}>
               {(link) => (

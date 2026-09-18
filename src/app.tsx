@@ -52,7 +52,7 @@ function Layout(props: { children: any }) {
           <main
             id="main-content"
             tabindex="-1"
-            class="lg:max-w-[1400px] mx-auto px-md pt-48 min-h-[60vh]"
+            class="lg:max-w-max-width mx-auto px-md pt-48 min-h-[60vh]"
           >
             <Suspense>{props.children}</Suspense>
           </main>

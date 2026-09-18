@@ -114,7 +114,7 @@ export default function People() {
       </section>
 
       <section class="pb-6xl">
-        <div class="max-w-[1400px] mx-auto">
+        <div class="max-w-max-width mx-auto">
           {/* Hero image */}
           <div class="mb-xl mt-xl md:mt-0">
             <div class="w-full h-auto bg-muted flex items-center justify-center">
@@ -152,7 +152,7 @@ export default function People() {
 
           {/* Ambassadors */}
           <section class="pb-6xl">
-            <div class="max-w-[1400px] mx-auto">
+            <div class="max-w-max-width mx-auto">
               <h2 class="text-4xl md:text-5xl font-normal mb-xl">
                 Ambassadors
               </h2>
@@ -166,7 +166,7 @@ export default function People() {
 
           {/* Founding Supporters */}
           <section class="px-lg py-xl lg:py-3xl md:px-2xl bg-dark text-blonde mb-3xl md:mb-6xl">
-            <div class="max-w-[1400px] mx-auto">
+            <div class="max-w-max-width mx-auto">
               <h2 class="text-2xl md:text-3xl lg:text-5xl font-normal mb-xl">
                 Founding Supporters
               </h2>

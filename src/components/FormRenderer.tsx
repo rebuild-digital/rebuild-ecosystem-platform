@@ -193,7 +193,7 @@ function FieldInput(props: {
             name={f().name}
             checked={!!props.value}
             onChange={(e) => props.onInput(e.currentTarget.checked)}
-            class="mt-[3px] accent-dark"
+            class="mt-0.75 accent-dark"
           />
           <span class="text-sm text-darker">
             {f().label}

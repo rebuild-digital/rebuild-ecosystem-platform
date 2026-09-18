@@ -5,7 +5,7 @@ author: "Matt Muir"
 tags:
   - Stories
 excerpt: "Why the problem with social media isn't the algorithm — it's the ownership structure"
-featured_image: "/assets/images/coop-1.jpg"
+featured_image: "/assets/images/coop-1.webp"
 published: true
 ---
 
@@ -21,7 +21,7 @@ As she puts it, 'it's the elephant in the room. We are very keen to discuss and 
 
 Niels Chemnitz shares this scepticism as to how much will change without altering something fundamental about how companies are structured. 'How do you avoid making the same mistakes in the future? Do we want to be here in 20 years' time, talking about the European tech founders of the 2020s, and how it turned out that they were not in fact the messiahs? That they ended up succumbing to market dynamics and investor pressures to pursue growth at all costs? Just like the founders of the 2000s and 2010s did?' As the old saying goes, 'madness is doing the same thing over and over again and expecting different results'.
 
-![Scenes from Rebuild, focus on delivering outcomes for European social platforms.](/assets/images/coop-2.jpg "Scenes from Rebuild, focus on delivering outcomes for European social platforms.")
+![Scenes from Rebuild, focus on delivering outcomes for European social platforms.](/assets/images/coop-2.webp "Scenes from Rebuild, focus on delivering outcomes for European social platforms.")
 
 They both believe that what is needed is a fresh approach not just to platform functionality but to everything: ownership, revenue models, the underlying technology, and the algorithmic layer.
 

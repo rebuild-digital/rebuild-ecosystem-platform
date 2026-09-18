@@ -23,13 +23,13 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
         width: "100vw",
       }}
     >
-      <div class="max-w-[1400px] mx-auto px-md">
+      <div class="max-w-max-width mx-auto px-md">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3xl lg:gap-lg mb-2xl">
           <For each={props.gatherings}>
             {(gathering) => (
               <div class="flex flex-col">
                 <div class="relative">
-                  <div class="relative h-[500px] overflow-hidden">
+                  <div class="relative h-125 overflow-hidden">
                     <img
                       src={gathering.image}
                       alt={gathering.title}

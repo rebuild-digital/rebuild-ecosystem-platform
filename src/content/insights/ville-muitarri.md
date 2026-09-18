@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "How 27 Crags grew into the Topo: a sustainable social platform for the climbing community"
-featured_image: "/assets/images/ville-27crags-1.jpg"
+featured_image: "/assets/images/ville-27crags-1.webp"
 published: true
 ---
 

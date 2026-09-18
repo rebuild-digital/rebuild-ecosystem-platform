@@ -80,7 +80,7 @@ export default function Rebuild2() {
           </h2>
 
           <Show when={!isPast()}>
-            <div class="w-[204px]">
+            <div class="w-51">
               <p class="text-xs tracking-widest uppercase mb-sm">Opening in</p>
               <GatheringCountdown targetDate="2026-08-30T09:00:00Z" />
             </div>
@@ -98,7 +98,7 @@ export default function Rebuild2() {
           "background-color": "rgba(107, 161, 204, 0.1)",
         }}
       >
-        <div class="max-w-[1400px] mx-auto px-md">
+        <div class="max-w-max-width mx-auto px-md">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-3xl">
             <div class="space-y-2xl pr-8">
               <h3 class="text-3xl mb-16">Programme highlights</h3>

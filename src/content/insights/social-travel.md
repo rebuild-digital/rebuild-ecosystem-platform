@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "A new wave of European platforms are building communities around shared values – and reimagining what it means to explore the world"
-featured_image: "/assets/images/social-travel-1.jpg"
+featured_image: "/assets/images/social-travel-1.webp"
 published: true
 ---
 
@@ -27,7 +27,7 @@ Usually when you travel as a queer person, you're limited to generic options, an
 
 "We straddle these two worlds of impact and tech. We have the big tech narrative, where we're talking about retention and keeping people on the app, but what we actually want is for it to be so easy for people to make this connection and have a real-world experience," says Thayne.
 
-![Jana Marie Bald presenting Ørth from the Rebuild 1 stage](/assets/images/social-travel-2.jpg)
+![Jana Marie Bald presenting Ørth from the Rebuild 1 stage](/assets/images/social-travel-2.webp)
 
 Quouch is just one example of how social platforms are being built to create new ways to travel and explore the world. Another community-driven travel platform is Ørth – a green travel platform for people who care about nature and the planet. Founder Jana Marie Bald was also presenting on stage at Rebuild 1, and coined her ambition as: "Travel is not a reward for working, it's education for life." That's why she has created a social network of travellers who care about sustainability, "so you can easily find a green travel buddy."
 

@@ -75,7 +75,7 @@ export default function Carousel(props: CarouselProps) {
                 aria-label={`Slide ${i() + 1} of ${props.slides.length}`}
                 style={{ "background-color": slide.bgColor }}
               >
-                <div class="w-full max-w-[1400px] mx-auto h-full">
+                <div class="w-full max-w-max-width mx-auto h-full">
                   <div class="grid grid-cols-1 lg:grid-cols-2 items-start lg:items-center h-full">
                     <div class="w-full h-full max-h-[40vh] lg:max-h-full order-1">
                       <img

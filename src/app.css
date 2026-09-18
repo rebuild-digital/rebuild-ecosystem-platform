@@ -807,7 +807,7 @@
   .hero-splash-alt .hero-content {
     @apply absolute bottom-0 left-0 w-full;
     @apply flex flex-col items-start justify-end;
-    @apply max-w-[1400px] mx-auto px-md pb-2xl md:pb-3xl;
+    @apply max-w-max-width mx-auto px-md pb-2xl md:pb-3xl;
     padding-top: 0;
     z-index: 3;
   }

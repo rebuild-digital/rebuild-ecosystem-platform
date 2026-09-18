@@ -5,7 +5,7 @@ author: "Matt Muir"
 tags:
   - Stories
 excerpt: "Daniela Hinrichs on building XING from invitation-only startup to the world's first Web 2.0 IPO – why community, not just code, made Europe's business network a success"
-featured_image: "/assets/images/daniela-3.jpg"
+featured_image: "/assets/images/daniela-3.webp"
 featured_image_credit: "Michael DeBoer"
 featured_image_credit_theme: "dark"
 published: true
@@ -23,7 +23,7 @@ They had three months to get the first version out. On 1 November 2003, Open Bus
 
 “We had momentum – we made sure that we used this momentum,” Daniela recalls, “Lars believed in the power of technology and the web to both connect people and make business.” Why the focus on business users? Daniela explains it was based on pragmatism: “We knew that the Myspace kids would need a platform when they graduated to business life – and business life is a long life. And people with jobs have money!”
 
-![Daniela Waschows - as she was named then - business card from openBC.](/assets/images/openBC_DH.jpg "The openBC business card.")
+![Daniela Waschows - as she was named then - business card from openBC.](/assets/images/openBC_DH.webp "The openBC business card.")
 
 Daniela’s role, as she remembers it, was “everything that wasn’t coding”; it was also in large part about defining the company, building a brand and developing the frameworks that would help create and maintain scaleable, valuable communities. She explains, “back then, social networking wasn’t just about driving engagement, but about fostering social interaction and communication.
 
@@ -41,7 +41,7 @@ We had members blogging about how to behave on, as well as use, the platform, a 
 
 By 2006, the “Open Business Club” label felt too literal and, increasingly, misleading. The word “open” suggested data might be exposed, and the “club” sounded closed and parochial. The company needed a brand that could travel. After weeks of naming work, they landed on XING – a name that hinted at people “crossing paths”. In practical terms, the rebrand was a high-wire act: around 1.5m member profiles and some 42m peer-to-peer connections were migrated to the new identity without losing a single link.
 
-![A screenshot from the 2005 website, when openBC rebranded to XING.](/assets/images/open-BC-2.jpg "When openBC became XING.")
+![A screenshot from the 2005 website, when openBC rebranded to XING.](/assets/images/open-BC-2.webp "When openBC became XING.")
 
 The timing was deliberate. Just weeks later, on 7 December 2006, the company – by then officially XING – went public in Frankfurt, the first Web 2.0 company to list on a stock market anywhere in the world, and it did so as a profitable, subscription-led business rather than a speculative bet on future advertising. [The issue price of €30 per share implied a valuation of roughly €175 million and raised around €35.7 million, a striking vote of confidence in a category that barely existed a few years before.](https://www.searchenginejournal.com/linkedin-takes-on-xing-or-the-other-way-around/4328/)
 

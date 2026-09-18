@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "The European social platforms designed to get you off the screen and into the world"
-featured_image: "/assets/images/irl-platforms-1.jpg"
+featured_image: "/assets/images/irl-platforms-1.webp"
 published: true
 ---
 
@@ -21,7 +21,7 @@ And then there is Meetball, which co-founder Stuart Cerne describes as an "open 
 
 Within 24 hours, Cerne and his fellow builders had a product: WebSummeet, which eventually got them into a little trouble with the festival organisers. Now Meetball has an "I can help" reaction function built in, making the transition from online interaction to offline even quicker.
 
-![Top down of a crowd from Rebuild1 in Copenhagen](/assets/images/irl-platforms-2.jpg)
+![Top down of a crowd from Rebuild1 in Copenhagen](/assets/images/irl-platforms-2.webp)
 
 Bridging grassroots, sports, and community, Prematch is another platform rooted emphasising what goes on away from the screen. It gives football players a space to store and share memories and, most importantly, it adds a digital identity and tracking to a player's real-life progression.
 

@@ -14,7 +14,7 @@ export default function Apply() {
       <Meta property="og:description" content="Are you building a social platform in Europe? Join our directory." />
 
       <section class="pb-6xl">
-        <div class="max-w-[600px] mx-auto">
+        <div class="max-w-150 mx-auto">
           <h1 class="text-3xl md:text-5xl font-normal mb-xl">
             Join the Directory
           </h1>

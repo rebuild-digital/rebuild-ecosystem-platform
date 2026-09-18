@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "How a Nokia pioneer's four-button innovation transformed human-computer interaction."
-featured_image: "/assets/images/christian-lindholm.jpg"
+featured_image: "/assets/images/christian-lindholm.webp"
 published: true
 ---
 
@@ -15,7 +15,7 @@ Christian Lindholm’s first mobile phone was a Nokia 2210. “I got it when I s
 
 Lindholm remembers walking around with a different piece of kit, though, an Apple Newton PDA. He held the compact, Kindle-like computer in his hands while strolling through London in the years before joining Nokia, guiding himself not by GPS but with the Time Out A-Z map he’d downloaded onto it. There was no dot to guide him, so he’d often overshoot a turning and have to backtrack. “It was close to science fiction, nobody did it,” he laughs, wishing aloud that he could travel back in time and get some drone shots of the passersby gawking at him.
 
-<img class="w-full object-cover" src="/assets/images/Nokia_0120.jpg" alt="Nokia 3310, Beetle." />
+<img class="w-full object-cover" src="/assets/images/Nokia_0120.webp" alt="Nokia 3310, Beetle." />
 
 He was desperate for the future, researching emergent design at London Business School, “totally smitten” by the promise of a mobile phone. “When I saw these ads of Nokia phones on London cabs, I thought ‘What the hell, something is happening in Finland!’ So I applied for a job,” Lindholm says. And he got it. Within weeks he was back in the country where he’d grown up.
 
@@ -27,9 +27,9 @@ He was desperate for the future, researching emergent design at London Business 
 
 Lindholm designed the Navi-Key to be understandable, usable by the masses. It had a central button, which changed function based on where you were in the menu, and then three universally known keys, ‘up’ and ‘down’ (like on TV remotes) and ‘clear’ (as seen on the calculator). Now inputs were dynamic, rather than limited to a button’s specific use, which gave our phone interactions more potential. Nokia was not just ‘connecting people’ to people, but also to the computers in their hands.
 
-![Sketches and notes for a clamshell phone. Dale Frye and Jeff Deacon.](/assets/images/sketches.jpg "Sketches and notes for a clamshell phone, transparencies.")
+![Sketches and notes for a clamshell phone. Dale Frye and Jeff Deacon.](/assets/images/sketches.webp "Sketches and notes for a clamshell phone, transparencies.")
 
-![Sketches and notes for a clamshell phone. Dale Frye and Jeff Deacon.](/assets/images/sketches_2.jpg "Sketches and notes for a clamshell phone, transparencies.")
+![Sketches and notes for a clamshell phone. Dale Frye and Jeff Deacon.](/assets/images/sketches_2.webp "Sketches and notes for a clamshell phone, transparencies.")
 
 It was also a key step in fusing telephones with computers, which was Lindholm’s obsession. “It was an extremely exotic thought,” he says. “And the fact that Nokia brought out the first was surprising.” The assumption, back then, was that it would be more difficult to integrate computer capabilities into a phone than add telephone features into a computer. And achieving this unlikely milestone was one of many forces motivating the Nokia team.
 

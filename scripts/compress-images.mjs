@@ -149,7 +149,7 @@ if (UPDATE_REFS) {
     );
   } else {
     const srcFiles = walk(SRC_DIR).filter((f) =>
-      /\.(tsx?|css|json)$/.test(f)
+      /\.(tsx?|css|json|md)$/.test(f)
     );
 
     let fileChanges = 0;

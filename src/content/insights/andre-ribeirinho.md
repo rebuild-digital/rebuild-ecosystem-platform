@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "The story of Adegga, how it scaled to 50,000 users across half the world's countries and why André Ribeirinho believes offline is where online gets real."
-featured_image: "/assets/images/andre-0.png"
+featured_image: "/assets/images/andre-0.webp"
 published: true
 ---
 
@@ -17,7 +17,7 @@ The platform in question was Adegga, a social network for wine. Ribeirinho, a so
 
 Adegga was his solution. Users could log-on and follow each other to discover and discuss what they were drinking. “I actually didn’t like wine at the time,” he recalls, but when he spoke to people who were into it he could see how special it was to them. “They all had this spark in their eyes,” says Ribeirinho. “So I got interested too.”
 
-![André presenting in front of an audience.](/assets/images/andre-1.jpg "André presenting in front of an audience.")
+![André presenting in front of an audience.](/assets/images/andre-1.webp "André presenting in front of an audience.")
 
 The instinct to build was something he’d been following for over a decade. “There was a period of discovery,” Ribeirinho says, remembering his first website, which he put up in 1996. “I’d been playing around for a while.” But that impetus to find a solution to a problem, and make it happen, was also “embedded in the spirit of how the web was growing”, he says. “It was making the world better connected and opening this large window of opportunity.”
 

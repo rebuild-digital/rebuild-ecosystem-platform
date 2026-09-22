@@ -56,7 +56,7 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
             <For each={displayPlatforms()}>
               {(platform) => (
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-dark py-sm">
-                  <h3 class="text-2xl md:mb-0 md:text-4xl font-normal text-dark">
+                  <h3 class="text-xl md:mb-0 md:text-2xl font-normal text-dark">
                     <a
                       href={platform.link}
                       target="_blank"

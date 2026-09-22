@@ -37,7 +37,7 @@ export default function Gatherings() {
       <section class="pt-xl pb-2xl">
         <div class="flex flex-col lg:flex-row gap-md">
           <div class="lg:w-1/2">
-            <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">
+            <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl">
               Gatherings
             </h1>
           </div>

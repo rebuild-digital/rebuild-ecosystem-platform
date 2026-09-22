@@ -47,7 +47,7 @@ export default function Journey() {
       {/* Page title */}
       <section class="pt-xl md:pb-2xl">
         <header class="mb-sm md:mb-xl text-center w-full">
-          <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">Journey</h1>
+          <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl">Journey</h1>
         </header>
       </section>
 
@@ -126,8 +126,8 @@ export default function Journey() {
                     {gathering.title}
                   </h2>
                   <div class="flex flex-col leading-tight lg:leading-none">
-                    <p class="text-md m-0 md:text-lg">{gathering.location}</p>
-                    <p class="text-md md:text-lg">
+                    <p class="text-base m-0 md:text-lg">{gathering.location}</p>
+                    <p class="text-base md:text-lg">
                       {new Date(gathering.startDate).toLocaleDateString(
                         "en-GB",
                         { day: "numeric", month: "short" }

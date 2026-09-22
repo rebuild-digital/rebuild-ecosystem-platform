@@ -540,15 +540,17 @@ wrong. Use font size and spacing to create hierarchy instead.
 | `2xl`  | 1.5       | 24        | h3 (desktop), h2 (mobile) |
 | `3xl`  | 1.875     | 30        | h2 (desktop), h1 (mobile), splash title (mobile) |
 | `4xl`  | 2.25      | 36        | h1 (desktop), page titles (mobile) |
-| `5xl`  | 3         | 48        | Rich-text h1, page titles (md+), section h2s (md+) |
-| `6xl`  | 3.75      | 60        | Unused — candidate for removal |
-| `7xl`  | 4.5       | 72        | Page titles (lg+), splash title (lg+) |
+| `5xl`  | 3         | 48        | Page titles (md+), section h2s (md+), HalfCircle h2 (lg+) |
+| `6xl`  | 3.75      | 60        | Page titles (lg+) |
+| `7xl`  | 4.5       | 72        | Splash alt-title (lg+) only |
 | `8xl`  | 6         | 96        | Display numbers, decorative text |
 | `9xl`  | 8         | 128       | Unused — candidate for removal |
 
-### Heading scale — base (from `@layer base`)
+### Heading scale
 
-These are the CSS-reset defaults. Verified: matches `app.css` exactly.
+These are the CSS-reset defaults applied in `@layer base`. Rich-text headings
+(`.rich-text`) follow the same scale — there is no separate rich-text heading
+scale.
 
 | Level | Desktop       | Mobile (< 768px) |
 |-------|---------------|-------------------|
@@ -559,42 +561,10 @@ These are the CSS-reset defaults. Verified: matches `app.css` exactly.
 | h5    | `lg` (18px)   | `lg` (18px)       |
 | h6    | `base` (16px) | `base` (16px)     |
 
-### Heading scale — rich-text (from `.rich-text`)
-
-Rich-text headings are consistently **one step larger** than the base scale.
-This is intentional for CMS content where headings need more presence.
-
-| Level | Rich-text (desktop) | Base (desktop) |
-|-------|---------------------|----------------|
-| h1    | `5xl` (48px)        | `4xl` (36px)   |
-| h2    | `4xl` (36px)        | `3xl` (30px)   |
-| h3    | `3xl` (30px)        | `2xl` (24px)   |
-| h4    | `2xl` (24px) at md+ | `xl` (20px)    |
-| h5    | `xl` (20px)         | `lg` (18px)    |
-| h6    | `lg` (18px)         | `base` (16px)  |
-
 ### Page title pattern
 
-Page-level h1 elements and homepage section h2s follow a larger scale than the
-base heading reset: `text-4xl md:text-5xl lg:text-7xl`. This is the dominant
-pattern across route pages and homepage sections.
-
-### Inconsistencies flagged (codebase audit)
-
-The following deviations from the scales above exist in the codebase:
-
-**Invalid class — `text-md` does not exist in Tailwind:**
-- `GatheringsPreview.tsx:72`, `journey.tsx:129,130` — produces no styling.
-
-**h2 elements undersized on mobile (using `xl` instead of `2xl`):**
-- `open-positions.tsx:43`, `people.tsx:132,142`
-- `gatherings/rebuild-2.tsx:76`, `gatherings/rebuild-3.tsx:67`
-
-**h3 elements oversized (one or two steps above the base h3 scale):**
-- `directory.tsx:237` — `text-2xl lg:text-3xl` (should be `xl` / `2xl`)
-- `insights/index.tsx:65` — `lg:text-3xl` (should be `lg:text-2xl`)
-- `gatherings/rebuild-2.tsx:104` — `text-3xl` with no responsive step-down
-- `DirectoryPreview.tsx:59` — `md:text-4xl` (two steps over)
+Page-level h1 elements use a linear progression: `text-4xl md:text-5xl lg:text-6xl`
+(36 → 48 → 60px). This is the standard pattern across all route pages.
 
 ### Line heights
 
@@ -603,7 +573,6 @@ The following deviations from the scales above exist in the codebase:
 | Buttons & controls   | 1           | Text sits optically centred in the hit target; vertical padding alone controls height. |
 | Labels & tags        | 1.2         | Compact but still readable as standalone text; keeps pill shapes tight. |
 | Headings             | 1.2         | Tight leading for large sizes that don't need inter-line breathing room. |
-| Rich-text headings   | 1.3         | Slightly more air for multi-line headings in CMS content. |
 | Body text            | 1.7         | Comfortable reading rhythm for monospaced text. |
 
 **Rule of thumb:** if the text is inside a clickable control (button, CTA, nav

@@ -40,7 +40,7 @@ export default function OpenPositions() {
             <For each={activeJobs()}>
               {(job) => (
                 <div>
-                  <h2 class="text-xl md:text-2xl font-normal mb-md">
+                  <h2 class="text-2xl md:text-3xl font-normal mb-md">
                     {job.title}
                   </h2>
                   <div class="rich-text" innerHTML={job.content} />

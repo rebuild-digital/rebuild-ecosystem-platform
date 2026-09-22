@@ -69,7 +69,7 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
                   </div>
                 </div>
 
-                <div class="mt-sm flex justify-between items-center text-sm md:text-md text-dark">
+                <div class="mt-sm flex justify-between items-center text-sm md:text-base text-dark">
                   <span>{gathering.location}</span>
                   <span>
                     {gathering.startDate} - {gathering.endDate}

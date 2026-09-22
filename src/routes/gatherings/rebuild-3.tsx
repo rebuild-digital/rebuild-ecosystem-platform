@@ -33,7 +33,7 @@ export default function Rebuild3() {
       <section class="pt-xl pb-lg">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-md">
           <div>
-            <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl mb-xs">
+            <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl mb-xs">
               Rebuild 3
             </h1>
             <div class="flex gap-8 lg:gap-16">
@@ -64,7 +64,7 @@ export default function Rebuild3() {
 
         {/* Tagline + countdown */}
         <div class="mt-xl flex flex-col space-y-16 lg:space-y-0 lg:flex-row justify-between">
-          <h2 class="text-xl md:text-2xl xl:text-3xl max-w-[45ch] leading-tight font-normal">
+          <h2 class="text-2xl md:text-3xl max-w-[45ch] leading-tight font-normal">
             The final gathering for the people building Europe's future social
             platforms. The showcase of Europe's next generation of social
             platforms, the takeoff of The Shift.

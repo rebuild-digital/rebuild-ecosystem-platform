@@ -111,7 +111,7 @@ export default function Directory() {
           <div class="flex flex-col lg:flex-row gap-md">
             {/* Title + tooltip */}
             <div class="flex-col lg:w-1/2">
-              <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-7xl">
+              <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-6xl">
                 Directory
               </h1>
               <div class="relative mt-md">
@@ -234,7 +234,7 @@ export default function Directory() {
                       <div class="bg-white space-y-md p-5 lg:p-md rounded border-2">
                         {/* Name + URL */}
                         <div class="builder-row-header">
-                          <h3 class="text-2xl lg:text-3xl">
+                          <h3 class="text-xl lg:text-2xl">
                             <Show
                               when={builder.link}
                               fallback={

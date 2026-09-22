@@ -474,28 +474,28 @@
   }
 
   .rich-text h1 {
-    @apply text-5xl mt-0;
+    @apply text-4xl mt-0;
   }
 
   .rich-text h2 {
-    @apply text-4xl border-b-2 border-muted pb-xs;
+    @apply text-3xl border-b-2 border-muted pb-xs;
   }
 
   .rich-text h3 {
-    @apply text-3xl;
+    @apply text-2xl;
   }
 
   .rich-text h4 {
-    @apply text-lg md:text-2xl;
+    @apply text-xl;
     @apply mb-xl;
   }
 
   .rich-text h5 {
-    @apply text-xl;
+    @apply text-lg;
   }
 
   .rich-text h6 {
-    @apply text-lg text-darker;
+    @apply text-base text-darker;
   }
 
   /* Paragraphs and text formatting */
@@ -693,15 +693,15 @@
   /* Responsive adjustments */
   @media (max-width: 767px) {
     .rich-text h1 {
-      @apply text-4xl;
-    }
-
-    .rich-text h2 {
       @apply text-3xl;
     }
 
-    .rich-text h3 {
+    .rich-text h2 {
       @apply text-2xl;
+    }
+
+    .rich-text h3 {
+      @apply text-xl;
     }
 
     .rich-text p {

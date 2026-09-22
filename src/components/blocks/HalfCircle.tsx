@@ -8,7 +8,7 @@ export default function HalfCircle() {
         width: "100vw",
       }}
     >
-      <h2 class="text-center text-2xl lg:text-7xl mb-2xl w-2/3 mx-auto">
+      <h2 class="text-center text-2xl lg:text-5xl mb-2xl w-2/3 mx-auto">
         Rebuild is a sprint for European social platforms
       </h2>
       <div class="relative">

@@ -12,9 +12,9 @@ export default defineConfig({
       "/fonts/**": {
         headers: { "Cache-Control": "public, max-age=31536000, immutable" },
       },
-      "/": { prerender: true },
-      "/directory": { prerender: true },
-      "/data": { prerender: true },
+      "/": { swr: 300 },
+      "/directory": { swr: 300 },
+      "/data": { swr: 300 },
     },
   },
   vite: {

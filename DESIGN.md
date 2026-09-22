@@ -595,9 +595,11 @@ and inherited by all elements.
 
 ## Layout
 
-A centred 1400px container with 24px gutters. Content flows within the
-container; full-bleed sections break out with a calc pattern and re-contain
-their children.
+Pages are a single vertical column at every width. On phone, content
+stretches edge-to-edge minus 24px gutters; at `lg` (1024px) the container
+caps at 1400px and centres. Grids are single-column on phone, switching to
+two or three columns at `md` or `lg`. Full-bleed sections break out of the
+container with a calc pattern and re-contain their children.
 
 ### Container
 
@@ -682,6 +684,38 @@ instead.
 The primary responsive breakpoint is `md` (768px). Typography, grid layouts,
 and navigation switch between mobile/desktop at this point.
 
+### Responsive behaviour
+
+**Phone (< 768px):** single-column flow throughout. Grids stack vertically,
+flex rows become `flex-col`, images are full-width. Navigation collapses to
+a hamburger menu. Text scales down one step (e.g. `text-4xl` instead of
+`text-5xl`). Spacing tokens contract (`pb-3xl` instead of `pb-6xl`).
+
+**Tablet (768px – 1023px / `md`):** grids switch to two columns
+(`md:grid-cols-2`), flex rows go horizontal, and typography steps up. The
+container still stretches to the viewport — the max-width cap doesn't activate
+until `lg`. This is the main content reflow breakpoint.
+
+**Desktop (1024px+ / `lg`):** the container centres at 1400px max. Some grids
+expand to three columns (`lg:grid-cols-3`). Desktop-only navigation appears.
+Spacing opens up (`lg:py-4xl`, `lg:gap-3xl`). Hero title hits its largest
+scale (`lg:text-6xl`).
+
+#### Grid column patterns
+
+| Pattern | Where |
+|---------|-------|
+| `grid-cols-1 md:grid-cols-2` | Event sections, FAQ, insights listing, people grid, data page |
+| `grid-cols-1 md:grid-cols-3` | Outcomes grid, data stats, InsightsPreview |
+| `grid-cols-1 lg:grid-cols-2` | About, tools, carousel slides, open positions, programme highlights |
+| `grid-cols-1 lg:grid-cols-3` | GatheringsPreview cards |
+| `grid-cols-1 md:grid-cols-2 lg:grid-cols-3` | People avatars, people board grid |
+
+**Rule:** use `md:` for content grids (articles, proof points, stats) and
+`lg:` for structural grids (sidebar + content, card groups where the third
+column needs room). Do not use `sm:` for column count — keep mobile
+single-column until `md`.
+
 ### Page structure
 
 - **Fixed header** at the top. Non-home pages add `pt-5xl` (192px) to `<main>`
@@ -689,6 +723,8 @@ and navigation switch between mobile/desktop at this point.
 - **Header modes:** default (white background, dark text) and transparent
   (transparent background, light text, inverted logo) — used on the homepage
   hero.
+- **Navigation:** full horizontal nav at `lg`; below `lg` it collapses to a
+  hamburger menu button that opens a slide-over mobile nav panel.
 - **Full-bleed hero** on the homepage: 90vh height, full viewport width via
   `w-screen`, with a gradient overlay and absolute-positioned content.
 

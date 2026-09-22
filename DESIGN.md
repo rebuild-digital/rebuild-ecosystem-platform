@@ -469,6 +469,9 @@ a curated programme booklet — restrained, typographic, confident.
 
 ## Colors
 
+30 total values: six chromatic hues with four stops each (shade → base → tint →
+light), plus six neutrals from white to dark. No dark mode — single light theme.
+
 ### Chromatic hues
 
 Each chromatic color has four stops, from darkest to lightest:
@@ -514,6 +517,8 @@ Each chromatic color has four stops, from darkest to lightest:
   filter. Standard header uses `white` background.
 
 ## Typography
+
+One typeface, one weight. Hierarchy comes from size and spacing only.
 
 ### Typeface
 
@@ -589,6 +594,10 @@ The body default is `-0.02em` (slightly tightened). This is applied globally
 and inherited by all elements.
 
 ## Layout
+
+A centred 1400px container with 24px gutters. Content flows within the
+container; full-bleed sections break out with a calc pattern and re-contain
+their children.
 
 ### Container
 
@@ -714,6 +723,9 @@ or smaller.
 
 ## Shapes
 
+Rectangular by default. Only buttons get border radius (matched to their size);
+only pills and tags use full rounding.
+
 ### Border radius
 
 | Token  | Value  | Use |
@@ -735,6 +747,10 @@ Standard interactive borders are **2px solid `dark`** (`#22223e`).
 Subtle dividers use **1px** or **2px `muted`** or `lighter`.
 
 ## Components
+
+Flat, borderless buttons in three sizes; a fixed header with two modes; and a
+rich-text wrapper for CMS content. The visual language is minimal — color fills
+and typography do the work.
 
 ### Buttons — Primary
 
@@ -852,6 +868,8 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
 2px `dark` border, transparent background.
 
 ## Do's and Don'ts
+
+Ground rules for staying within the system and avoiding common drift.
 
 ### Do
 

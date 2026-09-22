@@ -592,48 +592,95 @@ and inherited by all elements.
 
 ### Container
 
-- **Max width:** 1400px
-- **Horizontal padding:** 1.5rem (24px) — applied as `px-md`
+- **Max width:** 1400px (the `max-w-max-width` utility, from `--container-max-width`)
+- **Horizontal padding:** 1.5rem (24px) — applied as `px-md`, constant at all
+  breakpoints (no responsive padding scaling).
 - **Centering:** `max-w-max-width mx-auto px-md`
+
+The shell layout (`app.tsx`) applies `lg:max-w-max-width mx-auto px-md` to
+`<main>`, so the max-width constraint only activates at `lg` (1024px) and above.
+Below `lg`, content stretches to the viewport width minus the `px-md` gutters.
+
+Always use the `max-w-max-width` utility — never hardcode `max-w-[1400px]`.
+
+#### Full-bleed sections
+
+Some sections need to break out of the container to span the full viewport.
+Use this inline-style pattern:
+
+```css
+margin-left: calc(-50vw + 50%);
+margin-right: calc(-50vw + 50%);
+width: 100vw;
+```
+
+Then re-establish the container inside the full-bleed wrapper with
+`max-w-max-width mx-auto px-md` so inner content stays aligned.
+
+Used by: hero splash, gathering event sections, HalfCircle, DirectoryPreview,
+GatheringsPreview, QuoteCarousel, and programme highlight sections.
+
+The homepage hero (`HeroSplash`) uses `w-screen` instead of the calc pattern —
+either technique works, but prefer the calc pattern for sections that live
+inside the container flow.
 
 ### Spacing scale
 
-The spacing scale uses semantic names rather than numeric multipliers:
+The spacing scale uses semantic names. Always prefer these tokens over Tailwind
+numeric classes (e.g. `gap-lg` not `gap-8`, `mt-sm` not `mt-4`).
 
-| Token | Value  | Px  | Common use |
-|-------|--------|-----|------------|
-| `xxs` | 0.25rem | 4  | Tight internal padding (code inline, kbd) |
-| `xs`  | 0.5rem  | 8  | Gap between inline elements, list item margin |
-| `sm`  | 1rem    | 16 | Paragraph margin, card padding, button padding-y |
-| `md`  | 1.5rem  | 24 | Section padding, container gutter, button padding-x |
-| `lg`  | 2rem    | 32 | Between content blocks, heading margin-bottom |
-| `xl`  | 3rem    | 48 | Major section breaks, heading margin-top |
-| `2xl` | 4rem    | 64 | Hero content bottom padding, image margins |
-| `3xl` | 6rem    | 96 | Large section padding |
-| `4xl` | 8rem    | 128 | — |
+| Token | Value   | Px  | Common use |
+|-------|---------|-----|------------|
+| `xxs` | 0.25rem | 4   | Tight internal padding (code inline, kbd) |
+| `xs`  | 0.5rem  | 8   | Gap between inline elements, list item margin, small component padding |
+| `sm`  | 1rem    | 16  | Paragraph margin, card padding, button padding-y |
+| `md`  | 1.5rem  | 24  | Container gutter, button padding-x, card gap |
+| `lg`  | 2rem    | 32  | Between content blocks, heading margin-bottom |
+| `xl`  | 3rem    | 48  | Section breaks, heading margin-top, component group separation |
+| `2xl` | 4rem    | 64  | Large section gaps, image margins |
+| `3xl` | 6rem    | 96  | Section padding (mobile), component section padding |
+| `4xl` | 8rem    | 128 | Section padding (desktop) |
+| `5xl` | 12rem   | 192 | Header clearance (`pt-5xl` on `<main>`), heavy vertical breaks |
+| `6xl` | 16rem   | 256 | Standard page-bottom padding (`pb-6xl`); most common large spacer |
+| `7xl` | 20rem   | 320 | Rare; single use for extra-large bottom padding |
+| `8xl` | 24rem   | 384 | Rare; single use for extra-large responsive padding |
+
+**Note:** the jump from `xs` (8px) to `sm` (16px) is the widest ratio gap in
+the lower end of the scale. If a 12px value is needed (e.g. tag/badge padding),
+use `px-3` as an exception — but do not introduce it as a recurring pattern
+without adding a token.
+
+#### Section vertical padding conventions
+
+- **Page bottom:** `pb-3xl md:pb-6xl` (96px → 256px) is the standard pattern.
+- **Section separators:** `py-xl md:py-3xl` for preview/block components.
+- **Heavy sections:** `py-2xl lg:py-4xl` for full-bleed event sections.
 
 ### Breakpoints
 
-| Name  | Width   | Role |
-|-------|---------|------|
-| `sm`  | 640px   | Small phones → wider phones |
-| `md`  | 768px   | Phone → tablet; primary responsive typography breakpoint |
-| `lg`  | 1024px  | Tablet → desktop; hero title scale-up |
-| `xl`  | 1280px  | Desktop → wide desktop |
-| `2xl` | 1536px  | Wide desktop |
+| Name | Width  | Role |
+|------|--------|------|
+| `sm` | 640px  | Small phones → wider phones |
+| `md` | 768px  | Phone → tablet; primary responsive typography breakpoint |
+| `lg` | 1024px | Tablet → desktop; hero title scale-up, container max-width activates |
+| `xl` | 1280px | Desktop → wide desktop |
+
+`2xl` (1536px) is defined but has only a single use in the codebase. Do not
+introduce new `2xl:` breakpoint classes — use `xl:` or a `max-w` constraint
+instead.
 
 The primary responsive breakpoint is `md` (768px). Typography, grid layouts,
 and navigation switch between mobile/desktop at this point.
 
 ### Page structure
 
-- **Fixed header** at the top. Non-home pages add `pt-48` (192px) to `<main>`
+- **Fixed header** at the top. Non-home pages add `pt-5xl` (192px) to `<main>`
   to clear it.
 - **Header modes:** default (white background, dark text) and transparent
   (transparent background, light text, inverted logo) — used on the homepage
   hero.
-- **Full-bleed hero** on the homepage: 100vh, 100vw with negative margins to
-  break out of the container.
+- **Full-bleed hero** on the homepage: 90vh height, full viewport width via
+  `w-screen`, with a gradient overlay and absolute-positioned content.
 
 ## Elevation & Depth
 

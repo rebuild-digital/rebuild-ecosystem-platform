@@ -37,7 +37,12 @@ export default function Carousel(props: CarouselProps) {
   }
 
   onMount(() => {
-    startAutoplay();
+    const motionOk = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (motionOk) {
+      startAutoplay();
+    } else {
+      setPlaying(false);
+    }
 
     function handleKeydown(e: KeyboardEvent) {
       if (e.key === "ArrowLeft") {

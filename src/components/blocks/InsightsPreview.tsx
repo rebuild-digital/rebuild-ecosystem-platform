@@ -31,13 +31,13 @@ export default function InsightsPreview(props: InsightsPreviewProps) {
                   <Show
                     when={insight.featured_image}
                     fallback={
-                      <div class="w-full aspect-4/3 bg-lighter mb-md" />
+                      <div class="w-full aspect-video bg-lighter mb-md" />
                     }
                   >
                     <img
                       src={insight.featured_image}
                       alt={insight.title}
-                      class="w-full aspect-4/3 object-cover mb-md"
+                      class="w-full aspect-video object-cover mb-md"
                     />
                   </Show>
                   <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-fast">

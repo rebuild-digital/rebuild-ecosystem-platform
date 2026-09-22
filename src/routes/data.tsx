@@ -63,7 +63,7 @@ export default function Data() {
             </div>
             <div
               class="rounded-lg overflow-hidden lg:hidden"
-              style="aspect-ratio: 13/7;"
+              style="aspect-ratio: 16/9;"
             >
               <SignalField
                 cols={13}

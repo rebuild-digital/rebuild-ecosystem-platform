@@ -11,6 +11,9 @@ export default function HeroSplash(props: HeroSplashProps) {
   const interval = () => props.interval ?? 4000;
 
   onMount(() => {
+    const motionOk = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!motionOk) return;
+
     const timer = setInterval(() => {
       setActiveIndex((i) => (i + 1) % props.images.length);
     }, interval());

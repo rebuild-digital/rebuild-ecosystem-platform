@@ -11,7 +11,6 @@ export interface Tool {
   description: string;
   thumbnail?: string;
   thumbnailAlt?: string;
-  label?: string;
   primaryAction?: ToolAction;
   secondaryAction?: ToolAction;
 }
@@ -33,11 +32,6 @@ export default function ToolCard(props: { tool: Tool }) {
             alt={props.tool.thumbnailAlt ?? ""}
             class="w-full h-auto aspect-video object-cover"
           />
-        </Show>
-        <Show when={props.tool.label}>
-          <span class="absolute top-sm right-sm bg-blue text-dark px-sm py-xs text-xs">
-            {props.tool.label}
-          </span>
         </Show>
       </div>
 

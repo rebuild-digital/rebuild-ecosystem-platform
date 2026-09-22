@@ -3,10 +3,11 @@ import type { FormConfig, FormField } from "~/lib/formConfig";
 import { submitForm } from "~/lib/formSubmit";
 
 const inputClass =
-  "w-full px-sm py-xs border border-dark/30 bg-white text-dark text-base focus:border-dark focus:outline-none transition-fast";
+  "w-full px-sm py-xs border-2 border-lighter bg-white text-dark text-base focus:border-dark focus:outline-none transition-rebuild";
+const inputFilledClass = "border-darker";
 const labelClass = "block text-sm text-darker mb-[4px]";
 const helpClass = "text-xs text-dark/60 mt-[3px]";
-const errorClass = "text-sm text-red-600 mt-[2px]";
+const errorClass = "text-sm text-red mt-[2px]";
 
 function validateEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -157,7 +158,7 @@ export default function FormRenderer(props: {
         </For>
 
         <Show when={serverError()}>
-          <p class="text-sm text-red-600 bg-red-50 px-sm py-xs">
+          <p class="text-sm text-red bg-red-light px-sm py-xs">
             {serverError()}
           </p>
         </Show>
@@ -198,7 +199,7 @@ function FieldInput(props: {
           <span class="text-sm text-darker">
             {f().label}
             <Show when={f().required}>
-              <span class="text-red-600"> *</span>
+              <span class="text-red"> *</span>
             </Show>
           </span>
         </label>
@@ -214,7 +215,7 @@ function FieldInput(props: {
         <label for={id()} class={labelClass}>
           {f().label}
           <Show when={f().required}>
-            <span class="text-red-600"> *</span>
+            <span class="text-red"> *</span>
           </Show>
         </label>
 
@@ -227,7 +228,10 @@ function FieldInput(props: {
             placeholder={f().placeholder}
             rows={3}
             class={`${inputClass} resize-y`}
-            classList={{ "border-red-600!": !!props.error }}
+            classList={{
+              "border-red!": !!props.error,
+              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
+            }}
           />
         </Show>
 
@@ -238,7 +242,10 @@ function FieldInput(props: {
             value={String(props.value ?? "")}
             onChange={(e) => props.onInput(e.currentTarget.value)}
             class={inputClass}
-            classList={{ "border-red-600!": !!props.error }}
+            classList={{
+              "border-red!": !!props.error,
+              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
+            }}
           >
             <For each={f().options}>
               {(opt) => <option value={opt.value}>{opt.label}</option>}
@@ -261,7 +268,10 @@ function FieldInput(props: {
             onInput={(e) => props.onInput(e.currentTarget.value)}
             placeholder={f().placeholder}
             class={inputClass}
-            classList={{ "border-red-600!": !!props.error }}
+            classList={{
+              "border-red!": !!props.error,
+              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
+            }}
           />
         </Show>
 

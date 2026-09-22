@@ -504,8 +504,12 @@ Each chromatic color has four stops, from darkest to lightest:
 - **Text on white surface:** always `dark` (`#22223e`).
 - **Focus rings:** `blue` (`#6ba1cc`), 2px outline with 2px offset.
 - **Borders on interactive elements:** `dark` (`#22223e`), 2px width.
-- **Hero splash overlay:** `dark` in RGBA at varying opacities (0.1–0.95) as a
-  vertical gradient over background imagery.
+- **Color overlays on images:** use the `dark` color in RGBA at varying
+  opacities with `mix-blend-multiply`. The hero splash uses a vertical gradient
+  (0.1–0.95); past-event gathering cards use the gathering's brand color at
+  40% opacity over a grayscaled image. When overlaying imagery elsewhere,
+  prefer `mix-blend-multiply` with a chromatic or neutral color at 30–50%
+  opacity — never a solid block that hides the image entirely.
 - **Transparent header:** text flips to `light` / `white`; logo inverts via CSS
   filter. Standard header uses `white` background.
 
@@ -544,7 +548,6 @@ wrong. Use font size and spacing to create hierarchy instead.
 | `6xl`  | 3.75      | 60        | Page titles (lg+) |
 | `7xl`  | 4.5       | 72        | Splash alt-title (lg+) only |
 | `8xl`  | 6         | 96        | Display numbers, decorative text |
-| `9xl`  | 8         | 128       | Unused — candidate for removal |
 
 ### Heading scale
 

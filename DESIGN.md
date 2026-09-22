@@ -847,8 +847,7 @@ background and `white` text.
 
 Respect `prefers-reduced-motion: reduce`. Components that auto-advance
 (carousels, marquee) must check this preference and either stop auto-play or
-fall back to a static view. Three components currently check via
-`window.matchMedia` in JavaScript (SignalField, ImageCarousel, QuoteCarousel).
+fall back to a static view.
 
 **Rule:** every `@keyframes` animation and every JS-driven `setInterval`
 slideshow must have a reduced-motion guard. CSS-only guard:
@@ -862,8 +861,15 @@ slideshow must have a reduced-motion guard. CSS-only guard:
 }
 ```
 
-The marquee banner and desktop pulse animation are both paused under
-`prefers-reduced-motion: reduce` via a CSS media query in `app.css`.
+Components with reduced-motion guards:
+
+- **HeroSplash** — JS `matchMedia` check, skips `setInterval` slideshow.
+- **Carousel** — JS `matchMedia` check, disables autoplay.
+- **ProgrammesPreview** — JS `matchMedia` check skips the
+  `IntersectionObserver` entrance animation; CSS media query in `app.css`
+  sets `opacity: 1; transform: none` so items are visible immediately.
+- **Marquee banner / beta-pulse** — CSS media query in `app.css` sets
+  `animation: none`.
 
 ### Contrast
 

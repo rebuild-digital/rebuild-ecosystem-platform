@@ -897,6 +897,12 @@
     .beta-pulse {
       animation: none;
     }
+
+    .programme-item {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
   }
 
   /* Splash Button Background - 25% opacity dark */

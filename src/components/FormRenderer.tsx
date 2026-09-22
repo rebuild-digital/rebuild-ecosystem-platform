@@ -166,7 +166,7 @@ export default function FormRenderer(props: {
         <button
           type="submit"
           disabled={submitting()}
-          class="w-full px-lg py-sm bg-dark text-light text-lg border-2 border-dark hover:bg-darker transition-all duration-fast cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          class="w-full px-lg py-sm bg-dark text-light text-lg border-2 border-dark hover:bg-darker transition-all transition-rebuild cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {submitting() ? "Submitting…" : "Submit"}
         </button>

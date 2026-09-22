@@ -168,13 +168,13 @@ export default function Directory() {
             <div class="flex justify-end gap-sm md:gap-md md:w-1/2 h-16 md:h-20 leading-tight">
               <button
                 data-form="builder-application"
-                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
               >
                 Join the directory
               </button>
               <button
                 data-form="builder-promo"
-                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
               >
                 Suggest a platform
               </button>

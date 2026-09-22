@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 
 const btnBase =
-  "px-md py-sm md:px-xl md:py-lg bg-lighter text-dark text-xl md:text-2xl hover:bg-dark hover:text-light transition-all duration-fast cursor-pointer border-0 w-fit";
+  "px-md py-sm md:px-xl md:py-lg bg-lighter text-dark text-xl md:text-2xl hover:bg-dark hover:text-light transition-all transition-rebuild cursor-pointer border-0 w-fit";
 
 export default function Engage() {
   const [shareLabel, setShareLabel] = createSignal("Share this page");

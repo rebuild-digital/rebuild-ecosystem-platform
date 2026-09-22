@@ -160,6 +160,7 @@
   --transition-duration-slower: 500ms;
 
   /* Timing Functions */
+  --ease-rebuild: cubic-bezier(0.33, 0, 0.1, 1);
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -312,7 +313,7 @@
 
   /* Links */
   a {
-    @apply transition-fast;
+    @apply transition-rebuild;
   }
 
   a:focus-visible {
@@ -441,7 +442,9 @@
   .filter-button {
     @apply inline-flex items-center gap-xs px-md lg:px-lg py-xs lg:py-sm text-sm rounded-4xl;
     @apply border-2 border-dark text-dark;
-    @apply transition-colors duration-200 cursor-pointer;
+    @apply transition-colors cursor-pointer;
+    transition-duration: var(--transition-duration-fast);
+    transition-timing-function: var(--ease-rebuild);
     @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
   }
 
@@ -540,7 +543,7 @@
 
   /* Links */
   .rich-text a {
-    @apply text-dark underline hover:text-blue-shade transition-fast;
+    @apply text-dark underline hover:text-blue-shade transition-rebuild;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
   }
@@ -626,7 +629,7 @@
   }
 
   .rich-text tbody tr:hover {
-    @apply bg-blush transition-fast;
+    @apply bg-blush transition-rebuild;
   }
 
   /* Horizontal rules */
@@ -889,7 +892,7 @@
   /* Beta Pulse Animation - Desktop only */
   @media (min-width: 1024px) {
     .beta-pulse {
-      animation: subtle-pulse 5s ease-in-out infinite;
+      animation: subtle-pulse 5s var(--ease-in-out) infinite;
     }
   }
 

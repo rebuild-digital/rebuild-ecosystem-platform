@@ -84,19 +84,19 @@ export default function HeroSplash(props: HeroSplashProps) {
             <div class="flex flex-row flex-wrap gap-sm w-max md:w-full min-w-full md:min-w-0">
               <button
                 data-form="builder-promo"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Help map the platforms
               </button>
               <button
                 data-form="newsletter"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Stay involved
               </button>
               <button
                 data-form="gathering-invitation-rebuild3"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Request invitation
               </button>
@@ -104,7 +104,7 @@ export default function HeroSplash(props: HeroSplashProps) {
                 href="https://letter.rebuild.net"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Sign the rebuild letter
               </a>

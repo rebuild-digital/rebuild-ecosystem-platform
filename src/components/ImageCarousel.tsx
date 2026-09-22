@@ -86,7 +86,7 @@ export default function ImageCarousel(props: ImageCarouselProps) {
         )}
       </For>
       <button
-        class="absolute bottom-sm right-sm z-10 bg-dark/50 text-light border-0 px-sm py-xs text-xs cursor-pointer transition-all duration-fast hover:bg-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+        class="absolute bottom-sm right-sm z-10 bg-dark/50 text-light border-0 px-sm py-xs text-xs cursor-pointer transition-all transition-rebuild hover:bg-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
         onClick={togglePlay}
       >
         {playing() ? "Stop carousel" : "Start carousel"}

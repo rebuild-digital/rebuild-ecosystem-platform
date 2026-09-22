@@ -1357,7 +1357,8 @@ enough to feel responsive, slow enough to be perceptible.
   ease-in-out).
 - **Hero splash images:** crossfade (1500ms ease-in-out).
 - **Marquee banner:** continuous horizontal scroll (60s linear).
-- **Programme items:** slide-in entrance (translateX + opacity, 500ms).
+- **Programme items:** slide-in entrance (translateX + opacity,
+  `--duration-slower` with `--ease-rebuild`).
 
 ### What does not animate
 

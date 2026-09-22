@@ -859,7 +859,8 @@
   .programme-item {
     opacity: 0;
     transform: translateX(-1rem);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity var(--transition-duration-slower) var(--ease-rebuild),
+      transform var(--transition-duration-slower) var(--ease-rebuild);
   }
 
   .programme-item-visible {

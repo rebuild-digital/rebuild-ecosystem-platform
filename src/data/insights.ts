@@ -40,6 +40,8 @@ export interface InsightSummary {
   published: boolean;
 }
 
+let summaryCache: InsightSummary[] | null = null;
+
 function parseInsightRaw(slug: string, raw: string): Insight | null {
   const { data, content } = matter(raw);
   const frontmatter = data as InsightFrontmatter;
@@ -49,28 +51,32 @@ function parseInsightRaw(slug: string, raw: string): Insight | null {
 }
 
 export async function getAllInsights(): Promise<InsightSummary[]> {
+  if (summaryCache) return summaryCache;
+
   const insights: InsightSummary[] = [];
 
   for (const [filePath, raw] of Object.entries(insightFiles)) {
     const slug = filePath.replace(/^.*\//, "").replace(/\.md$/, "");
-    const parsed = parseInsightRaw(slug, raw);
-    if (!parsed) continue;
+    const { data } = matter(raw);
+    const fm = data as InsightFrontmatter;
+    if (!fm.published) continue;
     insights.push({
-      slug: parsed.slug,
-      url: parsed.url,
-      title: parsed.frontmatter.title,
-      date: parsed.frontmatter.date,
-      author: parsed.frontmatter.author,
-      tags: parsed.frontmatter.tags,
-      excerpt: parsed.frontmatter.excerpt,
-      featured_image: parsed.frontmatter.featured_image,
-      published: parsed.frontmatter.published,
+      slug,
+      url: `/insights/${slug}/`,
+      title: fm.title,
+      date: fm.date,
+      author: fm.author,
+      tags: fm.tags,
+      excerpt: fm.excerpt,
+      featured_image: fm.featured_image,
+      published: fm.published,
     });
   }
 
-  return insights.sort(
+  summaryCache = insights.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
+  return summaryCache;
 }
 
 export async function getInsightBySlug(

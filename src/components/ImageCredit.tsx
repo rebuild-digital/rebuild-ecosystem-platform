@@ -19,7 +19,7 @@ const themeClasses = {
 export default function ImageCredit(props: ImageCreditProps) {
   return (
     <div
-      class={`absolute ${positionClasses[props.position ?? "bottom-left"]} ${themeClasses[props.theme ?? "light"]} text-[10px] px-2 py-1 m-2`}
+      class={`absolute ${positionClasses[props.position ?? "bottom-left"]} ${themeClasses[props.theme ?? "light"]} text-[10px] px-xs py-xxs m-xs`}
     >
       Photo by: {props.credit}
     </div>

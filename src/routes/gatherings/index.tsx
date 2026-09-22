@@ -57,14 +57,14 @@ export default function Gatherings() {
 
       {/* Explainer section */}
       <section class="py-3xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 2xl:gap-24 items-start 2xl:items-center">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg lg:gap-2xl 2xl:gap-3xl items-start 2xl:items-center">
           <div class="w-full lg:sticky lg:top-8">
             <ImageCarousel images={carouselImages} credits={carouselCredits} />
           </div>
 
-          <div class="pr-3 space-y-8">
-            <h2 class="mt-8 lg:mt-0">What are Rebuild gatherings?</h2>
-            <div class="space-y-4 lg:space-y-6">
+          <div class="pr-3 space-y-lg">
+            <h2 class="mt-lg lg:mt-0">What are Rebuild gatherings?</h2>
+            <div class="space-y-sm lg:space-y-md">
               <p>
                 Rebuild gatherings are intensive 48-hour convenings of Europe's
                 social platform entrepreneurs, pioneers, investors, and

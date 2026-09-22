@@ -7,7 +7,7 @@ export interface GatheringsPreviewProps {
 
 function ImageCredit(props: { credit: string }) {
   return (
-    <div class="absolute bottom-0 left-0 bg-dark/50 text-white text-[10px] px-2 py-1 m-2">
+    <div class="absolute bottom-0 left-0 bg-dark/50 text-white text-[10px] px-xs py-xxs m-xs">
       Photo by: {props.credit}
     </div>
   );

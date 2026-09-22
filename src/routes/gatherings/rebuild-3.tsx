@@ -36,7 +36,7 @@ export default function Rebuild3() {
             <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl mb-xs">
               Rebuild 3
             </h1>
-            <div class="flex gap-8 lg:gap-16">
+            <div class="flex gap-lg lg:gap-2xl">
               <p>Paris, France</p>
               <p>Dec 13 – Dec 15</p>
             </div>
@@ -63,7 +63,7 @@ export default function Rebuild3() {
         </div>
 
         {/* Tagline + countdown */}
-        <div class="mt-xl flex flex-col space-y-16 lg:space-y-0 lg:flex-row justify-between">
+        <div class="mt-xl flex flex-col space-y-2xl lg:space-y-0 lg:flex-row justify-between">
           <h2 class="text-xl md:text-2xl xl:text-3xl max-w-[45ch] leading-tight font-normal">
             The final gathering for the people building Europe's future social
             platforms. The showcase of Europe's next generation of social

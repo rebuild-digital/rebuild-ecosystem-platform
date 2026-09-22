@@ -2,24 +2,27 @@ import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache } from "@solidjs/router";
 import { createSignal, createMemo, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
+import Badge from "~/components/Badge";
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  Bundled: { bg: "bg-red-tint", text: "text-dark" },
-  Community: { bg: "bg-blue-tint", text: "text-dark" },
-  Groups: { bg: "bg-green-tint", text: "text-dark" },
-  Networking: { bg: "bg-orange-tint", text: "text-dark" },
-  Messaging: { bg: "bg-blue-tint", text: "text-dark" },
-  Microblogging: { bg: "bg-red-tint", text: "text-dark" },
-  Forum: { bg: "bg-red-tint", text: "text-dark" },
-  Dating: { bg: "bg-blush-tint", text: "text-dark" },
-  Events: { bg: "bg-orange-tint", text: "text-dark" },
-  Location: { bg: "bg-green-tint", text: "text-dark" },
-  "Resource sharing": { bg: "bg-blonde-tint", text: "text-dark" },
-  "Photo sharing": { bg: "bg-blush-tint", text: "text-dark" },
-  "Video sharing": { bg: "bg-blonde-tint", text: "text-dark" },
-  "Creator platform": { bg: "bg-blue-tint", text: "text-dark" },
-  "Social marketplace": { bg: "bg-orange-tint", text: "text-dark" },
-  Other: { bg: "bg-blonde-tint", text: "text-dark" },
+type BadgeColor = "red" | "blue" | "green" | "orange" | "blush" | "blonde" | "dark" | "lighter";
+
+const CATEGORY_COLORS: Record<string, { badge: BadgeColor; bg: string; text: string }> = {
+  Bundled: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Community: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  Groups: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
+  Networking: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Messaging: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  Microblogging: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Forum: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Dating: { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
+  Events: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Location: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
+  "Resource sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
+  "Photo sharing": { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
+  "Video sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
+  "Creator platform": { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  "Social marketplace": { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Other: { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
 };
 
 const CATEGORY_ORDER = [
@@ -270,11 +273,9 @@ export default function Directory() {
                                 {(cat) => {
                                   const colors = getCategoryColors(cat);
                                   return (
-                                    <span
-                                      class={`inline-block rounded-lg px-3 py-2 ${colors.bg} ${colors.text} text-sm`}
-                                    >
+                                    <Badge color={colors.badge} size="sm">
                                       {cat}
-                                    </span>
+                                    </Badge>
                                   );
                                 }}
                               </For>
@@ -285,9 +286,9 @@ export default function Directory() {
                               builder.country && builder.country.length > 0
                             }
                           >
-                            <div class="text-sm bg-light px-3 py-2 rounded-lg text-dark">
+                            <Badge color="lighter" size="sm">
                               {builder.country.join(", ")}
-                            </div>
+                            </Badge>
                           </Show>
                         </div>
                       </div>

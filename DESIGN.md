@@ -862,7 +862,8 @@ slideshow must have a reduced-motion guard. CSS-only guard:
 }
 ```
 
-**Known gap:** the marquee banner lacks a reduced-motion check.
+The marquee banner and desktop pulse animation are both paused under
+`prefers-reduced-motion: reduce` via a CSS media query in `app.css`.
 
 ### Contrast
 
@@ -895,8 +896,9 @@ interactive widgets (carousels, dropdowns, tooltips) should add `onKeyDown`
 handlers for arrow keys, Escape, and Enter/Space where the native element
 does not provide them.
 
-**Known gap:** no custom keyboard handlers exist yet on carousels, the tooltip,
-or the dropdown menu.
+Keyboard handlers are implemented on the carousel (Escape stops autoplay),
+the desktop dropdown menu (ArrowDown/ArrowUp/Escape/Enter for full submenu
+navigation), and the directory tooltip (Escape closes it).
 
 ## Icon System
 
@@ -1278,10 +1280,13 @@ transition on mount.
 ### Desktop navigation
 
 - Horizontal `<nav>` with `flex gap-md`, hidden below `lg` breakpoint.
-- Links: `no-underline hover:underline px-sm py-xs transition-fast`.
+- Links: `no-underline hover:underline px-sm py-xs transition-rebuild`.
 - Active page: `aria-current="page"`.
 - Dropdown: parent `<li>` gets Tailwind `group` class. Submenu is `absolute
-  top-full` with `hidden group-hover:block focus-within:block`. Submenu items
+  top-full` with `hidden group-hover:block focus-within:block` for mouse users.
+  Keyboard users get a parallel signal-based open state: ArrowDown/Enter on the
+  trigger opens the submenu and focuses the first `menuitem`, ArrowUp/ArrowDown
+  cycles items, Escape closes and returns focus to the trigger. Submenu items
   without a URL show as non-linked text styled by status (`line-through` for
   past, `text-muted` for future).
 
@@ -1339,8 +1344,7 @@ enough to feel responsive, slow enough to be perceptible.
 
 ### What animates
 
-- **Hover states:** color shifts on buttons and links (`transition-fast` or
-  `transition-rebuild`).
+- **Hover states:** color shifts on buttons and links (`transition-rebuild`).
 - **Header mode switch:** background-color, text color, border-color, filter
   (300ms ease).
 - **Carousel slides:** opacity and visibility (`--duration-slow` with

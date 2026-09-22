@@ -13,7 +13,7 @@ export interface InsightsPreviewProps {
 export default function InsightsPreview(props: InsightsPreviewProps) {
   return (
     <section>
-      <div class="max-w-[1400px] mx-auto">
+      <div class="max-w-max-width mx-auto px-md">
         <div class="flex justify-between items-center mb-2xl">
           <h2 class="text-4xl md:text-5xl font-normal text-dark">Latest</h2>
         </div>

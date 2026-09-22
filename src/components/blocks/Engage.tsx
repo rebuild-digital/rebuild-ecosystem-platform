@@ -25,7 +25,7 @@ export default function Engage() {
 
   return (
     <section class="relative w-full text-center py-3xl">
-      <div class="max-w-[1400px] mx-auto px-md">
+      <div class="max-w-max-width mx-auto px-md">
         <h2 class="text-4xl md:text-5xl font-normal text-dark mb-lg md:mb-2xl">
           Engage with us
         </h2>

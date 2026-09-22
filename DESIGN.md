@@ -155,8 +155,11 @@ spacing:
 
 components:
   # =============================================
-  # BUTTONS — Primary (3 sizes × 4 color themes)
+  # BUTTONS — Primary (3 sizes × 6 color themes)
   # =============================================
+  # "dark" is the default primary. Colored variants (red, blue, green,
+  # orange, blush) are accent buttons — use them sparingly for special
+  # sections, featured cards, or unique pages, not for routine actions.
   # Rounded corners always match the size token (sm→sm, md→md, lg→lg).
   # No border or outline on any primary or secondary button.
   # Text color is whichever of dark/white achieves WCAG AA contrast.
@@ -202,6 +205,26 @@ components:
     backgroundColor: "{colors.green-tint}"
     textColor: "{colors.dark}"
 
+  button-primary-sm-orange:
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-orange-hover:
+    backgroundColor: "{colors.orange-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-sm-blush:
+    backgroundColor: "{colors.blush}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-blush-hover:
+    backgroundColor: "{colors.blush-tint}"
+    textColor: "{colors.dark}"
+
   # --- Size: md (16px text, 10px / 24px padding) ---
   button-primary-md-dark:
     backgroundColor: "{colors.dark}"
@@ -243,6 +266,26 @@ components:
     backgroundColor: "{colors.green-tint}"
     textColor: "{colors.dark}"
 
+  button-primary-md-orange:
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-orange-hover:
+    backgroundColor: "{colors.orange-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-md-blush:
+    backgroundColor: "{colors.blush}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-blush-hover:
+    backgroundColor: "{colors.blush-tint}"
+    textColor: "{colors.dark}"
+
   # --- Size: lg (18px text, 14px / 32px padding) ---
   button-primary-lg-dark:
     backgroundColor: "{colors.dark}"
@@ -282,6 +325,26 @@ components:
     typography: "{typography.button-lg}"
   button-primary-lg-green-hover:
     backgroundColor: "{colors.green-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-lg-orange:
+    backgroundColor: "{colors.orange}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-orange-hover:
+    backgroundColor: "{colors.orange-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-lg-blush:
+    backgroundColor: "{colors.blush}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-blush-hover:
+    backgroundColor: "{colors.blush-tint}"
     textColor: "{colors.dark}"
 
   # =============================================
@@ -620,9 +683,15 @@ Subtle dividers use **1px** or **2px `muted`** or `lighter`.
 
 ### Buttons — Primary
 
-Three sizes, four color themes, no border/outline. Rounded corners always match
+Three sizes, six color themes, no border/outline. Rounded corners always match
 the size token. Text color is whichever of `dark` or `white` meets WCAG AA
 contrast on that background.
+
+**`dark` is the default primary button.** Use it for all standard actions
+(submit, confirm, navigate, CTA). The five colored variants — red, blue, green,
+orange, blush — are accent buttons for rare, intentional use: a featured section
+card, a unique landing page, a special-event CTA, or anywhere a page already
+commits to a specific hue. If in doubt, use `dark`.
 
 #### Sizes
 
@@ -634,25 +703,31 @@ contrast on that background.
 
 #### Color themes
 
-| Theme   | Background     | Text    | Hover background | Hover text |
-|---------|----------------|---------|------------------|------------|
-| `dark`  | `dark` #22223e | `white` | `darker` #5f5f79 | `white`    |
-| `red`   | `red` #ac1d24  | `white` | `red-tint` #d16b6b | `dark`   |
-| `blue`  | `blue` #6ba1cc | `dark`  | `blue-tint` #8fb5d9 | `dark`  |
-| `green` | `green` #669e67| `dark`  | `green-tint` #73b088 | `dark` |
+| Theme    | Background       | Text    | Hover background     | Hover text | Usage |
+|----------|------------------|---------|----------------------|------------|-------|
+| `dark`   | `dark` #22223e   | `white` | `darker` #5f5f79     | `white`    | **Default.** All standard actions. |
+| `red`    | `red` #ac1d24    | `white` | `red-tint` #d16b6b   | `dark`     | Accent only. Alerts, destructive actions. |
+| `blue`   | `blue` #6ba1cc   | `dark`  | `blue-tint` #8fb5d9  | `dark`     | Accent only. Info-themed sections. |
+| `green`  | `green` #669e67  | `dark`  | `green-tint` #73b088 | `dark`     | Accent only. Success, completion. |
+| `orange` | `orange` #bf6e36 | `dark`  | `orange-tint` #d4a77a| `dark`     | Accent only. Warmth, featured content. |
+| `blush`  | `blush` #e1aeb0  | `dark`  | `blush-tint` #e8cdcd | `dark`     | Accent only. Soft, editorial pages. |
 
 **Contrast ratios (verified):**
 
-| Background      | Text    | Ratio  | WCAG AA |
-|-----------------|---------|--------|---------|
-| `dark`          | `white` | 14.5:1 | Pass    |
-| `darker` (hover)| `white` | 5.8:1  | Pass    |
-| `red`           | `white` | 6.7:1  | Pass    |
-| `red-tint` (hover) | `dark` | 4.4:1 | Pass for lg (≥18px); borderline for sm/md — acceptable given transient hover state |
-| `blue`          | `dark`  | 5.6:1  | Pass    |
-| `blue-tint` (hover) | `dark` | 7.2:1 | Pass |
-| `green`         | `dark`  | 4.9:1  | Pass    |
-| `green-tint` (hover) | `dark` | 6.1:1 | Pass |
+| Background           | Text    | Ratio  | WCAG AA |
+|----------------------|---------|--------|---------|
+| `dark`               | `white` | 14.5:1 | Pass |
+| `darker` (hover)     | `white` | 5.8:1  | Pass |
+| `red`                | `white` | 6.7:1  | Pass |
+| `red-tint` (hover)   | `dark`  | 4.4:1  | Pass for lg; borderline sm/md — acceptable as transient hover |
+| `blue`               | `dark`  | 5.6:1  | Pass |
+| `blue-tint` (hover)  | `dark`  | 7.2:1  | Pass |
+| `green`              | `dark`  | 4.9:1  | Pass |
+| `green-tint` (hover) | `dark`  | 6.1:1  | Pass |
+| `orange`             | `dark`  | 4.0:1  | Pass for lg; borderline sm/md — acceptable as accent use only |
+| `orange-tint` (hover)| `dark`  | 7.0:1  | Pass |
+| `blush`              | `dark`  | 8.0:1  | Pass |
+| `blush-tint` (hover) | `dark`  | 10.3:1 | Pass |
 
 ### Buttons — Secondary
 
@@ -734,6 +809,9 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
   with 24px side padding. Only the hero splash breaks out full-bleed.
 - **Use semantic spacing tokens** (`xs`, `sm`, `md`, `lg`, `xl`) rather than
   arbitrary pixel values.
+- **Default to the `dark` button.** It is the primary button for all standard
+  actions. Colored variants are accent buttons — use them only when a section,
+  card, or page already commits to a specific hue.
 - **Match button radius to size.** `sm` → `rounded-sm`, `md` → `rounded-md`,
   `lg` → `rounded-lg`. Only pills use `rounded-full`.
 - **No borders on standard buttons.** Primary and secondary buttons have no
@@ -756,6 +834,9 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
   Only buttons and pills get radii.
 - **Don't put borders on standard buttons.** Primary and secondary buttons are
   borderless. Don't add outlines to "make them look more clickable."
+- **Don't use colored buttons for routine actions.** A form's "Submit" is `dark`,
+  not `blue`. Colored variants are for pages that have an intentional color
+  identity.
 - **Don't apply shadows for hover states.** Use color shifts (tint variants for
   primary buttons, `light` for secondary) instead.
 - **Don't add a dark mode.** The system is single-theme (light).

@@ -1229,7 +1229,7 @@ Fixed top navigation with two visual modes:
 - **Default:** `white` background, `dark` text/links, dark logo.
 - **Transparent:** transparent background, `light` text/links, inverted
   (white) logo. Used when hero splash is directly behind.
-- **Transition:** 300ms ease on background-color, text color, border-color,
+- **Transition:** `--duration-slow` with `--ease-rebuild` on background-color, text color, border-color,
   and filter.
 
 ### Hero Splash
@@ -1279,7 +1279,7 @@ The header operates in two visual modes based on scroll position:
 2. **Default mode** (scrolled past hero, or any non-home page): `white`
    background, `dark` text, standard logo.
 
-The transition between modes uses 300ms ease on background-color, color,
+The transition between modes uses `--duration-slow` with `--ease-rebuild` on background-color, color,
 border-color, and filter. An anti-FOUC measure suppresses the initial
 transition on mount.
 
@@ -1352,7 +1352,7 @@ enough to feel responsive, slow enough to be perceptible.
 
 - **Hover states:** color shifts on buttons and links (`transition-rebuild`).
 - **Header mode switch:** background-color, text color, border-color, filter
-  (300ms ease).
+  (`--duration-slow` with `--ease-rebuild`).
 - **Carousel slides:** opacity and visibility (`--duration-slow` with
   ease-in-out).
 - **Hero splash images:** crossfade (1500ms ease-in-out).

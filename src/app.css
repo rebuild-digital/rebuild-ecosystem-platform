@@ -763,7 +763,7 @@
     background-size: cover;
     background-position: center;
     opacity: 0;
-    transition: opacity 1500ms ease-in-out;
+    transition: opacity 1500ms var(--ease-in-out);
   }
 
   .splash-image.active {
@@ -773,7 +773,8 @@
   /* Header Transitions */
   header {
     @apply bg-white;
-    transition: background-color 300ms ease, border-color 300ms ease;
+    transition: background-color var(--transition-duration-slow) var(--ease-rebuild),
+      border-color var(--transition-duration-slow) var(--ease-rebuild);
   }
 
   header a,
@@ -830,7 +831,10 @@
   header .border-b-2,
   header .beta-banner,
   header .marquee-text {
-    transition: color 300ms ease, border-color 300ms ease, filter 300ms ease, background-color 300ms ease;
+    transition: color var(--transition-duration-slow) var(--ease-rebuild),
+      border-color var(--transition-duration-slow) var(--ease-rebuild),
+      filter var(--transition-duration-slow) var(--ease-rebuild),
+      background-color var(--transition-duration-slow) var(--ease-rebuild);
   }
 }
 

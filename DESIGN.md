@@ -105,7 +105,25 @@ typography:
     fontFamily: ABC Social Mono
     fontSize: 0.75rem
     fontWeight: 400
-    lineHeight: 1.5
+    lineHeight: 1.2
+    letterSpacing: -0.02em
+  label-md:
+    fontFamily: ABC Social Mono
+    fontSize: 0.875rem
+    fontWeight: 400
+    lineHeight: 1.2
+    letterSpacing: -0.02em
+  button-md:
+    fontFamily: ABC Social Mono
+    fontSize: 1rem
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: -0.02em
+  button-sm:
+    fontFamily: ABC Social Mono
+    fontSize: 0.875rem
+    fontWeight: 400
+    lineHeight: 1
     letterSpacing: -0.02em
 
 rounded:
@@ -136,7 +154,7 @@ components:
     textColor: "{colors.dark}"
     rounded: "{rounded.full}"
     padding: 8px 24px
-    typography: "{typography.body-sm}"
+    typography: "{typography.button-sm}"
 
   filter-button-hover:
     backgroundColor: "{colors.dark}"
@@ -305,12 +323,19 @@ synthesis and is an accepted trade-off for CMS content only.
 
 ### Line heights
 
-| Context         | Line height |
-|-----------------|-------------|
-| Headings        | 1.2         |
-| Rich-text headings | 1.3      |
-| Body text       | 1.6         |
-| Rich-text body  | 1.7         |
+| Context              | Line height | Why |
+|----------------------|-------------|-----|
+| Buttons & controls   | 1           | Text sits optically centred in the hit target; vertical padding alone controls height. |
+| Labels & tags        | 1.2         | Compact but still readable as standalone text; keeps pill shapes tight. |
+| Headings             | 1.2         | Tight leading for large sizes that don't need inter-line breathing room. |
+| Rich-text headings   | 1.3         | Slightly more air for multi-line headings in CMS content. |
+| Body text            | 1.6         | Comfortable reading rhythm for monospaced text. |
+| Rich-text body       | 1.7         | Extra generosity for long-form CMS content. |
+
+**Rule of thumb:** if the text is inside a clickable control (button, CTA, nav
+link, filter pill), use `line-height: 1` so the element's padding is the only
+thing shaping its box. If the text is a label that sits on its own (tag, badge,
+caption), use `1.2`. For reading text, use `1.6` or `1.7`.
 
 ### Letter spacing
 

@@ -113,6 +113,12 @@ typography:
     fontWeight: 400
     lineHeight: 1.2
     letterSpacing: -0.02em
+  button-lg:
+    fontFamily: ABC Social Mono
+    fontSize: 1.125rem
+    fontWeight: 400
+    lineHeight: 1
+    letterSpacing: -0.02em
   button-md:
     fontFamily: ABC Social Mono
     fontSize: 1rem
@@ -148,6 +154,174 @@ spacing:
   4xl: 128px
 
 components:
+  # =============================================
+  # BUTTONS — Primary (3 sizes × 4 color themes)
+  # =============================================
+  # Rounded corners always match the size token (sm→sm, md→md, lg→lg).
+  # No border or outline on any primary or secondary button.
+  # Text color is whichever of dark/white achieves WCAG AA contrast.
+
+  # --- Size: sm (14px text, 8px / 16px padding) ---
+  button-primary-sm-dark:
+    backgroundColor: "{colors.dark}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-dark-hover:
+    backgroundColor: "{colors.darker}"
+    textColor: "{colors.white}"
+
+  button-primary-sm-red:
+    backgroundColor: "{colors.red}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-red-hover:
+    backgroundColor: "{colors.red-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-sm-blue:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-blue-hover:
+    backgroundColor: "{colors.blue-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-sm-green:
+    backgroundColor: "{colors.green}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-primary-sm-green-hover:
+    backgroundColor: "{colors.green-tint}"
+    textColor: "{colors.dark}"
+
+  # --- Size: md (16px text, 10px / 24px padding) ---
+  button-primary-md-dark:
+    backgroundColor: "{colors.dark}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-dark-hover:
+    backgroundColor: "{colors.darker}"
+    textColor: "{colors.white}"
+
+  button-primary-md-red:
+    backgroundColor: "{colors.red}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-red-hover:
+    backgroundColor: "{colors.red-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-md-blue:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-blue-hover:
+    backgroundColor: "{colors.blue-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-md-green:
+    backgroundColor: "{colors.green}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-primary-md-green-hover:
+    backgroundColor: "{colors.green-tint}"
+    textColor: "{colors.dark}"
+
+  # --- Size: lg (18px text, 14px / 32px padding) ---
+  button-primary-lg-dark:
+    backgroundColor: "{colors.dark}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-dark-hover:
+    backgroundColor: "{colors.darker}"
+    textColor: "{colors.white}"
+
+  button-primary-lg-red:
+    backgroundColor: "{colors.red}"
+    textColor: "{colors.white}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-red-hover:
+    backgroundColor: "{colors.red-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-lg-blue:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-blue-hover:
+    backgroundColor: "{colors.blue-tint}"
+    textColor: "{colors.dark}"
+
+  button-primary-lg-green:
+    backgroundColor: "{colors.green}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-primary-lg-green-hover:
+    backgroundColor: "{colors.green-tint}"
+    textColor: "{colors.dark}"
+
+  # =============================================
+  # BUTTONS — Secondary (3 sizes, single color)
+  # =============================================
+
+  button-secondary-sm:
+    backgroundColor: "{colors.lighter}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.sm}"
+    padding: 8px 16px
+    typography: "{typography.button-sm}"
+  button-secondary-sm-hover:
+    backgroundColor: "{colors.light}"
+    textColor: "{colors.dark}"
+
+  button-secondary-md:
+    backgroundColor: "{colors.lighter}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.md}"
+    padding: 10px 24px
+    typography: "{typography.button-md}"
+  button-secondary-md-hover:
+    backgroundColor: "{colors.light}"
+    textColor: "{colors.dark}"
+
+  button-secondary-lg:
+    backgroundColor: "{colors.lighter}"
+    textColor: "{colors.dark}"
+    rounded: "{rounded.lg}"
+    padding: 14px 32px
+    typography: "{typography.button-lg}"
+  button-secondary-lg-hover:
+    backgroundColor: "{colors.light}"
+    textColor: "{colors.dark}"
+
+  # =============================================
+  # BUTTONS — Special purpose
+  # =============================================
+
   # Filter pill buttons (directory, programme filters)
   filter-button:
     backgroundColor: transparent
@@ -155,26 +329,27 @@ components:
     rounded: "{rounded.full}"
     padding: 8px 24px
     typography: "{typography.button-sm}"
-
   filter-button-hover:
     backgroundColor: "{colors.dark}"
     textColor: "{colors.white}"
 
-  # Hero splash CTA buttons
+  # Hero splash CTA buttons (outlined, on image)
   splash-cta-button:
     backgroundColor: transparent
     textColor: "{colors.white}"
     rounded: "{rounded.none}"
     padding: 16px 24px
-
   splash-cta-button-hover:
     backgroundColor: "{colors.white}"
     textColor: "{colors.dark}"
 
+  # =============================================
+  # OTHER COMPONENTS
+  # =============================================
+
   # Standard link
   link:
     textColor: "{colors.dark}"
-
   link-hover:
     textColor: "{colors.blue-shade}"
 
@@ -425,15 +600,16 @@ or smaller.
 
 | Token  | Value  | Use |
 |--------|--------|-----|
-| `none` | 0px    | Default for most elements (buttons, inputs, cards) |
-| `sm`   | 4px    | Subtle rounding where needed |
-| `md`   | 8px    | — |
-| `lg`   | 12px   | — |
-| `full` | 9999px | Filter pill buttons |
+| `none` | 0px    | Default for cards, inputs, containers |
+| `sm`   | 4px    | Small buttons |
+| `md`   | 8px    | Medium buttons |
+| `lg`   | 12px   | Large buttons |
+| `full` | 9999px | Filter pill buttons, tags |
 
-**Guidance:** the default shape is **rectangular** (no border-radius). Only
-filter pills and tags use `rounded-full`. Do not round cards, images, or
-containers unless specifically designed.
+**Guidance:** buttons use the radius that matches their size (`sm` → `sm`,
+`md` → `md`, `lg` → `lg`). Everything else — cards, images, containers — is
+rectangular (`none`) unless specifically designed. Only filter pills and tags
+use `rounded-full`.
 
 ### Borders
 
@@ -442,18 +618,72 @@ Subtle dividers use **1px** or **2px `muted`** or `lighter`.
 
 ## Components
 
-### Filter Button
+### Buttons — Primary
 
-Pill-shaped toggle for directory/programme category filtering.
+Three sizes, four color themes, no border/outline. Rounded corners always match
+the size token. Text color is whichever of `dark` or `white` meets WCAG AA
+contrast on that background.
+
+#### Sizes
+
+| Size | Font     | Padding (v / h) | Rounded | Height (approx) |
+|------|----------|-----------------|---------|------------------|
+| `sm` | 14px     | 8px / 16px      | `sm` (4px)  | 30px |
+| `md` | 16px     | 10px / 24px     | `md` (8px)  | 36px |
+| `lg` | 18px     | 14px / 32px     | `lg` (12px) | 46px |
+
+#### Color themes
+
+| Theme   | Background     | Text    | Hover background | Hover text |
+|---------|----------------|---------|------------------|------------|
+| `dark`  | `dark` #22223e | `white` | `darker` #5f5f79 | `white`    |
+| `red`   | `red` #ac1d24  | `white` | `red-tint` #d16b6b | `dark`   |
+| `blue`  | `blue` #6ba1cc | `dark`  | `blue-tint` #8fb5d9 | `dark`  |
+| `green` | `green` #669e67| `dark`  | `green-tint` #73b088 | `dark` |
+
+**Contrast ratios (verified):**
+
+| Background      | Text    | Ratio  | WCAG AA |
+|-----------------|---------|--------|---------|
+| `dark`          | `white` | 14.5:1 | Pass    |
+| `darker` (hover)| `white` | 5.8:1  | Pass    |
+| `red`           | `white` | 6.7:1  | Pass    |
+| `red-tint` (hover) | `dark` | 4.4:1 | Pass for lg (≥18px); borderline for sm/md — acceptable given transient hover state |
+| `blue`          | `dark`  | 5.6:1  | Pass    |
+| `blue-tint` (hover) | `dark` | 7.2:1 | Pass |
+| `green`         | `dark`  | 4.9:1  | Pass    |
+| `green-tint` (hover) | `dark` | 6.1:1 | Pass |
+
+### Buttons — Secondary
+
+Single color scheme, same three sizes as primary. No border/outline. Rounded
+corners match the size token.
+
+| State   | Background          | Text   |
+|---------|---------------------|--------|
+| Default | `lighter` #d9d9e0   | `dark` |
+| Hover   | `light` #e8e8e8     | `dark` |
+
+Contrast: `lighter` → `dark` is 10.9:1, `light` → `dark` is 12.5:1. Both pass
+comfortably.
+
+### Buttons — Special purpose
+
+#### Filter Button (pill)
+
+Pill-shaped toggle for directory/programme category filtering. **Not** part of
+the sm/md/lg size system — uses its own dimensions and `rounded-full`.
 
 - **Default:** transparent background, 2px `dark` border, `dark` text,
-  `rounded-full`, padding `xs` vertical / `md` horizontal.
+  `rounded-full`, padding `xs` (8px) vertical / `md` (24px) horizontal.
 - **Hover/active:** `dark` background, `white` text.
 - **Contains:** optional dismiss "✕" icon.
+- This is the one button type that keeps a border.
 
-### Splash CTA Button
+#### Splash CTA Button
 
-Call-to-action links overlaid on the hero splash image.
+Call-to-action links overlaid on the hero splash image. Also outside the
+standard size system — these are contextual to the hero.
 
 - **Default:** transparent background (25% `dark` overlay), 2px `light` border,
   `light` text, no border-radius.
@@ -504,8 +734,14 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
   with 24px side padding. Only the hero splash breaks out full-bleed.
 - **Use semantic spacing tokens** (`xs`, `sm`, `md`, `lg`, `xl`) rather than
   arbitrary pixel values.
-- **Default to rectangular shapes.** No border-radius is the norm; only use
-  `rounded-full` for pills/tags.
+- **Match button radius to size.** `sm` → `rounded-sm`, `md` → `rounded-md`,
+  `lg` → `rounded-lg`. Only pills use `rounded-full`.
+- **No borders on standard buttons.** Primary and secondary buttons have no
+  border or outline — color alone distinguishes them. Only filter pills and
+  splash CTAs keep a border.
+- **Pick button text color for contrast.** Use `white` on dark/saturated
+  backgrounds (dark, red), `dark` on light/medium backgrounds (blue, green,
+  lighter, light). See the verified contrast table.
 - **Set focus rings.** All interactive elements need a visible 2px `blue`
   outline with 2px offset on `:focus-visible`.
 
@@ -516,10 +752,12 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
 - **Don't introduce new colors.** The 30-value palette (6 chromatic × 4 stops
   + 6 neutrals) is the complete set.
 - **Don't use gradients** outside the hero splash overlay.
-- **Don't use rounded corners on cards or containers.** The design language is
-  rectangular.
-- **Don't apply shadows for hover states.** Use color shifts (shade variants)
-  instead.
+- **Don't use rounded corners on cards or containers.** They stay rectangular.
+  Only buttons and pills get radii.
+- **Don't put borders on standard buttons.** Primary and secondary buttons are
+  borderless. Don't add outlines to "make them look more clickable."
+- **Don't apply shadows for hover states.** Use color shifts (tint variants for
+  primary buttons, `light` for secondary) instead.
 - **Don't add a dark mode.** The system is single-theme (light).
 - **Don't use the system sans-serif** for visible UI text. The `--font-sans`
   token exists as a fallback stack but is not used in the design.

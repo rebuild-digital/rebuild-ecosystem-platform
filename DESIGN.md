@@ -93,13 +93,13 @@ typography:
     fontFamily: ABC Social Mono
     fontSize: 1rem
     fontWeight: 400
-    lineHeight: 1.6
+    lineHeight: 1.7
     letterSpacing: -0.02em
   body-sm:
     fontFamily: ABC Social Mono
     fontSize: 0.875rem
     fontWeight: 400
-    lineHeight: 1.6
+    lineHeight: 1.7
     letterSpacing: -0.02em
   label-sm:
     fontFamily: ABC Social Mono
@@ -528,27 +528,27 @@ The design system uses **only weight 400**. Do not apply `font-weight: bold`,
 not include those weights and the browser will synthesize a faux-bold that looks
 wrong. Use font size and spacing to create hierarchy instead.
 
-Exception: the `.rich-text strong` rule applies `font-bold` for user-authored
-markdown content, where semantic emphasis is needed; this relies on browser
-synthesis and is an accepted trade-off for CMS content only.
-
 ### Type scale
 
-| Token     | Size (rem) | Size (px) | Use |
-|-----------|-----------|-----------|-----|
-| `xs`      | 0.75      | 12        | Smallest labels, fine print |
-| `sm`      | 0.875     | 14        | Captions, filter buttons, metadata |
-| `base`    | 1         | 16        | Body text, form inputs |
-| `lg`      | 1.125     | 18        | Body text in rich-text blocks (desktop), h5, h4 (mobile) |
-| `xl`      | 1.25      | 20        | h4 (desktop), h3 (mobile) |
-| `2xl`     | 1.5       | 24        | h3 (desktop), h2 (mobile) |
-| `3xl`     | 1.875     | 30        | h2 (desktop), h1 (mobile) |
-| `4xl`     | 2.25      | 36        | h1 (desktop) |
-| `5xl`     | 3         | 48        | Rich-text h1, splash title (mobile) |
-| `6xl`     | 3.75      | 60        | — |
-| `7xl`     | 4.5       | 72        | Splash title (desktop, lg+) |
+| Token  | Size (rem) | Size (px) | Use |
+|--------|-----------|-----------|-----|
+| `xs`   | 0.75      | 12        | Smallest labels, fine print, image credits |
+| `sm`   | 0.875     | 14        | Captions, filter buttons, metadata, footer text |
+| `base` | 1         | 16        | Body text, form inputs, h6 |
+| `lg`   | 1.125     | 18        | Body text at md+ breakpoints, h5, h4 (mobile) |
+| `xl`   | 1.25      | 20        | h4 (desktop), h3 (mobile), page subtitles |
+| `2xl`  | 1.5       | 24        | h3 (desktop), h2 (mobile) |
+| `3xl`  | 1.875     | 30        | h2 (desktop), h1 (mobile), splash title (mobile) |
+| `4xl`  | 2.25      | 36        | h1 (desktop), page titles (mobile) |
+| `5xl`  | 3         | 48        | Rich-text h1, page titles (md+), section h2s (md+) |
+| `6xl`  | 3.75      | 60        | Unused — candidate for removal |
+| `7xl`  | 4.5       | 72        | Page titles (lg+), splash title (lg+) |
+| `8xl`  | 6         | 96        | Display numbers, decorative text |
+| `9xl`  | 8         | 128       | Unused — candidate for removal |
 
-### Heading scale (responsive)
+### Heading scale — base (from `@layer base`)
+
+These are the CSS-reset defaults. Verified: matches `app.css` exactly.
 
 | Level | Desktop       | Mobile (< 768px) |
 |-------|---------------|-------------------|
@@ -559,6 +559,43 @@ synthesis and is an accepted trade-off for CMS content only.
 | h5    | `lg` (18px)   | `lg` (18px)       |
 | h6    | `base` (16px) | `base` (16px)     |
 
+### Heading scale — rich-text (from `.rich-text`)
+
+Rich-text headings are consistently **one step larger** than the base scale.
+This is intentional for CMS content where headings need more presence.
+
+| Level | Rich-text (desktop) | Base (desktop) |
+|-------|---------------------|----------------|
+| h1    | `5xl` (48px)        | `4xl` (36px)   |
+| h2    | `4xl` (36px)        | `3xl` (30px)   |
+| h3    | `3xl` (30px)        | `2xl` (24px)   |
+| h4    | `2xl` (24px) at md+ | `xl` (20px)    |
+| h5    | `xl` (20px)         | `lg` (18px)    |
+| h6    | `lg` (18px)         | `base` (16px)  |
+
+### Page title pattern
+
+Page-level h1 elements and homepage section h2s follow a larger scale than the
+base heading reset: `text-4xl md:text-5xl lg:text-7xl`. This is the dominant
+pattern across route pages and homepage sections.
+
+### Inconsistencies flagged (codebase audit)
+
+The following deviations from the scales above exist in the codebase:
+
+**Invalid class — `text-md` does not exist in Tailwind:**
+- `GatheringsPreview.tsx:72`, `journey.tsx:129,130` — produces no styling.
+
+**h2 elements undersized on mobile (using `xl` instead of `2xl`):**
+- `open-positions.tsx:43`, `people.tsx:132,142`
+- `gatherings/rebuild-2.tsx:76`, `gatherings/rebuild-3.tsx:67`
+
+**h3 elements oversized (one or two steps above the base h3 scale):**
+- `directory.tsx:237` — `text-2xl lg:text-3xl` (should be `xl` / `2xl`)
+- `insights/index.tsx:65` — `lg:text-3xl` (should be `lg:text-2xl`)
+- `gatherings/rebuild-2.tsx:104` — `text-3xl` with no responsive step-down
+- `DirectoryPreview.tsx:59` — `md:text-4xl` (two steps over)
+
 ### Line heights
 
 | Context              | Line height | Why |
@@ -567,13 +604,12 @@ synthesis and is an accepted trade-off for CMS content only.
 | Labels & tags        | 1.2         | Compact but still readable as standalone text; keeps pill shapes tight. |
 | Headings             | 1.2         | Tight leading for large sizes that don't need inter-line breathing room. |
 | Rich-text headings   | 1.3         | Slightly more air for multi-line headings in CMS content. |
-| Body text            | 1.6         | Comfortable reading rhythm for monospaced text. |
-| Rich-text body       | 1.7         | Extra generosity for long-form CMS content. |
+| Body text            | 1.7         | Comfortable reading rhythm for monospaced text. |
 
 **Rule of thumb:** if the text is inside a clickable control (button, CTA, nav
 link, filter pill), use `line-height: 1` so the element's padding is the only
 thing shaping its box. If the text is a label that sits on its own (tag, badge,
-caption), use `1.2`. For reading text, use `1.6` or `1.7`.
+caption), use `1.2`. For reading text, use `1.7`.
 
 ### Letter spacing
 

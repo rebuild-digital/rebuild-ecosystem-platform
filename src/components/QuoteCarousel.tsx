@@ -1,4 +1,5 @@
 import { createSignal, onMount, onCleanup, For } from "solid-js";
+import Section from "~/components/Section";
 
 interface Quote {
   text: string;
@@ -81,9 +82,10 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
   }
 
   return (
-    <section
+    <Section
+      fullBleed
+      raw
       class="relative mt-3xl py-3xl lg:py-6xl overflow-hidden"
-      style="margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); width: 100vw;"
       role="region"
       aria-roledescription="carousel"
       aria-label="Quotes"
@@ -162,6 +164,6 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
           </button>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

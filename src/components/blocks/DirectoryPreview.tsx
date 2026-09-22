@@ -1,4 +1,5 @@
 import { For, Show } from "solid-js";
+import Section from "~/components/Section";
 
 export interface DirectoryPlatform {
   name: string;
@@ -15,16 +16,11 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
   const displayPlatforms = () => props.platforms.slice(0, 10);
 
   return (
-    <section
+    <Section
+      fullBleed
       class="relative w-full py-4xl"
-      style={{
-        "margin-left": "calc(-50vw + 50%)",
-        "margin-right": "calc(-50vw + 50%)",
-        width: "100vw",
-        "background-color": "rgba(107, 161, 204, 0.1)",
-      }}
+      style={{ "background-color": "rgba(107, 161, 204, 0.1)" }}
     >
-      <div class="max-w-max-width mx-auto px-md">
         <div class="flex justify-between flex-col md:flex-row gap-lg md:gap-md md:items-center mb-2xl">
           <div>
             <h2 class="text-4xl md:text-5xl font-normal text-dark">
@@ -98,7 +94,6 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
             </button>
           </div>
         </div>
-      </div>
-    </section>
+    </Section>
   );
 }

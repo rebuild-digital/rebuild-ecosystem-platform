@@ -1,5 +1,6 @@
 import { For, Show } from "solid-js";
 import type { Gathering } from "~/data/gatherings";
+import Section from "~/components/Section";
 
 export interface GatheringsPreviewProps {
   gatherings: Gathering[];
@@ -15,15 +16,7 @@ function ImageCredit(props: { credit: string }) {
 
 export default function GatheringsPreview(props: GatheringsPreviewProps) {
   return (
-    <section
-      class="relative w-full py-xl md:py-3xl"
-      style={{
-        "margin-left": "calc(-50vw + 50%)",
-        "margin-right": "calc(-50vw + 50%)",
-        width: "100vw",
-      }}
-    >
-      <div class="max-w-max-width mx-auto px-md">
+    <Section fullBleed class="relative w-full py-xl md:py-3xl">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3xl lg:gap-lg mb-2xl">
           <For each={props.gatherings}>
             {(gathering) => (
@@ -102,7 +95,6 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
             )}
           </For>
         </div>
-      </div>
-    </section>
+    </Section>
   );
 }

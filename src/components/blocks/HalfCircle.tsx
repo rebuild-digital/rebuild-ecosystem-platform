@@ -1,12 +1,12 @@
+import Section from "~/components/Section";
+
 export default function HalfCircle() {
   return (
-    <div
+    <Section
+      fullBleed
+      raw
       class="w-full bg-orange lg:bg-transparent pt-xl lg:pt-0 overflow-hidden"
-      style={{
-        "margin-left": "calc(-50vw + 50%)",
-        "margin-right": "calc(-50vw + 50%)",
-        width: "100vw",
-      }}
+      as="div"
     >
       <h2 class="text-center text-2xl lg:text-5xl mb-2xl w-2/3 mx-auto">
         Rebuild is a sprint for European social platforms
@@ -30,6 +30,6 @@ export default function HalfCircle() {
           resources back to a strengthened industry.
         </p>
       </div>
-    </div>
+    </Section>
   );
 }

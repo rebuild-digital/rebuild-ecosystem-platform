@@ -610,7 +610,8 @@ The shell layout (`app.tsx`) applies `lg:max-w-max-width mx-auto px-md` to
 `<main>`, so the max-width constraint only activates at `lg` (1024px) and above.
 Below `lg`, content stretches to the viewport width minus the `px-md` gutters.
 
-Always use the `max-w-max-width` utility — never hardcode `max-w-[1400px]`.
+Always use token-based utilities for widths and spacing — never hardcode
+pixel values in arbitrary Tailwind brackets.
 
 #### Full-bleed sections
 

@@ -3,6 +3,7 @@ import { For, Show } from "solid-js";
 import HalfCircle from "~/components/blocks/HalfCircle";
 import ProgrammesPreview from "~/components/blocks/ProgrammesPreview";
 import ImageCredit from "~/components/ImageCredit";
+import Section from "~/components/Section";
 import { events } from "~/data/events";
 import { programmes } from "~/data/programmes";
 
@@ -108,17 +109,12 @@ export default function Journey() {
       {/* Gathering sections — full-bleed, one per event */}
       <For each={events}>
         {(gathering) => (
-          <section
+          <Section
+            fullBleed
             id={gathering.id}
             class="relative w-full py-2xl lg:py-4xl"
-            style={{
-              "background-color": gathering.bgColor,
-              "margin-left": "calc(-50vw + 50%)",
-              "margin-right": "calc(-50vw + 50%)",
-              width: "100vw",
-            }}
+            style={{ "background-color": gathering.bgColor }}
           >
-            <div class="max-w-max-width mx-auto px-md">
               {/* Header */}
               <div class="mb-2xl lg:mb-4xl">
                 <div class="flex flex-col md:flex-row justify-between">
@@ -194,8 +190,7 @@ export default function Journey() {
                   </div>
                 </div>
               </Show>
-            </div>
-          </section>
+          </Section>
         )}
       </For>
 

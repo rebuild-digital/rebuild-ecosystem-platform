@@ -59,20 +59,17 @@ export default function HeroSplash(props: HeroSplashProps) {
         </For>
       </div>
 
-      {/* Gradient Overlay */}
+      {/* Color overlay — mix-blend-multiply tints the image without washing it out */}
       <div
-        class="absolute bottom-0 left-0 w-full h-full pointer-events-none z-20"
+        class="absolute inset-0 bg-dark/65 mix-blend-multiply pointer-events-none z-20"
+        aria-hidden="true"
+      />
+      {/* Bottom gradient — extra contrast for CTA text in the lower third */}
+      <div
+        class="absolute bottom-0 left-0 w-full h-1/3 pointer-events-none z-20"
         aria-hidden="true"
         style={{
-          background: `linear-gradient(
-            to bottom,
-            color-mix(in srgb, var(--color-dark) 75%, transparent) 0%,
-            color-mix(in srgb, var(--color-dark) 50%, transparent) 20%,
-            transparent 40%,
-            transparent 60%,
-            color-mix(in srgb, var(--color-dark) 50%, transparent) 80%,
-            color-mix(in srgb, var(--color-dark) 75%, transparent) 100%
-          )`,
+          background: "linear-gradient(to top, rgba(34,34,62,0.6) 0%, transparent 100%)",
         }}
       />
 

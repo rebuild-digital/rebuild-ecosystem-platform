@@ -49,6 +49,9 @@ export default function Carousel(props: CarouselProps) {
         goTo((current() - 1 + props.slides.length) % props.slides.length);
       } else if (e.key === "ArrowRight") {
         goTo((current() + 1) % props.slides.length);
+      } else if (e.key === "Escape" && playing()) {
+        stopAutoplay();
+        setPlaying(false);
       }
     }
     document.addEventListener("keydown", handleKeydown);

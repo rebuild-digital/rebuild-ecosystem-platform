@@ -1,6 +1,6 @@
 import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache } from "@solidjs/router";
-import { createSignal, createMemo, Suspense, For, Show } from "solid-js";
+import { createSignal, createEffect, createMemo, onCleanup, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
 
@@ -90,6 +90,17 @@ export default function Directory() {
     const all = data() ?? [];
     if (active.length === 0) return all;
     return all.filter((b) => b.category.some((c) => active.includes(c)));
+  });
+
+  createEffect(() => {
+    if (!tooltipOpen()) return;
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setTooltipOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeydown);
+    onCleanup(() => document.removeEventListener("keydown", handleKeydown));
   });
 
   function toggleCategory(cat: string) {

@@ -5,6 +5,10 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 
 const CACHE_FILE = path.join(process.cwd(), ".cache/builders.json");
+const MEMORY_TTL = 5 * 60 * 1000;
+
+let memCache: { data: Builder[]; ts: number } | null = null;
+let pendingRefresh: Promise<Builder[]> | null = null;
 
 export interface Builder {
   id: string;
@@ -21,7 +25,7 @@ export interface Builder {
   order: number;
 }
 
-function readCache(): Builder[] | null {
+function readFileCache(): Builder[] | null {
   try {
     if (fs.existsSync(CACHE_FILE)) {
       return JSON.parse(fs.readFileSync(CACHE_FILE, "utf-8"));
@@ -32,7 +36,7 @@ function readCache(): Builder[] | null {
   return null;
 }
 
-function writeCache(data: Builder[]) {
+function writeFileCache(data: Builder[]) {
   try {
     fs.mkdirSync(path.dirname(CACHE_FILE), { recursive: true });
     fs.writeFileSync(CACHE_FILE, JSON.stringify(data, null, 2));
@@ -41,88 +45,124 @@ function writeCache(data: Builder[]) {
   }
 }
 
-function shuffle<T>(arr: T[]): T[] {
+function dailySeed(): number {
+  const d = new Date();
+  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+
+function seededShuffle<T>(arr: T[], seed: number): T[] {
   const a = [...arr];
+  let s = seed;
   for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    s = (s * 1664525 + 1013904223) & 0x7fffffff;
+    const j = s % (i + 1);
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
 }
 
-export async function getBuilders(): Promise<Builder[]> {
+async function fetchFromNotion(): Promise<Builder[]> {
   const token = process.env.NOTION_TOKEN;
   const dbId = process.env.NOTION_BUILDERS_DB_ID;
 
   if (!token || !dbId) {
-    console.warn(
-      "Notion credentials not found, using cached builders data if available."
-    );
-    return readCache() ?? [];
+    throw new Error("Notion credentials not configured");
   }
 
   const notion = new Client({ auth: token });
+  const database = await notion.databases.retrieve({ database_id: dbId });
+  const dataSourceId = (database as any).data_sources?.[0]?.id;
+
+  if (!dataSourceId) {
+    throw new Error("No data source found in database");
+  }
+
+  let allResults: any[] = [];
+  let hasMore = true;
+  let startCursor: string | undefined;
+
+  while (hasMore) {
+    const queryOptions: any = {
+      data_source_id: dataSourceId,
+      filter: {
+        property: "PUBLISHED?",
+        checkbox: { equals: true },
+      },
+      page_size: 100,
+    };
+    if (startCursor) queryOptions.start_cursor = startCursor;
+
+    const response = await (notion as any).dataSources.query(queryOptions);
+    allResults = allResults.concat(response.results);
+    hasMore = response.has_more;
+    startCursor = response.next_cursor;
+  }
+
+  const data: Builder[] = allResults.map((page: any) => ({
+    id: page.id,
+    name: page.properties.Name?.title[0]?.plain_text || "Untitled",
+    description:
+      page.properties.DESCRIPTION?.rich_text[0]?.plain_text || "",
+    imageUrl:
+      page.properties.Image?.files[0]?.file?.url ||
+      page.properties.Image?.files[0]?.external?.url ||
+      "",
+    link: page.properties.WEBSITE?.url || "",
+    tags:
+      page.properties.TAGS?.multi_select?.map((t: any) => t.name) || [],
+    category:
+      page.properties.CATEGORY?.multi_select?.map((t: any) => t.name) ||
+      [],
+    stage: page.properties.STAGE?.select?.name || "",
+    country:
+      page.properties.COUNTRY?.multi_select?.map((t: any) => t.name) ||
+      [],
+    yearFounded: page.properties["YEAR FOUNDED"]?.number || null,
+    published: page.properties["PUBLISHED?"]?.checkbox || false,
+    order: page.properties.Order?.number || 999,
+  }));
+
+  const shuffled = seededShuffle(data, dailySeed());
+  writeFileCache(shuffled);
+  memCache = { data: shuffled, ts: Date.now() };
+  console.log(`Fetched ${data.length} platforms from the directory.`);
+  return shuffled;
+}
+
+function refreshInBackground() {
+  if (pendingRefresh) return;
+  pendingRefresh = fetchFromNotion()
+    .catch((err) => {
+      console.warn("Background builder refresh failed:", err.message);
+      return memCache?.data ?? [];
+    })
+    .finally(() => {
+      pendingRefresh = null;
+    });
+}
+
+export async function getBuilders(): Promise<Builder[]> {
+  if (memCache && Date.now() - memCache.ts < MEMORY_TTL) {
+    return memCache.data;
+  }
+
+  const fileCached = readFileCache();
+  if (fileCached && fileCached.length > 0) {
+    const shuffled = seededShuffle(fileCached, dailySeed());
+    memCache = { data: shuffled, ts: Date.now() };
+    refreshInBackground();
+    return shuffled;
+  }
+
+  if (pendingRefresh) return pendingRefresh;
 
   try {
-    const database = await notion.databases.retrieve({ database_id: dbId });
-    const dataSourceId = (database as any).data_sources?.[0]?.id;
-
-    if (!dataSourceId) {
-      throw new Error("No data source found in database");
-    }
-
-    let allResults: any[] = [];
-    let hasMore = true;
-    let startCursor: string | undefined;
-
-    while (hasMore) {
-      const queryOptions: any = {
-        data_source_id: dataSourceId,
-        filter: {
-          property: "PUBLISHED?",
-          checkbox: { equals: true },
-        },
-        page_size: 100,
-      };
-      if (startCursor) queryOptions.start_cursor = startCursor;
-
-      const response = await (notion as any).dataSources.query(queryOptions);
-      allResults = allResults.concat(response.results);
-      hasMore = response.has_more;
-      startCursor = response.next_cursor;
-    }
-
-    const data: Builder[] = allResults.map((page: any) => ({
-      id: page.id,
-      name: page.properties.Name?.title[0]?.plain_text || "Untitled",
-      description:
-        page.properties.DESCRIPTION?.rich_text[0]?.plain_text || "",
-      imageUrl:
-        page.properties.Image?.files[0]?.file?.url ||
-        page.properties.Image?.files[0]?.external?.url ||
-        "",
-      link: page.properties.WEBSITE?.url || "",
-      tags:
-        page.properties.TAGS?.multi_select?.map((t: any) => t.name) || [],
-      category:
-        page.properties.CATEGORY?.multi_select?.map((t: any) => t.name) ||
-        [],
-      stage: page.properties.STAGE?.select?.name || "",
-      country:
-        page.properties.COUNTRY?.multi_select?.map((t: any) => t.name) ||
-        [],
-      yearFounded: page.properties["YEAR FOUNDED"]?.number || null,
-      published: page.properties["PUBLISHED?"]?.checkbox || false,
-      order: page.properties.Order?.number || 999,
-    }));
-
-    const shuffled = shuffle(data);
-    writeCache(shuffled);
-    console.log(`Fetched ${data.length} platforms from the directory.`);
-    return shuffled;
+    pendingRefresh = fetchFromNotion();
+    return await pendingRefresh;
   } catch (error: any) {
     console.error("Notion API failed:", error.message);
-    console.warn("Attempting to use cached data...");
-    return readCache() ?? [];
+    return [];
+  } finally {
+    pendingRefresh = null;
   }
 }

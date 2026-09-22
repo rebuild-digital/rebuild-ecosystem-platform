@@ -862,7 +862,7 @@ slideshow must have a reduced-motion guard. CSS-only guard:
 }
 ```
 
-**Known gaps:** HeroSplash and the marquee banner lack reduced-motion checks.
+**Known gap:** the marquee banner lacks a reduced-motion check.
 
 ### Contrast
 
@@ -1015,9 +1015,7 @@ The target system above adds a visible distinction for filled fields.
 - **Error text:** `text-sm text-red mt-[2px]` below the field.
 - **Required indicator:** red asterisk after the label.
 
-**Known inconsistency:** current code uses Tailwind's `red-600` for error
-states instead of the project's `--color-red` token. This should be
-normalised.
+Error styles use the project's `--color-red` token throughout.
 
 ### Labels
 

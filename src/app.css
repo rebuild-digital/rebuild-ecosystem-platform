@@ -888,6 +888,17 @@
     }
   }
 
+  /* Accessibility: disable marquee and pulse animations for reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+      animation: none;
+    }
+
+    .beta-pulse {
+      animation: none;
+    }
+  }
+
   /* Splash Button Background - 25% opacity dark */
   .bg-splash-button {
     background-color: rgba(34, 34, 62, 0.25);

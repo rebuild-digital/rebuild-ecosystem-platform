@@ -140,6 +140,12 @@ rounded:
   xl: 16px
   2xl: 20px
   3xl: 24px
+  4xl: 28px
+  5xl: 32px
+  6xl: 40px
+  7xl: 48px
+  8xl: 56px
+  9xl: 64px
   full: 9999px
 
 spacing:
@@ -463,7 +469,7 @@ near-white pastels used for subtle backgrounds, graphic elements, and color
 overlays. There is **no dark mode**; the system ships a single light theme.
 
 The visual language is flat and direct: no gradients (except the hero splash
-overlay), no drop shadows on interactive elements, and minimal border radius.
+overlay), no drop shadows anywhere, and minimal border radius.
 Buttons are either borderless text or outlined pills. The overall feeling is
 a curated programme booklet — restrained, typographic, confident.
 
@@ -730,38 +736,46 @@ single-column until `md`.
 
 ## Elevation & Depth
 
-The design is intentionally flat. Shadows are defined in the token system but
-used sparingly:
+**This is a shadowless design system.** No drop shadows, no box-shadows, no
+elevation through shadow. Depth comes from borders, color fills, overlays,
+and z-index stacking — never from shadows.
 
-| Token    | Value | Use |
-|----------|-------|-----|
-| `xs`     | `0 1px 2px 0 rgb(0 0 0 / 0.05)` | — |
-| `sm`     | `0 1px 3px …` | — |
-| `md`     | `0 4px 6px …` | Code blocks in rich-text |
-| `lg`     | `0 10px 15px …` | — |
-| `xl`     | `0 20px 25px …` | — |
-| `2xl`    | `0 25px 50px …` | — |
-| `inner`  | `inset 0 2px 4px …` | — |
-
-**Guidance:** prefer borders over shadows. The default interactive language
-is a 2px `dark` border, not a shadow lift. If you must elevate, use `shadow-md`
-or smaller.
+The decision is deliberate: the editorial, flat aesthetic treats the page as a
+printed surface. Shadows imply a light source and physical depth that conflict
+with the ink-on-paper metaphor. Use 2px `dark` borders to define interactive
+elements. Use semi-transparent overlays (`bg-dark/50`) for modals and scrims.
 
 ### Z-index
 
 | Token | Value | Use |
 |-------|-------|-----|
 | `0`   | 0     | Default stacking |
-| `10`  | 10    | Splash background images |
+| `10`  | 10    | Splash background images, carousel controls, tooltips |
 | `20`  | 20    | Splash gradient overlay |
 | `30`  | 30    | Splash content |
 | `40`  | 40    | — |
-| `50`  | 50    | Fixed header, modals |
+| `50`  | 50    | Fixed header, dropdowns, mobile menu |
+| `max` | 999   | Modal overlays (FormSidebar), skip-link |
+
+**Rule:** always use the token scale. Do not introduce ad-hoc z-index values.
+The `max` layer is reserved for elements that must sit above everything,
+including the fixed header.
+
+### Overlays
+
+- **Modal scrim:** `bg-dark/50` full-screen fixed overlay.
+- **Image credits:** `bg-dark/50 text-white` (light theme) or
+  `bg-light/80 text-dark` (dark theme) — small absolute-positioned labels.
+- **Hero text contrast:** `mix-blend-multiply` with `dark` at 60–70% opacity,
+  plus a simplified bottom gradient covering the lower third.
+- **Past-event images:** `grayscale(100%)` on the image, then a
+  `mix-blend-multiply` color overlay at 40% opacity using the event's brand
+  color.
 
 ## Shapes
 
-Rectangular by default. Only buttons get border radius (matched to their size);
-only pills and tags use full rounding.
+Rectangular by default. Rounded corners are reserved for buttons and badges;
+tags, chips, and badges always receive `rounded-full`.
 
 ### Border radius
 
@@ -770,18 +784,254 @@ only pills and tags use full rounding.
 | `none` | 0px    | Default for cards, inputs, containers |
 | `sm`   | 4px    | Small buttons |
 | `md`   | 8px    | Medium buttons |
-| `lg`   | 12px   | Large buttons |
-| `full` | 9999px | Filter pill buttons, tags |
+| `lg`   | 12px   | Large buttons, image containers (rare) |
+| `xl`   | 16px   | Available |
+| `2xl`  | 20px   | Available |
+| `3xl`  | 24px   | Available |
+| `4xl`  | 28px   | Available |
+| `5xl`  | 32px   | Available |
+| `6xl`  | 40px   | Available |
+| `7xl`  | 48px   | Available |
+| `8xl`  | 56px   | Available |
+| `9xl`  | 64px   | Available |
+| `full` | 9999px | Badges, tags, chips, filter pills |
 
 **Guidance:** buttons use the radius that matches their size (`sm` → `sm`,
-`md` → `md`, `lg` → `lg`). Everything else — cards, images, containers — is
-rectangular (`none`) unless specifically designed. Only filter pills and tags
-use `rounded-full`.
+`md` → `md`, `lg` → `lg`). Cards, images, and containers are rectangular
+(`none`) unless specifically designed. All badges, tags, and chips use
+`rounded-full` — no exceptions.
 
 ### Borders
 
 Standard interactive borders are **2px solid `dark`** (`#22223e`).
 Subtle dividers use **1px** or **2px `muted`** or `lighter`.
+
+## Accessibility
+
+WCAG 2.1 compliance is **paramount**. Every component, every page, every
+interaction must be accessible from the ground up — not retrofitted. This is
+not a nice-to-have; it is a first-class design constraint equal to typography
+and color.
+
+### Focus rings
+
+All interactive elements receive a visible focus indicator on `:focus-visible`:
+2px `blue` outline with 2px offset. This is enforced globally in `app.css` on
+`a`, `button`, `input[type="checkbox"]`, and `.filter-button`. Apply the same
+pattern to any new interactive element:
+
+```
+focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue
+```
+
+The `#main-content` target suppresses its outline to avoid a ring when the
+skip-link lands there.
+
+### Skip link
+
+A visually-hidden "Skip to main content" link is the first focusable element
+on every page. It targets `#main-content` (which receives `tabindex="-1"`).
+On `:focus-visible`, the link appears on-screen at `z-max` with a `blue`
+background and `white` text.
+
+### Reduced motion
+
+Respect `prefers-reduced-motion: reduce`. Components that auto-advance
+(carousels, marquee) must check this preference and either stop auto-play or
+fall back to a static view. Three components currently check via
+`window.matchMedia` in JavaScript (SignalField, ImageCarousel, QuoteCarousel).
+
+**Rule:** every `@keyframes` animation and every JS-driven `setInterval`
+slideshow must have a reduced-motion guard. CSS-only guard:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+**Known gaps:** HeroSplash and the marquee banner lack reduced-motion checks.
+
+### Contrast
+
+All text/background combinations must meet WCAG AA (4.5:1 for normal text,
+3:1 for large text). See the verified contrast table in the Buttons section.
+When adding new color pairings, verify the ratio before shipping.
+
+### ARIA patterns in use
+
+- **Carousels:** `aria-roledescription="carousel"` / `"slide"`, `aria-label`
+  with position counts, `aria-hidden` on inactive slides.
+- **Header:** `aria-expanded`, `aria-controls`, `aria-haspopup` on the mobile
+  toggle and dropdown triggers, `aria-current="page"` on active links.
+- **Modals:** `aria-modal="true"`, `aria-hidden` on the backdrop, `aria-label`
+  for the dialog.
+- **Decorative elements:** `aria-hidden="true"` on Unicode icons, decorative
+  images, and visual flourishes.
+- **Dynamic content:** `aria-live="polite"` on regions that update without
+  a page load.
+
+### Alt text
+
+All `<img>` elements must have an `alt` attribute. Meaningful images get
+descriptive text. Decorative images use `alt=""`. Never omit the attribute.
+
+### Keyboard navigation
+
+Native focusable elements (links, buttons) handle keyboard access. Custom
+interactive widgets (carousels, dropdowns, tooltips) should add `onKeyDown`
+handlers for arrow keys, Escape, and Enter/Space where the native element
+does not provide them.
+
+**Known gap:** no custom keyboard handlers exist yet on carousels, the tooltip,
+or the dropdown menu.
+
+## Icon System
+
+**Text-first.** The design system uses Unicode characters instead of an icon
+library. No SVG icon sprites, no icon fonts, no third-party icon packages.
+
+### Standard characters
+
+| Character | Unicode  | Use | Component(s) |
+|-----------|----------|-----|---------------|
+| ✕         | U+2715   | Dismiss / close | FormSidebar, Header (mobile), filter pills |
+| +         | U+002B   | Open / expand | Header (mobile menu toggle) |
+| ⓘ         | U+24D8   | Info / help | Directory tooltip |
+| →         | U+2192   | Navigate / link | CTA buttons, read-more links |
+
+### Rules
+
+- **Standardized dismiss character:** always use ✕ (U+2715), never × (U+00D7)
+  or ✖ (U+2716) or any other variant.
+- **Sizing:** match the surrounding text size or one step up. Use `text-xl`
+  or `text-2xl` with `leading-none` for standalone icon use.
+- **Accessibility:** always wrap in a `<span>` with `aria-hidden="true"` and
+  provide an `aria-label` on the parent interactive element.
+- **No icon library:** if a pictogram is needed and no Unicode character works,
+  use a simple inline SVG — but prefer text.
+
+## Logo Usage
+
+The Rebuild logo is a single-line logotype rendered as an SVG image
+(`/public/assets/images/logo.svg`). It is not a font glyph.
+
+### Sizing
+
+- **Minimum height:** `h-6` (24px). Never render the logo smaller than this.
+- **Larger sizes are allowed** wherever the design of a page or feature calls
+  for it. There is no maximum — use judgement.
+- **Maintain aspect ratio.** Always use `w-auto` paired with a height class.
+
+### Color modes
+
+- **Default (dark surface or light background):** dark logotype, no filter.
+- **Transparent header (over hero splash):** inverted to white via
+  `filter: brightness(0) invert(1)`. The header component handles this
+  automatically when in transparent mode.
+
+### Placement
+
+- **Header:** left-aligned, `h-6`, links to `/`.
+- **Footer:** left-aligned within the footer's left column.
+- **Do not** place the logo on patterned or busy backgrounds without sufficient
+  contrast. Use the inverted variant on dark backgrounds.
+
+## Image Treatment
+
+### Aspect ratios
+
+Three standard ratios. Use only these:
+
+| Name       | Ratio | Class / style          | Use |
+|------------|-------|------------------------|-----|
+| Square     | 1:1   | `aspect-square`        | Portraits, avatars, small thumbnails |
+| Video      | 16:9  | `aspect-video`         | Hero images, tool cards, wide content |
+| Portrait   | 3:4   | `style="aspect-ratio: 3/4"` | Tall editorial images, carousels |
+
+**Rule:** `object-cover` on every image within these containers. No
+`object-contain`, no `object-fill`.
+
+### Grayscale and blend modes
+
+- **Past events:** apply `grayscale(100%)` to the image, then overlay a
+  `<div>` with the event's brand color at `mix-blend-multiply` and 40%
+  opacity. This desaturates the image while tinting it with the event color.
+- **General grayscale:** may be used for editorial effect on historical or
+  archival imagery. Always pair with a color overlay or sufficient text
+  contrast.
+- **`mix-blend-multiply`:** the primary blending tool. Use it for color
+  overlays on images, hero text contrast layers, and tinted scrims.
+
+### Overlays for text contrast
+
+Hero and splash images need overlays to ensure text readability:
+
+- **Current approach:** `color-mix(in srgb, var(--color-dark), transparent)`
+  gradient running top-to-bottom with stops at 75%–50%–0%–0%–50%–75%.
+- **Target approach:** `mix-blend-multiply` with `dark` at 60–70% opacity,
+  plus a simplified bottom-third gradient for CTA readability.
+- All images with text overlays must maintain WCAG AA contrast.
+
+### Lazy loading
+
+All below-the-fold images use `loading="lazy"` for native browser lazy loading.
+
+## Form Input Styles
+
+### Text inputs, textareas, selects
+
+| Property | Value |
+|----------|-------|
+| Width | `w-full` |
+| Padding | `px-sm` (16px) horizontal, `py-xs` (8px) vertical |
+| Font | `text-base` (16px), inherits ABC Social Mono |
+| Background | `bg-white` (`#f7f8f9`) |
+| Border radius | `none` (rectangular) |
+| Placeholder | `--color-darker` (`#5f5f79`) |
+
+### Border states
+
+Three states using the neutrals palette:
+
+| State   | Border | Color |
+|---------|--------|-------|
+| Empty   | 1px solid | `lighter` (`#d9d9e0`) or `muted` (`#9c9cb4`) |
+| Filled  | 2px solid | `darker` (`#5f5f79`) |
+| Active / focus | 2px solid | `dark` (`#22223e`) |
+
+**Current implementation:** `border-dark/30` default, `border-dark` on focus.
+The target system above adds a visible distinction for filled fields.
+
+### Validation
+
+- **Error border:** `border-red` (use the project token `--color-red`, not
+  Tailwind's `red-600`).
+- **Error text:** `text-sm text-red mt-[2px]` below the field.
+- **Required indicator:** red asterisk after the label.
+
+**Known inconsistency:** current code uses Tailwind's `red-600` for error
+states instead of the project's `--color-red` token. This should be
+normalised.
+
+### Labels
+
+- Class: `block text-sm text-darker mb-[4px]`.
+- Always visible above the field. Do not use placeholder-only labels.
+
+### Checkbox
+
+Custom 32×32px checkbox. `appearance: none`, 2px `dark` border, transparent
+background. Checked state shows a "✕" (U+2715) via `::after` pseudo-element.
+
+### Submit button
+
+Full-width, `dark` background, `light` text, 2px `dark` border, `text-lg`.
+Hover: `bg-darker`. Follows the primary button pattern but is always
+full-width within the form context.
 
 ## Components
 
@@ -860,7 +1110,7 @@ the sm/md/lg size system — uses its own dimensions and `rounded-full`.
 - **Default:** transparent background, 2px `dark` border, `dark` text,
   `rounded-full`, padding `xs` (8px) vertical / `md` (24px) horizontal.
 - **Hover/active:** `dark` background, `white` text.
-- **Contains:** optional dismiss "✕" icon.
+- **Contains:** optional dismiss "✕" (U+2715) icon when active.
 - This is the one button type that keeps a border.
 
 #### Splash CTA Button
@@ -872,6 +1122,115 @@ standard size system — these are contextual to the hero.
   `light` text, no border-radius.
 - **Hover:** `light` background, `dark` text.
 - **Layout:** 2-column grid on desktop, vertical stack on mobile.
+
+### Badges
+
+Small labels identifying categories or types. Always `rounded-full` with a
+solid background color and contrasting text.
+
+#### Sizes
+
+| Size | Font | Padding (v / h) |
+|------|------|-----------------|
+| `sm` | `text-xs` (12px) | 4px / 8px |
+| `md` | `text-sm` (14px) | 6px / 12px |
+| `lg` | `text-base` (16px) | 8px / 16px |
+
+#### Color variants
+
+Available in all brand colors plus neutrals. Text is always `dark`
+(`#22223e`) — the tint variants provide enough contrast.
+
+| Variant  | Background  | Use |
+|----------|-------------|-----|
+| `red`    | `red-tint`  | Alerts, categories (Bundled, Forum, Microblogging) |
+| `blue`   | `blue-tint` | Info categories (Community, Creator platform, Messaging) |
+| `green`  | `green-tint`| Success, categories (Groups, Location) |
+| `orange` | `orange-tint`| Warning, categories (Events, Social marketplace) |
+| `blush`  | `blush-tint`| Soft categories (Dating, Photo sharing) |
+| `blonde` | `blonde-tint`| Neutral categories (Resource sharing, Video sharing, Other) |
+| `dark`   | `dark`      | Dark variant — `white` text |
+| `lighter`| `lighter`   | Muted/neutral labels |
+
+#### Current usage
+
+Directory cards use inline badge styling: `rounded-lg px-3 py-2 text-sm`
+with per-category color maps. This should be migrated to the universal badge
+component once it exists.
+
+Insights posts should use the `lighter` variant for topic tags.
+
+### Chips / Pills
+
+Interactive toggle elements for filtering and selection. Always `rounded-full`.
+
+#### Sizes
+
+| Size | Font | Padding (v / h) |
+|------|------|-----------------|
+| `sm` | `text-xs` (12px) | 4px / 12px |
+| `md` | `text-sm` (14px) | 6px / 16px |
+| `lg` | `text-base` (16px) | 8px / 24px |
+
+#### Variants
+
+**Outlined (default for filters):**
+- Default: `white` background, 2px `dark` border, `dark` text.
+- Active: colored `--light` background, 2px `dark` border, `dark` text,
+  dismiss ✕ (U+2715) appended.
+- Hover (inactive): `lighter` background.
+
+**Filled:**
+- Default: `--light` variant of the brand color, no border, `dark` text.
+- Hover: `--tint` variant of the brand color.
+- Active/selected: `--base` (default) variant of the brand color, `dark` or
+  `white` text for contrast, dismiss ✕ appended.
+
+#### Filter pill color mapping
+
+Each filter category maps to a brand color. When active, the pill shows that
+color's `--light` variant as background, shifting to `--tint` on hover and
+`--base` (default value) when selected.
+
+### Card Component
+
+Cards are content containers. The system has no shared card base class — each
+variant is composed from utility classes. These are the common principles
+extracted from the directory cards.
+
+#### Principles
+
+- **Surface:** `bg-white` with `border-2` (inherits `border-dark`).
+- **Radius:** `rounded-none` (rectangular). Cards do not get rounded corners.
+- **Padding:** `p-md` (24px) on desktop, `p-5` (20px) as a compact
+  alternative.
+- **Internal spacing:** `space-y-md` (24px vertical rhythm).
+- **No shadows.** Depth comes from the border.
+
+#### Card variants
+
+**Directory card** (the canonical reference):
+- Masonry layout (`columns-1 md:columns-2 lg:columns-3`).
+- Contains: name/link, description (max-width `55ch`), category badges, and
+  country pill.
+- Outer: `break-inside-avoid mb-xs`.
+- Inner: `bg-white space-y-md p-5 lg:p-md rounded border-2`.
+
+**Tool card:**
+- `bg-lighter`, no border, no rounded corners.
+- Image at top with `aspect-video`, content in `p-md`.
+- Action buttons use `border-2 border-dark`.
+
+**Insight post card:**
+- No surface — image and title only (`overflow-hidden mb-xl`).
+- Image with `aspect-4/3`, title link below with `mt-md`.
+
+**Gathering card:**
+- No surface — image with colored overlay label.
+- Fixed-height image (`h-125`), location/date row, optional CTA buttons.
+
+**Person card:**
+- No surface — square image (`aspect-square bg-muted`), name, specialty, bio.
 
 ### Header
 
@@ -901,8 +1260,250 @@ Scrolling marquee strip, typically below the header.
 
 ### Checkbox
 
-Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
-2px `dark` border, transparent background.
+Custom 32×32px checkbox with "✕" (U+2715) mark instead of the native
+checkmark. 2px `dark` border, transparent background.
+
+## Navigation Patterns
+
+### Header modes
+
+The header operates in two visual modes based on scroll position:
+
+1. **Transparent mode** (home page, above hero fold): transparent background,
+   `light` text, inverted logo. Triggered by `isHome() && !scrolledPastHero()`.
+2. **Default mode** (scrolled past hero, or any non-home page): `white`
+   background, `dark` text, standard logo.
+
+The transition between modes uses 300ms ease on background-color, color,
+border-color, and filter. An anti-FOUC measure suppresses the initial
+transition on mount.
+
+### Desktop navigation
+
+- Horizontal `<nav>` with `flex gap-md`, hidden below `lg` breakpoint.
+- Links: `no-underline hover:underline px-sm py-xs transition-fast`.
+- Active page: `aria-current="page"`.
+- Dropdown: parent `<li>` gets Tailwind `group` class. Submenu is `absolute
+  top-full` with `hidden group-hover:block focus-within:block`. Submenu items
+  without a URL show as non-linked text styled by status (`line-through` for
+  past, `text-muted` for future).
+
+### Mobile navigation
+
+- Full-screen overlay: `fixed inset-0 bg-white z-50`.
+- Toggled by signal; body scroll is locked when open.
+- Links use `text-4xl` — deliberately oversized for touch targets and visual
+  impact. This is an intentional stylistic choice, not a bug.
+- Secondary navigation appears below with `text-xl`, separated by a
+  `border-b-2 border-dark`.
+- Close button uses "Close" text + ✕ (U+2715).
+
+### Improvements needed
+
+- Dropdown should support keyboard navigation (arrow keys, Escape).
+- Mobile menu close should trap focus within the overlay.
+
+## Motion
+
+### Custom easing
+
+The Rebuild identity easing curve:
+
+```
+--ease-rebuild: cubic-bezier(0.33, 0, 0.1, 1)
+```
+
+A smooth, confident curve — quick off the mark, then settling gently into
+place. No bounce, no overshoot. Like turning a page.
+
+### Duration tokens
+
+| Token              | Value | Use |
+|--------------------|-------|-----|
+| `--duration-fast`  | 150ms | Hover states, micro-interactions |
+| `--duration-base`  | 250ms | General transitions |
+| `--duration-slow`  | 350ms | Carousel crossfades |
+| `--duration-slower`| 500ms | Entrance animations |
+
+### The `transition-rebuild` utility
+
+Combines the custom easing with a 220ms duration:
+
+```css
+@utility transition-rebuild {
+  transition-duration: 220ms;
+  transition-timing-function: var(--ease-rebuild);
+}
+```
+
+Use `transition-rebuild` for most interactive transitions (buttons, links,
+state changes). The 220ms duration sits between `fast` and `base` — quick
+enough to feel responsive, slow enough to be perceptible.
+
+### What animates
+
+- **Hover states:** color shifts on buttons and links (`transition-fast` or
+  `transition-rebuild`).
+- **Header mode switch:** background-color, text color, border-color, filter
+  (300ms ease).
+- **Carousel slides:** opacity and visibility (`--duration-slow` with
+  ease-in-out).
+- **Hero splash images:** crossfade (1500ms ease-in-out).
+- **Marquee banner:** continuous horizontal scroll (60s linear).
+- **Programme items:** slide-in entrance (translateX + opacity, 500ms).
+
+### What does not animate
+
+- Layout shifts (no animated width/height changes).
+- Page transitions (not yet implemented — `transition-rebuild` is intended
+  for future page transition work).
+- Scroll position.
+
+### Reduced motion
+
+All animations must respect `prefers-reduced-motion: reduce`. See the
+Accessibility section for implementation details.
+
+## Error, Empty, and Loading States
+
+### Loading states
+
+Use **shimmer skeletons** — placeholder shapes that pulse with a subtle
+animation to indicate content is loading. Shimmer is an industry standard
+and communicates that something is happening.
+
+**Current state:** all `<Suspense>` boundaries render nothing while loading.
+Shimmer skeletons need to be implemented.
+
+**Skeleton guidelines:**
+- Match the approximate layout of the content being loaded.
+- Use `bg-lighter` as the base color with a shimmer animation sweeping
+  `bg-light` across.
+- Respect `prefers-reduced-motion` — static placeholder without animation
+  for users who prefer reduced motion.
+
+### Empty states
+
+When data is genuinely empty (not loading, not errored — just nothing there),
+display a descriptive message in the editorial voice.
+
+**Tone:** write like an editor's note, not a system message. Be as
+descriptive, detailed, and plain-language as possible. The reader is an adult
+who deserves a clear explanation.
+
+**Format:** use an em-dash (—) to separate the state from its explanation
+when appropriate.
+
+| Pattern | Example |
+|---------|---------|
+| No results | "No platforms match the selected filters." |
+| Empty collection | "No platforms available — this is definitely an error." |
+| Not found | "Not found" (with `text-4xl` heading) |
+
+### Error states
+
+**Form validation:**
+- Error border: `border-red` (project token, not Tailwind red).
+- Error text: `text-sm text-red` below the field.
+- Server errors: descriptive message in the editorial voice.
+
+**Page-level errors:**
+- No `ErrorBoundary` component exists yet. When implemented, use the same
+  editorial tone as empty states.
+
+## Badge, Tag, and Chip Styles
+
+See the **Badges** and **Chips / Pills** subsections under Components for the
+full specification. Summary of the distinction:
+
+| Element | Shape | Interactive? | Border |
+|---------|-------|-------------|--------|
+| Badge   | `rounded-full` | No (label only) | None — solid fill |
+| Chip / Pill | `rounded-full` | Yes (toggle/dismiss) | 2px `dark` (outlined) or none (filled) |
+
+Both use the same size scale (sm / md / lg) and are available in all brand
+colors. Badges are static labels. Chips are interactive filters with hover,
+active, and dismiss states.
+
+## Footer Component
+
+### Structure
+
+Two-region layout inside a `flex-col lg:flex-row` container:
+
+1. **Left column:** logo and site description.
+2. **Right column:** `<nav>` with two `<ul>` lists side by side
+   (`flex-row gap-xl`):
+   - First list: main navigation links (`text-sm`, `hover:underline`).
+   - Second list: secondary navigation (`text-xs`). Non-clickable items
+     render as `<span>` with `cursor-not-allowed` and `aria-disabled`.
+
+A copyright line sits below both columns.
+
+### Responsive
+
+- Below `lg`: columns stack vertically (`flex-col`), constrained to
+  `max-w-200`.
+- At `lg` and above: horizontal layout, `max-w-max-width`.
+
+### Styling
+
+- No background color (inherits page background).
+- No top border or divider — separation comes from spacing.
+- Links follow the standard `dark` text, `hover:underline` pattern.
+
+## Content Voice and Tone
+
+### Core principles
+
+**Plain language, at eye level.** Write as if explaining something to a
+thoughtful peer over coffee. No jargon, no corporate speak, no hedging.
+The reader is a grown-up — give them clear, direct information and trust
+them to understand it.
+
+**Be an editor, not a marketer.** Every piece of text should read like an
+editor's note: informed, precise, and genuinely useful. Never sell. Never
+hype. State what something is, what it does, and why it matters.
+
+**Concise but complete.** Say everything that needs saying, nothing more.
+A single well-constructed sentence beats three that circle the point. Cut
+filler words. Cut throat-clearing introductions. Start with the substance.
+
+### Voice characteristics
+
+- **Direct:** "We are mapping all the social platforms in Europe." Not "We're
+  excited to announce our initiative to comprehensively catalogue..."
+- **Honest:** acknowledge limitations and uncertainties. "This is definitely
+  an error" is better than pretending nothing happened.
+- **Inclusive:** write for an international audience. Avoid idioms, cultural
+  references, or humor that assumes a specific background.
+- **Warm but not casual:** friendly without being flip. No exclamation marks
+  in UI text. No emoji (unless explicitly documented as part of a component).
+
+### Editorial reference
+
+The Rebuild Letter sets the tone for long-form and inspirational prose:
+confident, rooted, culturally aware, and written from a place of genuine
+conviction. It uses simple sentence structures, concrete imagery, and speaks
+to the reader as a collaborator, not an audience.
+
+When writing longer content (about pages, manifestos, programme descriptions),
+channel this voice: grounded, specific, and human. Avoid abstraction. Name
+real places, real challenges, real aspirations.
+
+### UI text guidelines
+
+- **Labels and buttons:** imperative mood. "Join the directory", not "Click
+  here to join."
+- **Descriptions:** present tense, active voice. "We are mapping..." not "The
+  platforms are being mapped..."
+- **Empty states:** write like an editor's note. Descriptive, detailed, plain
+  language.
+- **Error messages:** explain what happened and what to do. Never blame the
+  user. "Something went wrong" is acceptable as a last resort, but prefer
+  specificity.
+- **Tooltips and help text:** answer the question the reader is asking.
+  "What is this?" deserves a real, complete answer.
 
 ## Do's and Don'ts
 
@@ -912,7 +1513,8 @@ Ground rules for staying within the system and avoiding common drift.
 
 - **Use a single font weight.** ABC Social Mono Book (400) only. Create
   hierarchy with size and spacing.
-- **Keep it flat.** Use borders, not shadows, to define interactive elements.
+- **Keep it flat.** No shadows anywhere. Use borders and color fills to
+  define interactive elements and create visual hierarchy.
 - **Use the shade/tint system.** Hover states should use the shade variant;
   background fills should use the tint variant.
 - **Respect the container.** Content sits inside a 1400px max-width container
@@ -923,7 +1525,7 @@ Ground rules for staying within the system and avoiding common drift.
   actions. Colored variants are accent buttons — use them only when a section,
   card, or page already commits to a specific hue.
 - **Match button radius to size.** `sm` → `rounded-sm`, `md` → `rounded-md`,
-  `lg` → `rounded-lg`. Only pills use `rounded-full`.
+  `lg` → `rounded-lg`. Only pills and badges use `rounded-full`.
 - **No borders on standard buttons.** Primary and secondary buttons have no
   border or outline — color alone distinguishes them. Only filter pills and
   splash CTAs keep a border.
@@ -932,6 +1534,12 @@ Ground rules for staying within the system and avoiding common drift.
   lighter, light). See the verified contrast table.
 - **Set focus rings.** All interactive elements need a visible 2px `blue`
   outline with 2px offset on `:focus-visible`.
+- **Use the z-index token scale.** Never introduce ad-hoc z-index values.
+- **Use the `transition-rebuild` utility** for interactive transitions.
+- **Respect reduced motion.** Every animation needs a
+  `prefers-reduced-motion` guard.
+- **Design for WCAG 2.1 AA** from the start. Contrast, focus, keyboard
+  access, and ARIA are not optional.
 
 ### Don't
 
@@ -939,21 +1547,21 @@ Ground rules for staying within the system and avoiding common drift.
   for CMS content where semantic markup matters).
 - **Don't introduce new colors.** The 30-value palette (6 chromatic × 4 stops
   + 6 neutrals) is the complete set.
+- **Don't use shadows.** Not for elevation, not for hover, not for depth.
+  This is a shadowless design system by deliberate choice.
 - **Don't use gradients** outside the hero splash overlay.
 - **Don't use rounded corners on cards or containers.** They stay rectangular.
-  Only buttons and pills get radii.
+  Only buttons, badges, and pills get radii.
 - **Don't put borders on standard buttons.** Primary and secondary buttons are
   borderless. Don't add outlines to "make them look more clickable."
-- **Don't use colored buttons for routine actions.** A form's "Submit" is `dark`,
-  not `blue`. Colored variants are for pages that have an intentional color
-  identity.
-- **Don't apply shadows for hover states.** Use color shifts (tint variants for
-  primary buttons, `light` for secondary) instead.
+- **Don't use colored buttons for routine actions.** A form's "Submit" is
+  `dark`, not `blue`. Colored variants are for pages that have an intentional
+  color identity.
 - **Don't add a dark mode.** The system is single-theme (light).
-- **Don't use the system sans-serif** for visible UI text. The `--font-sans`
-  token exists as a fallback stack but is not used in the design.
 - **Don't load additional font weights or font files.** The single .woff2 is
   intentional for performance.
-
-<!-- TODO: The sections below require input from the design owner. -->
-<!-- See the checklist at the end of this file for what's still needed. -->
+- **Don't use icon libraries.** Use Unicode characters or simple inline SVGs.
+- **Don't use Tailwind's built-in colors** (e.g., `red-600`, `gray-200`).
+  Always use the project's color tokens.
+- **Don't skip reduced-motion checks.** Animations without a
+  `prefers-reduced-motion` guard are a11y violations.

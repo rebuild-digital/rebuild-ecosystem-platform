@@ -40,7 +40,7 @@ export default function InsightsPreview(props: InsightsPreviewProps) {
                       class="w-full aspect-video object-cover mb-md"
                     />
                   </Show>
-                  <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-fast">
+                  <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-rebuild">
                     {insight.title}
                   </h3>
                 </a>

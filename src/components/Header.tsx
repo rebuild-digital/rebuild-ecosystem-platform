@@ -84,7 +84,7 @@ export default function Header() {
                   >
                     <a
                       href={item.url}
-                      class="no-underline hover:underline px-sm last:pl-0 py-xs transition-fast"
+                      class="no-underline hover:underline px-sm last:pl-0 py-xs transition-rebuild"
                       aria-current={
                         location.pathname === item.url ? "page" : undefined
                       }
@@ -196,7 +196,7 @@ export default function Header() {
                   <li>
                     <a
                       href={item.url}
-                      class="text-dark text-4xl no-underline block transition-fast hover:text-blue focus:text-blue"
+                      class="text-dark text-4xl no-underline block transition-rebuild hover:text-blue focus:text-blue"
                       classList={{
                         "text-blue": location.pathname === item.url,
                       }}
@@ -224,7 +224,7 @@ export default function Header() {
                   <li>
                     <a
                       href={item.url}
-                      class="text-dark text-xl no-underline transition-fast hover:text-blue focus:text-blue"
+                      class="text-dark text-xl no-underline transition-rebuild hover:text-blue focus:text-blue"
                       classList={{
                         "text-blue": location.pathname === item.url,
                       }}

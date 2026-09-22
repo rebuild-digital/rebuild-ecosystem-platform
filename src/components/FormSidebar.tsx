@@ -80,7 +80,7 @@ export default function FormSidebar() {
             <button
               ref={closeRef}
               onClick={close}
-              class="text-dark text-2xl p-xs hover:text-darker transition-fast border-0 leading-none"
+              class="text-dark text-2xl p-xs hover:text-darker transition-rebuild border-0 leading-none"
               aria-label="Close form"
             >
               ✕

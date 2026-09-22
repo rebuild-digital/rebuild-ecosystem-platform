@@ -30,7 +30,7 @@ export default function Footer() {
                   <li>
                     <a
                       href={item.url}
-                      class="text-dark hover:underline transition-fast"
+                      class="text-dark hover:underline transition-rebuild"
                     >
                       {item.name}
                     </a>
@@ -55,7 +55,7 @@ export default function Footer() {
                     >
                       <a
                         href={item.url}
-                        class="hover:underline transition-fast"
+                        class="hover:underline transition-rebuild"
                       >
                         {item.name}
                       </a>

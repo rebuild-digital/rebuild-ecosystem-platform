@@ -31,7 +31,7 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
           </div>
           <a
             href="/directory/"
-            class="text-lg md:text-2xl text-dark hover:underline transition-fast"
+            class="text-lg md:text-2xl text-dark hover:underline transition-rebuild"
           >
             View all
           </a>
@@ -56,7 +56,7 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
                       href={platform.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      class="hover:underline transition-fast break-all"
+                      class="hover:underline transition-rebuild break-all"
                     >
                       {platform.name}
                     </a>

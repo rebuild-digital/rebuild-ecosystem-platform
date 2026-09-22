@@ -46,7 +46,7 @@ export default function OpenPositions() {
                   <div class="rich-text" innerHTML={job.content} />
                   <a
                     href={`mailto:positions@rebuild.net?subject=${encodeURIComponent(`Application: ${job.title}`)}`}
-                    class="inline-block mt-md border-2 border-dark bg-dark text-light px-md py-sm hover:bg-darker transition-fast no-underline"
+                    class="inline-block mt-md border-2 border-dark bg-dark text-light px-md py-sm hover:bg-darker transition-rebuild no-underline"
                   >
                     Apply now
                   </a>

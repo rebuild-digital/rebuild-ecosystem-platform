@@ -60,7 +60,7 @@ export default function ToolCard(props: { tool: Tool }) {
               >
                 <a
                   href={action().url}
-                  class="inline-block text-center border-2 border-dark bg-dark text-light px-md py-sm hover:bg-darker transition-fast no-underline"
+                  class="inline-block text-center border-2 border-dark bg-dark text-light px-md py-sm hover:bg-darker transition-rebuild no-underline"
                 >
                   {action().text}
                 </a>
@@ -82,7 +82,7 @@ export default function ToolCard(props: { tool: Tool }) {
               >
                 <a
                   href={action().url}
-                  class="inline-block text-center border-2 border-dark bg-light text-dark px-md py-sm hover:bg-lighter transition-fast no-underline"
+                  class="inline-block text-center border-2 border-dark bg-light text-dark px-md py-sm hover:bg-lighter transition-rebuild no-underline"
                 >
                   {action().text}
                 </a>

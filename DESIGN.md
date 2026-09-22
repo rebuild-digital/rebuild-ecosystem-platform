@@ -148,6 +148,15 @@ rounded:
   9xl: 64px
   full: 9999px
 
+z-index:
+  0: 0
+  10: 10
+  20: 20
+  30: 30
+  40: 40
+  50: 50
+  max: 999
+
 spacing:
   xxs: 4px
   xs: 8px
@@ -905,6 +914,9 @@ library. No SVG icon sprites, no icon fonts, no third-party icon packages.
 
 ### Rules
 
+- **Expandable system:** the table above is the current set, not a closed list.
+  New Unicode characters can be added as needs arise — just add them to the
+  table and follow the rules below.
 - **Standardized dismiss character:** always use ✕ (U+2715), never × (U+00D7)
   or ✖ (U+2716) or any other variant.
 - **Sizing:** match the surrounding text size or one step up. Use `text-xl`
@@ -965,16 +977,6 @@ Three standard ratios. Use only these:
   contrast.
 - **`mix-blend-multiply`:** the primary blending tool. Use it for color
   overlays on images, hero text contrast layers, and tinted scrims.
-
-### Overlays for text contrast
-
-Hero and splash images need overlays to ensure text readability:
-
-- **Current approach:** `color-mix(in srgb, var(--color-dark), transparent)`
-  gradient running top-to-bottom with stops at 75%–50%–0%–0%–50%–75%.
-- **Target approach:** `mix-blend-multiply` with `dark` at 60–70% opacity,
-  plus a simplified bottom-third gradient for CTA readability.
-- All images with text overlays must maintain WCAG AA contrast.
 
 ### Lazy loading
 
@@ -1100,29 +1102,6 @@ corners match the size token.
 Contrast: `lighter` → `dark` is 10.9:1, `light` → `dark` is 12.5:1. Both pass
 comfortably.
 
-### Buttons — Special purpose
-
-#### Filter Button (pill)
-
-Pill-shaped toggle for directory/programme category filtering. **Not** part of
-the sm/md/lg size system — uses its own dimensions and `rounded-full`.
-
-- **Default:** transparent background, 2px `dark` border, `dark` text,
-  `rounded-full`, padding `xs` (8px) vertical / `md` (24px) horizontal.
-- **Hover/active:** `dark` background, `white` text.
-- **Contains:** optional dismiss "✕" (U+2715) icon when active.
-- This is the one button type that keeps a border.
-
-#### Splash CTA Button
-
-Call-to-action links overlaid on the hero splash image. Also outside the
-standard size system — these are contextual to the hero.
-
-- **Default:** transparent background (25% `dark` overlay), 2px `light` border,
-  `light` text, no border-radius.
-- **Hover:** `light` background, `dark` text.
-- **Layout:** 2-column grid on desktop, vertical stack on mobile.
-
 ### Badges
 
 Small labels identifying categories or types. Always `rounded-full` with a
@@ -1154,15 +1133,17 @@ Available in all brand colors plus neutrals. Text is always `dark`
 
 #### Current usage
 
-Directory cards use inline badge styling: `rounded-lg px-3 py-2 text-sm`
-with per-category color maps. This should be migrated to the universal badge
-component once it exists.
+Directory cards use the `Badge` component (`~/components/Badge.tsx`) with
+per-category color mapping defined in `CATEGORY_COLORS`. Country labels
+use the `lighter` variant.
 
-Insights posts should use the `lighter` variant for topic tags.
+Insights posts should use the `lighter` variant for topic tags when tag
+data is added to the data model.
 
 ### Chips / Pills
 
 Interactive toggle elements for filtering and selection. Always `rounded-full`.
+The original pattern comes from the directory/programme filter buttons.
 
 #### Sizes
 
@@ -1179,6 +1160,9 @@ Interactive toggle elements for filtering and selection. Always `rounded-full`.
 - Active: colored `--light` background, 2px `dark` border, `dark` text,
   dismiss ✕ (U+2715) appended.
 - Hover (inactive): `lighter` background.
+- The existing `.filter-button` class uses this variant with `xs` (8px)
+  vertical / `md` (24px) horizontal padding. This is the one button type
+  that keeps a visible border.
 
 **Filled:**
 - Default: `--light` variant of the brand color, no border, `dark` text.
@@ -1223,7 +1207,7 @@ extracted from the directory cards.
 
 **Insight post card:**
 - No surface — image and title only (`overflow-hidden mb-xl`).
-- Image with `aspect-4/3`, title link below with `mt-md`.
+- Image with `aspect-video`, title link below with `mt-md`.
 
 **Gathering card:**
 - No surface — image with colored overlay label.
@@ -1242,6 +1226,26 @@ Fixed top navigation with two visual modes:
 - **Transition:** 300ms ease on background-color, text color, border-color,
   and filter.
 
+### Hero Splash
+
+Full-viewport (90vh) image slideshow with text overlay and CTA buttons.
+
+**Image overlay:** two layers —
+1. Full-bleed `bg-dark/65` with `mix-blend-multiply` (tints without washing
+   out the image).
+2. Bottom-third gradient (`rgba(34,34,62,0.6)` → transparent) for extra CTA
+   text contrast.
+
+**Splash CTA buttons:** overlaid on the hero image, outside the standard
+button size system.
+- **Default:** transparent background (25% `dark`), 2px `light` border,
+  `light` text, no border-radius.
+- **Hover:** `light` background, `dark` text.
+- **Layout:** flex-wrap row, scrollable on mobile.
+
+**Slideshow:** auto-advances every 4s. Respects `prefers-reduced-motion` —
+stops on the first image when the user prefers reduced motion.
+
 ### Rich Text
 
 Wrapper class (`.rich-text`) for CMS-authored markdown/HTML content with
@@ -1257,11 +1261,6 @@ Scrolling marquee strip, typically below the header.
   `light` border.
 - Animation: horizontal scroll, 60s cycle, pauses on hover.
 - Desktop-only subtle opacity pulse (5s cycle).
-
-### Checkbox
-
-Custom 32×32px checkbox with "✕" (U+2715) mark instead of the native
-checkmark. 2px `dark` border, transparent background.
 
 ## Navigation Patterns
 

@@ -100,7 +100,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <circle cx="260" cy="260" r="258" fill="#6ba1cc" fill-opacity="0.10" />
+        <circle cx="260" cy="260" r="258" fill="var(--color-blue)" fill-opacity="0.10" />
       </svg>
       <svg
         class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 pointer-events-none"
@@ -111,7 +111,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <circle cx="260" cy="260" r="258" fill="#6ba1cc" fill-opacity="0.10" />
+        <circle cx="260" cy="260" r="258" fill="var(--color-blue)" fill-opacity="0.10" />
       </svg>
 
       {/* Decorative quote marks */}

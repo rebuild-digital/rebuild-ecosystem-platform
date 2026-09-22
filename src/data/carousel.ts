@@ -17,7 +17,7 @@ export const carouselSlides: CarouselSlide[] = [
     image: "/assets/images/letter-rb1.webp",
     ctaText: "Sign here",
     ctaLink: "https://letter.rebuild.net",
-    bgColor: "#E7ECF0",
+    bgColor: "var(--color-blue-light)",
   },
   {
     id: "slide-2",
@@ -27,7 +27,7 @@ export const carouselSlides: CarouselSlide[] = [
     image: "/assets/images/gatherings-main/gatherings-main-1.webp",
     ctaText: "Learn more",
     ctaLink: "/gatherings",
-    bgColor: "#dce0e4",
+    bgColor: "var(--color-blonde-light)",
   },
   {
     id: "slide-3",
@@ -37,7 +37,7 @@ export const carouselSlides: CarouselSlide[] = [
     image: "/assets/images/gatherings-carousel.webp",
     ctaText: "Explore it here",
     ctaLink: "/directory",
-    bgColor: "#8fb5d9",
+    bgColor: "var(--color-blue-tint)",
   },
   {
     id: "slide-4",
@@ -47,6 +47,6 @@ export const carouselSlides: CarouselSlide[] = [
     image: "/assets/images/margrethe.webp",
     ctaText: "Read more",
     ctaLink: "/insights/a-word-from-margrethe",
-    bgColor: "#dde2de",
+    bgColor: "var(--color-green-light)",
   },
 ];

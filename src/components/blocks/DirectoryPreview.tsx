@@ -18,8 +18,7 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
   return (
     <Section
       fullBleed
-      class="relative w-full py-4xl"
-      style={{ "background-color": "rgba(107, 161, 204, 0.1)" }}
+      class="relative w-full py-4xl bg-blue-light"
     >
         <div class="flex justify-between flex-col md:flex-row gap-lg md:gap-md md:items-center mb-2xl">
           <div>

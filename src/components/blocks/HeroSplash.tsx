@@ -63,12 +63,12 @@ export default function HeroSplash(props: HeroSplashProps) {
         style={{
           background: `linear-gradient(
             to bottom,
-            rgba(34, 34, 62, 0.75) 0%,
-            rgba(34, 34, 62, 0.5) 20%,
-            rgba(34, 34, 62, 0) 40%,
-            rgba(34, 34, 62, 0) 60%,
-            rgba(34, 34, 62, 0.5) 80%,
-            rgba(34, 34, 62, 0.75) 100%
+            color-mix(in srgb, var(--color-dark) 75%, transparent) 0%,
+            color-mix(in srgb, var(--color-dark) 50%, transparent) 20%,
+            transparent 40%,
+            transparent 60%,
+            color-mix(in srgb, var(--color-dark) 50%, transparent) 80%,
+            color-mix(in srgb, var(--color-dark) 75%, transparent) 100%
           )`,
         }}
       />

@@ -92,8 +92,7 @@ export default function Rebuild2() {
       {/* Programme highlights */}
       <Section
         fullBleed
-        class="py-xl sm:py-3xl"
-        style={{ "background-color": "rgba(107, 161, 204, 0.1)" }}
+        class="py-xl sm:py-3xl bg-blue-light"
       >
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-3xl">
             <div class="space-y-2xl pr-8">

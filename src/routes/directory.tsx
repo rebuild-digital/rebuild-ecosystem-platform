@@ -122,19 +122,7 @@ export default function Directory() {
                   aria-controls="info-tooltip"
                   onClick={() => setTooltipOpen((v) => !v)}
                 >
-                  <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="10" stroke-width="2" />
-                    <path
-                      d="M12 16v-4M12 8h.01"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                  </svg>
+                  <span class="text-xl leading-none" aria-hidden="true">ⓘ</span>
                   <span>What is this?</span>
                 </button>
                 <Show when={tooltipOpen()}>
@@ -201,7 +189,7 @@ export default function Directory() {
                             <span>{cat}</span>
                             <Show when={isActive()}>
                               <span class="filter-x" aria-hidden="true">
-                                ×
+                                ✕
                               </span>
                             </Show>
                           </button>

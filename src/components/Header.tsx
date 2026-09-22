@@ -153,7 +153,7 @@ export default function Header() {
               class="text-2xl leading-none align-top pb-1"
               aria-hidden="true"
             >
-              {mobileOpen() ? "×" : "+"}
+              {mobileOpen() ? "✕" : "+"}
             </span>
           </button>
         </div>

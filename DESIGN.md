@@ -4,33 +4,39 @@ name: Rebuild Ecosystem Platform
 description: >
   A monospaced, editorial design system for a cultural ecosystem platform.
   Dark ink on warm off-white, one typeface (ABC Social Mono Book), six chromatic
-  hues each with shade/tint variants, and generous spacing.
+  hues each with four variants (shade, base, tint, light), and generous spacing.
 
 colors:
   # Brand chromatic — each with shade (darker) and tint (lighter) variants
   red: "#ac1d24"
   red-shade: "#8a1f1f"
   red-tint: "#d16b6b"
+  red-light: "#EDDFE0"
 
   blue: "#6ba1cc"
   blue-shade: "#3d5f83"
   blue-tint: "#8fb5d9"
+  blue-light: "#E7ECF0"
 
   green: "#669e67"
   green-shade: "#316139"
   green-tint: "#73b088"
+  green-light: "#E6ECE6"
 
   blush: "#e1aeb0"
   blush-shade: "#b17d7d"
   blush-tint: "#e8cdcd"
+  blush-light: "#F3EDEE"
 
   blonde: "#f4e2d2"
   blonde-shade: "#d4b59a"
   blonde-tint: "#f7ebe0"
+  blonde-light: "#F4F3F1"
 
   orange: "#bf6e36"
   orange-shade: "#9a5e2e"
   orange-tint: "#d4a77a"
+  orange-light: "#EFE7E1"
 
   # Neutrals
   white: "#f7f8f9"
@@ -195,9 +201,10 @@ italic variations.
 
 The palette pairs a deep navy-ink dark (`#22223e`) with a cool off-white
 (`#f7f8f9`) as the default surface. Six chromatic hues — red, blue, green,
-blush, blonde, orange — each carry a shade (darker) and tint (lighter) variant,
-giving 18 chromatic values plus 6 neutrals. There is **no dark mode**; the
-system ships a single light theme.
+blush, blonde, orange — each carry four stops (shade → base → tint → light),
+giving 24 chromatic values plus 6 neutrals (30 total). The light stops are
+near-white pastels used for subtle backgrounds, graphic elements, and color
+overlays. There is **no dark mode**; the system ships a single light theme.
 
 The visual language is flat and direct: no gradients (except the hero splash
 overlay), no drop shadows on interactive elements, and minimal border radius.
@@ -208,17 +215,22 @@ a curated programme booklet — restrained, typographic, confident.
 
 ### Chromatic hues
 
-Each chromatic color has three stops: the **base** for primary use, a **shade**
-for hover states and emphasis, and a **tint** for backgrounds and subtle fills.
+Each chromatic color has four stops, from darkest to lightest:
 
-| Name   | Base      | Shade     | Tint      | Role |
-|--------|-----------|-----------|-----------|------|
-| Red    | `#ac1d24` | `#8a1f1f` | `#d16b6b` | Accent, alerts, beta-banner callouts |
-| Blue   | `#6ba1cc` | `#3d5f83` | `#8fb5d9` | Links (focus ring), info callouts, interactive highlights |
-| Green  | `#669e67` | `#316139` | `#73b088` | Success states, inline code text |
-| Blush  | `#e1aeb0` | `#b17d7d` | `#e8cdcd` | Soft accent, table row hover, error callouts |
-| Blonde | `#f4e2d2` | `#d4b59a` | `#f7ebe0` | Warm background accents |
-| Orange | `#bf6e36` | `#9a5e2e` | `#d4a77a` | Warning callouts, highlight marks |
+- **Shade** — darkest; hover states, pressed states, emphasis.
+- **Base** — the primary, recognisable value of the hue.
+- **Tint** — lighter; secondary fills, callout backgrounds, soft accents.
+- **Light** — lightest, near-white; subtle page backgrounds, graphic
+  elements, color overlays, section tinting.
+
+| Name   | Shade     | Base      | Tint      | Light     | Role |
+|--------|-----------|-----------|-----------|-----------|------|
+| Red    | `#8a1f1f` | `#ac1d24` | `#d16b6b` | `#EDDFE0` | Accent, alerts, beta-banner callouts |
+| Blue   | `#3d5f83` | `#6ba1cc` | `#8fb5d9` | `#E7ECF0` | Links (focus ring), info callouts, interactive highlights |
+| Green  | `#316139` | `#669e67` | `#73b088` | `#E6ECE6` | Success states, inline code text |
+| Blush  | `#b17d7d` | `#e1aeb0` | `#e8cdcd` | `#F3EDEE` | Soft accent, table row hover, error callouts |
+| Blonde | `#d4b59a` | `#f4e2d2` | `#f7ebe0` | `#F4F3F1` | Warm background accents |
+| Orange | `#9a5e2e` | `#bf6e36` | `#d4a77a` | `#EFE7E1` | Warning callouts, highlight marks |
 
 ### Neutrals
 
@@ -476,7 +488,7 @@ Custom 32×32px checkbox with "✕" mark instead of the native checkmark.
 
 - **Don't use bold or italic** on ABC Social Mono (except in `.rich-text`
   for CMS content where semantic markup matters).
-- **Don't introduce new colors.** The 24-value palette (6 chromatic × 3 stops
+- **Don't introduce new colors.** The 30-value palette (6 chromatic × 4 stops
   + 6 neutrals) is the complete set.
 - **Don't use gradients** outside the hero splash overlay.
 - **Don't use rounded corners on cards or containers.** The design language is

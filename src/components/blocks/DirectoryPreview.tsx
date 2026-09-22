@@ -25,7 +25,7 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
             <h2 class="text-4xl md:text-5xl font-normal text-dark">
               Social Platform Directory
             </h2>
-            <p class="text-dark text-sm mt-4">
+            <p class="text-dark text-sm mt-sm">
               Latest count: {props.totalCount} platforms
             </p>
           </div>

@@ -81,7 +81,7 @@ export default function InsightDetail() {
                   />
                   <Show when={insight().featured_image_credit}>
                     <div
-                      class="absolute bottom-0 left-0 px-2 py-1 m-2 text-[10px]"
+                      class="absolute bottom-0 left-0 px-xs py-xxs m-xs text-[10px]"
                       classList={{
                         "bg-dark/50 text-white":
                           insight().featured_image_credit_theme !== "dark",

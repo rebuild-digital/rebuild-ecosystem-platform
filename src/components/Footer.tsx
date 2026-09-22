@@ -7,7 +7,7 @@ export default function Footer() {
       <div class="mx-auto pt-md">
         <div class="flex flex-col lg:flex-row justify-between">
           <div class="flex flex-col">
-            <div class="py-2 h-12">
+            <div class="py-xs h-12">
               <img
                 class="h-6 w-auto"
                 src={site.logo}

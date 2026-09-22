@@ -45,7 +45,7 @@ export default function Rebuild2() {
             <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl mb-xs">
               Rebuild 2
             </h1>
-            <div class="flex gap-8 lg:gap-16">
+            <div class="flex gap-lg lg:gap-2xl">
               <p>Helsinki, Finland</p>
               <p>Aug 30 – Sep 01</p>
             </div>
@@ -73,7 +73,7 @@ export default function Rebuild2() {
         </div>
 
         {/* Tagline + countdown */}
-        <div class="mt-xl flex flex-col space-y-16 lg:space-y-0 lg:flex-row justify-between">
+        <div class="mt-xl flex flex-col space-y-2xl lg:space-y-0 lg:flex-row justify-between">
           <h2 class="text-2xl md:text-3xl max-w-[45ch] leading-tight font-normal">
             The second gathering for the people building Europe's future social
             platforms. The summer camp where we teach each other how to build,
@@ -95,8 +95,8 @@ export default function Rebuild2() {
         class="py-xl sm:py-3xl bg-blue-light"
       >
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-3xl">
-            <div class="space-y-2xl pr-8">
-              <h3 class="text-2xl mb-16">Programme highlights</h3>
+            <div class="space-y-2xl pr-lg">
+              <h3 class="text-2xl mb-2xl">Programme highlights</h3>
               <For each={event.proofPoints}>
                 {(point) => (
                   <div>

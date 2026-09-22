@@ -109,7 +109,7 @@ export default function People() {
 
       <section class="lg:pt-xl pt-0 md:pb-2xl">
         <header class="mb-sm md:mb-xl text-center w-full">
-          <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">People</h1>
+          <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl">People</h1>
         </header>
       </section>
 
@@ -129,7 +129,7 @@ export default function People() {
           {/* Founder & Patron */}
           <div class="grid grid-cols-1 md:grid-cols-2 gap-xl mb-3xl md:mb-5xl">
             <div>
-              <h2 class="text-xl md:text-3xl font-normal mb-md">
+              <h2 class="text-2xl md:text-3xl font-normal mb-md">
                 Thomas Madsen-Mygdal, Founder & Chairperson
               </h2>
               <p class="text-base md:text-xl">
@@ -139,7 +139,7 @@ export default function People() {
               </p>
             </div>
             <div>
-              <h2 class="text-xl md:text-3xl font-normal mb-md">
+              <h2 class="text-2xl md:text-3xl font-normal mb-md">
                 Margrethe Vestager, Patron
               </h2>
               <p class="text-base md:text-xl">

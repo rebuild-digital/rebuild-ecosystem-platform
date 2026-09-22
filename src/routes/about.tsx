@@ -14,12 +14,12 @@ export default function About() {
 
       <section class="lg:pt-xl pt-0 pb-2xl">
         <header class="mb-xl text-center w-full">
-          <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">About</h1>
+          <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl">About</h1>
         </header>
       </section>
 
       <section class="pb-6xl">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg lg:gap-xl items-start mx-auto">
           <div class="w-full lg:sticky lg:top-8">
             <ImageCarousel />
           </div>

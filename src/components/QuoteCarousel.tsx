@@ -1,4 +1,5 @@
 import { createSignal, onMount, onCleanup, For } from "solid-js";
+import Section from "~/components/Section";
 
 interface Quote {
   text: string;
@@ -26,7 +27,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
     const nextEl = slideRefs[next];
     if (!prevEl || !nextEl) return;
 
-    prevEl.style.transition = `opacity ${dur}ms ease`;
+    prevEl.style.transition = `opacity ${dur}ms cubic-bezier(0.33, 0, 0.1, 1)`;
     prevEl.style.opacity = "0";
     prevEl.style.pointerEvents = "none";
 
@@ -34,7 +35,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
     nextEl.style.opacity = "0";
     nextEl.style.transform = "translateY(1rem)";
     void nextEl.offsetHeight;
-    nextEl.style.transition = `opacity ${dur}ms ease, transform ${dur}ms ease`;
+    nextEl.style.transition = `opacity ${dur}ms cubic-bezier(0.33, 0, 0.1, 1), transform ${dur}ms cubic-bezier(0.33, 0, 0.1, 1)`;
     nextEl.style.opacity = "1";
     nextEl.style.transform = "translateY(0)";
     nextEl.style.pointerEvents = "auto";
@@ -81,9 +82,10 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
   }
 
   return (
-    <section
+    <Section
+      fullBleed
+      raw
       class="relative mt-3xl py-3xl lg:py-6xl overflow-hidden"
-      style="margin-left: calc(-50vw + 50%); margin-right: calc(-50vw + 50%); width: 100vw;"
       role="region"
       aria-roledescription="carousel"
       aria-label="Quotes"
@@ -98,7 +100,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <circle cx="260" cy="260" r="258" fill="#6ba1cc" fill-opacity="0.10" />
+        <circle cx="260" cy="260" r="258" fill="var(--color-blue)" fill-opacity="0.10" />
       </svg>
       <svg
         class="hidden lg:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 pointer-events-none"
@@ -109,7 +111,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         xmlns="http://www.w3.org/2000/svg"
         aria-hidden="true"
       >
-        <circle cx="260" cy="260" r="258" fill="#6ba1cc" fill-opacity="0.10" />
+        <circle cx="260" cy="260" r="258" fill="var(--color-blue)" fill-opacity="0.10" />
       </svg>
 
       {/* Decorative quote marks */}
@@ -155,13 +157,13 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         </div>
         <div class="flex justify-center mt-lg">
           <button
-            class="bg-transparent border-0 text-darker px-sm py-xxs text-xs cursor-pointer transition-all duration-fast hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+            class="bg-transparent border-0 text-darker px-sm py-xxs text-xs cursor-pointer transition-all transition-rebuild hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
             onClick={togglePlay}
           >
             {playing() ? "Stop carousel" : "Start carousel"}
           </button>
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

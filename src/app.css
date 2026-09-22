@@ -21,26 +21,32 @@
   --color-red: #ac1d24;
   --color-red-shade: #8a1f1f;
   --color-red-tint: #d16b6b;
+  --color-red-light: #EDDFE0;
 
   --color-blue: #6ba1cc;
   --color-blue-shade: #3d5f83;
   --color-blue-tint: #8fb5d9;
+  --color-blue-light: #E7ECF0;
 
   --color-green: #669e67;
   --color-green-shade: #316139;
   --color-green-tint: #73b088;
+  --color-green-light: #E6ECE6;
 
   --color-blush: #e1aeb0;
   --color-blush-shade: #b17d7d;
   --color-blush-tint: #e8cdcd;
+  --color-blush-light: #F3EDEE;
 
   --color-blonde: #f4e2d2;
   --color-blonde-shade: #d4b59a;
   --color-blonde-tint: #f7ebe0;
+  --color-blonde-light: #F4F3F1;
 
   --color-orange: #bf6e36;
   --color-orange-shade: #9a5e2e;
   --color-orange-tint: #d4a77a;
+  --color-orange-light: #EFE7E1;
 
   /* Neutrals */
   --color-white: #f7f8f9;
@@ -76,8 +82,6 @@
   /* Font Families */
   --font-custom:
     "ABC Social Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-sans: system-ui, -apple-system, sans-serif;
-  --font-serif: Georgia, Cambria, "Times New Roman", Times, serif;
   --font-mono: "ABC Social Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
   /* Font Sizes */
@@ -95,16 +99,8 @@
   --font-size-8xl: 6rem; /* 96px */
   --font-size-9xl: 8rem; /* 128px */
 
-  /* Font Weights */
-  --font-weight-thin: 100;
-  --font-weight-extralight: 200;
-  --font-weight-light: 300;
+  /* Font Weights — only 400 is used; ABC Social Mono ships Book only */
   --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
-  --font-weight-extrabold: 800;
-  --font-weight-black: 900;
 
   /* Line Heights */
   --line-height-none: 1;
@@ -133,6 +129,12 @@
   --radius-xl: 16px;
   --radius-2xl: 20px;
   --radius-3xl: 24px;
+  --radius-4xl: 28px;
+  --radius-5xl: 32px;
+  --radius-6xl: 40px;
+  --radius-7xl: 48px;
+  --radius-8xl: 56px;
+  --radius-9xl: 64px;
   --radius-full: 9999px;
 
   /* ===========================================
@@ -145,18 +147,8 @@
   --border-width-4: 4px;
   --border-width-8: 8px;
 
-  /* ===========================================
-     SHADOWS
-     =========================================== */
-
-  --shadow-xs: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-sm: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  --shadow-none: 0 0 #0000;
+  /* No shadows — this is a deliberately flat, shadowless design system.
+     Use borders and color fills to create visual hierarchy. */
 
   /* ===========================================
      TRANSITIONS
@@ -168,6 +160,7 @@
   --transition-duration-slower: 500ms;
 
   /* Timing Functions */
+  --ease-rebuild: cubic-bezier(0.33, 0, 0.1, 1);
   --ease-linear: linear;
   --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-out: cubic-bezier(0, 0, 0.2, 1);
@@ -183,6 +176,7 @@
   --z-30: 30;
   --z-40: 40;
   --z-50: 50;
+  --z-max: 999;
   --z-auto: auto;
 
   /* ===========================================
@@ -240,6 +234,11 @@
   transition-duration: var(--transition-duration-slower);
 }
 
+@utility transition-rebuild {
+  transition-duration: 220ms;
+  transition-timing-function: var(--ease-rebuild);
+}
+
 /* Base Layer - Global styles and resets */
 @layer base {
   /* Skip Navigation Link */
@@ -247,7 +246,7 @@
     position: fixed;
     top: 1rem;
     left: 1rem;
-    z-index: 9999;
+    z-index: var(--z-max);
     padding: 1rem 1.5rem;
     background-color: var(--color-dark);
     color: var(--color-light);
@@ -313,7 +312,7 @@
 
   /* Links */
   a {
-    @apply transition-fast;
+    @apply transition-rebuild;
   }
 
   a:focus-visible {
@@ -442,7 +441,9 @@
   .filter-button {
     @apply inline-flex items-center gap-xs px-md lg:px-lg py-xs lg:py-sm text-sm rounded-4xl;
     @apply border-2 border-dark text-dark;
-    @apply transition-colors duration-200 cursor-pointer;
+    @apply transition-colors cursor-pointer;
+    transition-duration: var(--transition-duration-fast);
+    transition-timing-function: var(--ease-rebuild);
     @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
   }
 
@@ -468,28 +469,28 @@
   }
 
   .rich-text h1 {
-    @apply text-5xl mt-0;
+    @apply text-4xl mt-0;
   }
 
   .rich-text h2 {
-    @apply text-4xl border-b-2 border-muted pb-xs;
+    @apply text-3xl border-b-2 border-muted pb-xs;
   }
 
   .rich-text h3 {
-    @apply text-3xl;
+    @apply text-2xl;
   }
 
   .rich-text h4 {
-    @apply text-lg md:text-2xl;
+    @apply text-xl;
     @apply mb-xl;
   }
 
   .rich-text h5 {
-    @apply text-xl;
+    @apply text-lg;
   }
 
   .rich-text h6 {
-    @apply text-lg text-darker;
+    @apply text-base text-darker;
   }
 
   /* Paragraphs and text formatting */
@@ -541,7 +542,7 @@
 
   /* Links */
   .rich-text a {
-    @apply text-dark underline hover:text-blue-shade transition-fast;
+    @apply text-dark underline hover:text-blue-shade transition-rebuild;
     text-decoration-thickness: 1px;
     text-underline-offset: 2px;
   }
@@ -592,7 +593,7 @@
   }
 
   .rich-text pre {
-    @apply bg-dark text-light p-md overflow-x-auto my-lg shadow-md;
+    @apply bg-dark text-light p-md overflow-x-auto my-lg;
     line-height: 1.5;
   }
 
@@ -627,7 +628,7 @@
   }
 
   .rich-text tbody tr:hover {
-    @apply bg-blush transition-fast;
+    @apply bg-blush transition-rebuild;
   }
 
   /* Horizontal rules */
@@ -687,15 +688,15 @@
   /* Responsive adjustments */
   @media (max-width: 767px) {
     .rich-text h1 {
-      @apply text-4xl;
-    }
-
-    .rich-text h2 {
       @apply text-3xl;
     }
 
-    .rich-text h3 {
+    .rich-text h2 {
       @apply text-2xl;
+    }
+
+    .rich-text h3 {
+      @apply text-xl;
     }
 
     .rich-text p {
@@ -758,115 +759,24 @@
     animation-play-state: paused;
   }
 
-  /* Hero Splash Alternative Component */
-  .hero-splash-alt {
-    @apply relative overflow-hidden;
-    height: 100vh;
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    margin-right: calc(-50vw + 50%);
-    z-index: 1;
-  }
-
-  /* Background Images Container */
-  .splash-images {
-    @apply absolute top-0 left-0 w-full h-full;
-    z-index: 1;
-  }
-
-  /* Individual Background Image */
+  /* Hero splash image crossfade */
   .splash-image {
     @apply absolute top-0 left-0 w-full h-full;
     background-size: cover;
     background-position: center;
     opacity: 0;
-    transition: opacity 1500ms ease-in-out;
+    transition: opacity 1500ms var(--ease-in-out);
   }
 
   .splash-image.active {
     opacity: 1;
   }
 
-  /* Gradient Overlay - #22223E saturated at top and bottom, transparent in middle */
-  .splash-gradient {
-    @apply absolute bottom-0 left-0 w-full h-full pointer-events-none;
-    background: linear-gradient(
-      to bottom,
-      rgba(34, 34, 62, 0.9) 0%,
-      rgba(34, 34, 62, 0.7) 15%,
-      rgba(34, 34, 62, 0.3) 30%,
-      rgba(34, 34, 62, 0.1) 50%,
-      rgba(34, 34, 62, 0.3) 70%,
-      rgba(34, 34, 62, 0.7) 85%,
-      rgba(34, 34, 62, 0.95) 100%
-    );
-    z-index: 2;
-  }
-
-  /* Splash Alternative Content - Positioned at bottom left */
-  .hero-splash-alt .hero-content {
-    @apply absolute bottom-0 left-0 w-full;
-    @apply flex flex-col items-start justify-end;
-    @apply max-w-max-width mx-auto px-md pb-2xl md:pb-3xl;
-    padding-top: 0;
-    z-index: 3;
-  }
-
-  /* Splash Alternative Title - Left aligned, lowercase */
-  .splash-alt-title {
-    @apply text-light text-4xl md:text-5xl lg:text-7xl font-normal leading-tight mb-lg md:mb-xl;
-    text-align: left;
-    max-width: 800px;
-  }
-
-  /* CTA Wrapper - Desktop: 2x2 grid, Mobile: vertical stack with overflow */
-  .splash-cta-wrapper {
-    @apply w-full;
-    max-width: 800px;
-  }
-
-  .splash-cta-container {
-    @apply grid grid-cols-2 gap-sm;
-  }
-
-  /* Mobile: Vertical stack with horizontal scroll */
-  @media (max-width: 767px) {
-    .splash-cta-wrapper {
-      @apply overflow-x-auto overflow-y-visible;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-    }
-
-    .splash-cta-wrapper::-webkit-scrollbar {
-      display: none;
-    }
-
-    .splash-cta-container {
-      @apply flex flex-col gap-sm;
-      width: max-content;
-      min-width: 100%;
-    }
-
-    .splash-alt-title {
-      @apply text-3xl mb-md;
-    }
-  }
-
-  /* CTA Buttons */
-  .splash-cta-button {
-    @apply border-2 border-light px-md py-sm text-light text-base no-underline;
-    @apply transition-all duration-fast hover:bg-light hover:text-dark;
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
-    @apply cursor-pointer bg-transparent whitespace-nowrap;
-    flex-shrink: 0;
-    width: auto;
-    justify-self: start;
-  }
-
   /* Header Transitions */
   header {
     @apply bg-white;
-    transition: background-color 300ms ease, border-color 300ms ease;
+    transition: background-color var(--transition-duration-slow) var(--ease-rebuild),
+      border-color var(--transition-duration-slow) var(--ease-rebuild);
   }
 
   header a,
@@ -923,7 +833,10 @@
   header .border-b-2,
   header .beta-banner,
   header .marquee-text {
-    transition: color 300ms ease, border-color 300ms ease, filter 300ms ease, background-color 300ms ease;
+    transition: color var(--transition-duration-slow) var(--ease-rebuild),
+      border-color var(--transition-duration-slow) var(--ease-rebuild),
+      filter var(--transition-duration-slow) var(--ease-rebuild),
+      background-color var(--transition-duration-slow) var(--ease-rebuild);
   }
 }
 
@@ -952,7 +865,8 @@
   .programme-item {
     opacity: 0;
     transform: translateX(-1rem);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity var(--transition-duration-slower) var(--ease-rebuild),
+      transform var(--transition-duration-slower) var(--ease-rebuild);
   }
 
   .programme-item-visible {
@@ -977,7 +891,24 @@
   /* Beta Pulse Animation - Desktop only */
   @media (min-width: 1024px) {
     .beta-pulse {
-      animation: subtle-pulse 5s ease-in-out infinite;
+      animation: subtle-pulse 5s var(--ease-in-out) infinite;
+    }
+  }
+
+  /* Accessibility: disable marquee and pulse animations for reduced-motion */
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-content {
+      animation: none;
+    }
+
+    .beta-pulse {
+      animation: none;
+    }
+
+    .programme-item {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
   }
 

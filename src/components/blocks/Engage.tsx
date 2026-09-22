@@ -1,7 +1,7 @@
 import { createSignal } from "solid-js";
 
 const btnBase =
-  "px-md py-sm md:px-xl md:py-lg bg-lighter text-dark text-xl md:text-2xl hover:bg-dark hover:text-light transition-all duration-fast cursor-pointer border-0 w-fit";
+  "px-md py-sm md:px-xl md:py-lg bg-lighter text-dark text-xl md:text-2xl hover:bg-dark hover:text-light transition-all transition-rebuild cursor-pointer border-0 w-fit";
 
 export default function Engage() {
   const [shareLabel, setShareLabel] = createSignal("Share this page");
@@ -25,7 +25,7 @@ export default function Engage() {
 
   return (
     <section class="relative w-full text-center py-3xl">
-      <div class="max-w-[1400px] mx-auto px-md">
+      <div class="max-w-max-width mx-auto px-md">
         <h2 class="text-4xl md:text-5xl font-normal text-dark mb-lg md:mb-2xl">
           Engage with us
         </h2>

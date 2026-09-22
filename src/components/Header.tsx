@@ -5,6 +5,7 @@ import site from "~/data/site";
 export default function Header() {
   const [mobileOpen, setMobileOpen] = createSignal(false);
   const [scrolledPastHero, setScrolledPastHero] = createSignal(false);
+  const [kbOpenDropdown, setKbOpenDropdown] = createSignal<number | null>(null);
   const location = useLocation();
 
   const isHome = () => location.pathname === "/";
@@ -77,65 +78,134 @@ export default function Header() {
           <nav aria-label="Main navigation" class="hidden lg:block">
             <ul class="flex gap-md list-none md:flex-wrap md:justify-center md:gap-sm">
               <For each={site.main_navigation}>
-                {(item) => (
-                  <li
-                    class="relative"
-                    classList={{ group: !!item.subItems }}
-                  >
-                    <a
-                      href={item.url}
-                      class="no-underline hover:underline px-sm last:pl-0 py-xs transition-fast"
-                      aria-current={
-                        location.pathname === item.url ? "page" : undefined
-                      }
-                      {...(item.subItems
-                        ? {
-                            "aria-haspopup": "true" as const,
-                            "aria-expanded": "false",
-                          }
-                        : {})}
-                    >
-                      {item.name}
-                    </a>
+                {(item, itemIndex) => {
+                  const hasSubmenu = !!item.subItems;
 
-                    <Show when={item.subItems}>
-                      <ul
-                        role="menu"
-                        class="desktop-submenu absolute top-full left-1/2 -translate-x-1/2 mt-1.5 bg-white border-2 border-dark py-sm px-md mx-auto min-w-40 list-none hidden group-hover:block focus-within:block z-50"
+                  function handleTriggerKeydown(e: KeyboardEvent) {
+                    if (!hasSubmenu) return;
+                    if (e.key === "ArrowDown" || e.key === "Enter") {
+                      e.preventDefault();
+                      setKbOpenDropdown(itemIndex());
+                      // Focus the first focusable submenu item after the menu renders
+                      requestAnimationFrame(() => {
+                        const li = (e.currentTarget as HTMLElement).closest("li");
+                        const firstLink = li?.querySelector<HTMLElement>(
+                          'ul[role="menu"] a[role="menuitem"]'
+                        );
+                        firstLink?.focus();
+                      });
+                    }
+                  }
+
+                  function handleSubmenuKeydown(e: KeyboardEvent) {
+                    const menu = (e.currentTarget as HTMLElement).closest(
+                      'ul[role="menu"]'
+                    );
+                    if (!menu) return;
+
+                    const items = Array.from(
+                      menu.querySelectorAll<HTMLElement>('a[role="menuitem"]')
+                    );
+                    const currentIdx = items.indexOf(
+                      document.activeElement as HTMLElement
+                    );
+
+                    if (e.key === "ArrowDown") {
+                      e.preventDefault();
+                      const next = currentIdx + 1 < items.length ? currentIdx + 1 : 0;
+                      items[next]?.focus();
+                    } else if (e.key === "ArrowUp") {
+                      e.preventDefault();
+                      const prev = currentIdx - 1 >= 0 ? currentIdx - 1 : items.length - 1;
+                      items[prev]?.focus();
+                    } else if (e.key === "Escape") {
+                      e.preventDefault();
+                      setKbOpenDropdown(null);
+                      // Return focus to the trigger link
+                      const li = menu.closest("li");
+                      const trigger = li?.querySelector<HTMLElement>(
+                        ':scope > a[aria-haspopup]'
+                      );
+                      trigger?.focus();
+                    }
+                  }
+
+                  return (
+                    <li
+                      class="relative"
+                      classList={{ group: hasSubmenu }}
+                    >
+                      <a
+                        href={item.url}
+                        class="no-underline hover:underline px-sm last:pl-0 py-xs transition-rebuild"
+                        aria-current={
+                          location.pathname === item.url ? "page" : undefined
+                        }
+                        onKeyDown={handleTriggerKeydown}
+                        onBlur={() => {
+                          // Close keyboard-opened menu when focus leaves entirely
+                          requestAnimationFrame(() => {
+                            const li = document.activeElement?.closest("li");
+                            if (!li || !li.contains(document.activeElement)) {
+                              setKbOpenDropdown(null);
+                            }
+                          });
+                        }}
+                        {...(hasSubmenu
+                          ? {
+                              "aria-haspopup": "true" as const,
+                              "aria-expanded": kbOpenDropdown() === itemIndex() ? "true" : "false",
+                            }
+                          : {})}
                       >
-                        <For each={item.subItems}>
-                          {(sub) => (
-                            <li role="none" class="py-xs text-center">
-                              <Show
-                                when={sub.url}
-                                fallback={
-                                  <span
-                                    class="block whitespace-nowrap cursor-default"
-                                    classList={{
-                                      "line-through text-dark/50":
-                                        sub.status === "past",
-                                      "text-muted": sub.status === "future",
-                                    }}
+                        {item.name}
+                      </a>
+
+                      <Show when={item.subItems}>
+                        <ul
+                          role="menu"
+                          class="desktop-submenu absolute top-full left-1/2 -translate-x-1/2 mt-1.5 bg-white border-2 border-dark py-sm px-md mx-auto min-w-40 list-none z-50"
+                          classList={{
+                            "hidden group-hover:block focus-within:block": kbOpenDropdown() !== itemIndex(),
+                            block: kbOpenDropdown() === itemIndex(),
+                          }}
+                          onKeyDown={handleSubmenuKeydown}
+                        >
+                          <For each={item.subItems}>
+                            {(sub) => (
+                              <li role="none" class="py-xs text-center">
+                                <Show
+                                  when={sub.url}
+                                  fallback={
+                                    <span
+                                      class="block whitespace-nowrap cursor-default"
+                                      classList={{
+                                        "line-through text-dark/50":
+                                          sub.status === "past",
+                                        "text-muted": sub.status === "future",
+                                      }}
+                                    >
+                                      {sub.name}
+                                    </span>
+                                  }
+                                >
+                                  <a
+                                    href={sub.url!}
+                                    role="menuitem"
+                                    class="no-underline hover:underline block whitespace-nowrap"
+                                    tabindex="-1"
                                   >
                                     {sub.name}
-                                  </span>
-                                }
-                              >
-                                <a
-                                  href={sub.url!}
-                                  role="menuitem"
-                                  class="no-underline hover:underline block whitespace-nowrap"
-                                >
-                                  {sub.name}
-                                </a>
-                              </Show>
-                            </li>
-                          )}
-                        </For>
-                      </ul>
-                    </Show>
-                  </li>
-                )}
+                                  </a>
+                                </Show>
+                              </li>
+                            )}
+                          </For>
+                        </ul>
+                      </Show>
+                    </li>
+                  );
+                }}
               </For>
             </ul>
           </nav>
@@ -153,7 +223,7 @@ export default function Header() {
               class="text-2xl leading-none align-top pb-1"
               aria-hidden="true"
             >
-              {mobileOpen() ? "×" : "+"}
+              {mobileOpen() ? "✕" : "+"}
             </span>
           </button>
         </div>
@@ -196,7 +266,7 @@ export default function Header() {
                   <li>
                     <a
                       href={item.url}
-                      class="text-dark text-4xl no-underline block transition-fast hover:text-blue focus:text-blue"
+                      class="text-dark text-4xl no-underline block transition-rebuild hover:text-blue focus:text-blue"
                       classList={{
                         "text-blue": location.pathname === item.url,
                       }}
@@ -224,7 +294,7 @@ export default function Header() {
                   <li>
                     <a
                       href={item.url}
-                      class="text-dark text-xl no-underline transition-fast hover:text-blue focus:text-blue"
+                      class="text-dark text-xl no-underline transition-rebuild hover:text-blue focus:text-blue"
                       classList={{
                         "text-blue": location.pathname === item.url,
                       }}

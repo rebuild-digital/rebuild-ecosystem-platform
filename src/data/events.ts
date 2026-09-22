@@ -37,7 +37,7 @@ export const events: RebuildEvent[] = [
     startDate: "2026-03-01T09:00:00Z",
     endDate: "2026-03-03T18:00:00Z",
     location: "Copenhagen, Denmark",
-    bgColor: "#669e67",
+    bgColor: "var(--color-green)",
     image: "/assets/images/copenhagen.webp",
     imageCredit: "Eryk Piotr Munk",
     proofPoints: [
@@ -75,7 +75,7 @@ export const events: RebuildEvent[] = [
     startDate: "2026-08-30T09:00:00Z",
     endDate: "2026-09-01T18:00:00Z",
     location: "Helsinki, Finland",
-    bgColor: "#6ba1cc",
+    bgColor: "var(--color-blue)",
     image: "/assets/images/helsinki.webp",
     imageCredit: "Kristaps Grundsteins",
     proofPoints: [
@@ -140,7 +140,7 @@ export const events: RebuildEvent[] = [
     startDate: "2026-12-13T09:00:00Z",
     endDate: "2026-12-15T18:00:00Z",
     location: "Paris, France",
-    bgColor: "#e1aeb0",
+    bgColor: "var(--color-blush)",
     image: "/assets/images/paris.webp",
     imageCredit: "HANVIN CHEONG",
     proofPoints: [

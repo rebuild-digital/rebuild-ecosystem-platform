@@ -3,6 +3,7 @@ import { For, Show } from "solid-js";
 import HalfCircle from "~/components/blocks/HalfCircle";
 import ProgrammesPreview from "~/components/blocks/ProgrammesPreview";
 import ImageCredit from "~/components/ImageCredit";
+import Section from "~/components/Section";
 import { events } from "~/data/events";
 import { programmes } from "~/data/programmes";
 
@@ -47,7 +48,7 @@ export default function Journey() {
       {/* Page title */}
       <section class="pt-xl md:pb-2xl">
         <header class="mb-sm md:mb-xl text-center w-full">
-          <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl">Journey</h1>
+          <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl">Journey</h1>
         </header>
       </section>
 
@@ -108,17 +109,12 @@ export default function Journey() {
       {/* Gathering sections — full-bleed, one per event */}
       <For each={events}>
         {(gathering) => (
-          <section
+          <Section
+            fullBleed
             id={gathering.id}
             class="relative w-full py-2xl lg:py-4xl"
-            style={{
-              "background-color": gathering.bgColor,
-              "margin-left": "calc(-50vw + 50%)",
-              "margin-right": "calc(-50vw + 50%)",
-              width: "100vw",
-            }}
+            style={{ "background-color": gathering.bgColor }}
           >
-            <div class="max-w-max-width mx-auto px-md">
               {/* Header */}
               <div class="mb-2xl lg:mb-4xl">
                 <div class="flex flex-col md:flex-row justify-between">
@@ -126,8 +122,8 @@ export default function Journey() {
                     {gathering.title}
                   </h2>
                   <div class="flex flex-col leading-tight lg:leading-none">
-                    <p class="text-md m-0 md:text-lg">{gathering.location}</p>
-                    <p class="text-md md:text-lg">
+                    <p class="text-base m-0 md:text-lg">{gathering.location}</p>
+                    <p class="text-base md:text-lg">
                       {new Date(gathering.startDate).toLocaleDateString(
                         "en-GB",
                         { day: "numeric", month: "short" }
@@ -194,8 +190,7 @@ export default function Journey() {
                   </div>
                 </div>
               </Show>
-            </div>
-          </section>
+          </Section>
         )}
       </For>
 

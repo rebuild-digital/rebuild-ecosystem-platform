@@ -13,7 +13,7 @@ export interface InsightsPreviewProps {
 export default function InsightsPreview(props: InsightsPreviewProps) {
   return (
     <section>
-      <div class="max-w-[1400px] mx-auto">
+      <div class="max-w-max-width mx-auto px-md">
         <div class="flex justify-between items-center mb-2xl">
           <h2 class="text-4xl md:text-5xl font-normal text-dark">Latest</h2>
         </div>
@@ -31,16 +31,16 @@ export default function InsightsPreview(props: InsightsPreviewProps) {
                   <Show
                     when={insight.featured_image}
                     fallback={
-                      <div class="w-full aspect-4/3 bg-lighter mb-md" />
+                      <div class="w-full aspect-video bg-lighter mb-md" />
                     }
                   >
                     <img
                       src={insight.featured_image}
                       alt={insight.title}
-                      class="w-full aspect-4/3 object-cover mb-md"
+                      class="w-full aspect-video object-cover mb-md"
                     />
                   </Show>
-                  <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-fast">
+                  <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-rebuild">
                     {insight.title}
                   </h3>
                 </a>

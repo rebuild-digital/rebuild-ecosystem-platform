@@ -1,5 +1,6 @@
 import { For, Show } from "solid-js";
 import type { Gathering } from "~/data/gatherings";
+import Section from "~/components/Section";
 
 export interface GatheringsPreviewProps {
   gatherings: Gathering[];
@@ -7,7 +8,7 @@ export interface GatheringsPreviewProps {
 
 function ImageCredit(props: { credit: string }) {
   return (
-    <div class="absolute bottom-0 left-0 bg-dark/50 text-white text-[10px] px-2 py-1 m-2">
+    <div class="absolute bottom-0 left-0 bg-dark/50 text-white text-[10px] px-xs py-xxs m-xs">
       Photo by: {props.credit}
     </div>
   );
@@ -15,15 +16,7 @@ function ImageCredit(props: { credit: string }) {
 
 export default function GatheringsPreview(props: GatheringsPreviewProps) {
   return (
-    <section
-      class="relative w-full py-xl md:py-3xl"
-      style={{
-        "margin-left": "calc(-50vw + 50%)",
-        "margin-right": "calc(-50vw + 50%)",
-        width: "100vw",
-      }}
-    >
-      <div class="max-w-max-width mx-auto px-md">
+    <Section fullBleed class="relative w-full py-xl md:py-3xl">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3xl lg:gap-lg mb-2xl">
           <For each={props.gatherings}>
             {(gathering) => (
@@ -69,7 +62,7 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
                   </div>
                 </div>
 
-                <div class="mt-sm flex justify-between items-center text-sm md:text-md text-dark">
+                <div class="mt-sm flex justify-between items-center text-sm md:text-base text-dark">
                   <span>{gathering.location}</span>
                   <span>
                     {gathering.startDate} - {gathering.endDate}
@@ -102,7 +95,6 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
             )}
           </For>
         </div>
-      </div>
-    </section>
+    </Section>
   );
 }

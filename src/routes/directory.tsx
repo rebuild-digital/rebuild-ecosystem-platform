@@ -1,25 +1,28 @@
 import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache } from "@solidjs/router";
-import { createSignal, createMemo, Suspense, For, Show } from "solid-js";
+import { createSignal, createEffect, createMemo, onCleanup, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
+import Badge from "~/components/Badge";
 
-const CATEGORY_COLORS: Record<string, { bg: string; text: string }> = {
-  Bundled: { bg: "bg-red-tint", text: "text-dark" },
-  Community: { bg: "bg-blue-tint", text: "text-dark" },
-  Groups: { bg: "bg-green-tint", text: "text-dark" },
-  Networking: { bg: "bg-orange-tint", text: "text-dark" },
-  Messaging: { bg: "bg-blue-tint", text: "text-dark" },
-  Microblogging: { bg: "bg-red-tint", text: "text-dark" },
-  Forum: { bg: "bg-red-tint", text: "text-dark" },
-  Dating: { bg: "bg-blush-tint", text: "text-dark" },
-  Events: { bg: "bg-orange-tint", text: "text-dark" },
-  Location: { bg: "bg-green-tint", text: "text-dark" },
-  "Resource sharing": { bg: "bg-blonde-tint", text: "text-dark" },
-  "Photo sharing": { bg: "bg-blush-tint", text: "text-dark" },
-  "Video sharing": { bg: "bg-blonde-tint", text: "text-dark" },
-  "Creator platform": { bg: "bg-blue-tint", text: "text-dark" },
-  "Social marketplace": { bg: "bg-orange-tint", text: "text-dark" },
-  Other: { bg: "bg-blonde-tint", text: "text-dark" },
+type BadgeColor = "red" | "blue" | "green" | "orange" | "blush" | "blonde" | "dark" | "lighter";
+
+const CATEGORY_COLORS: Record<string, { badge: BadgeColor; bg: string; text: string }> = {
+  Bundled: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Community: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  Groups: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
+  Networking: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Messaging: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  Microblogging: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Forum: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
+  Dating: { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
+  Events: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Location: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
+  "Resource sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
+  "Photo sharing": { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
+  "Video sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
+  "Creator platform": { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
+  "Social marketplace": { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
+  Other: { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
 };
 
 const CATEGORY_ORDER = [
@@ -89,6 +92,17 @@ export default function Directory() {
     return all.filter((b) => b.category.some((c) => active.includes(c)));
   });
 
+  createEffect(() => {
+    if (!tooltipOpen()) return;
+    function handleKeydown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setTooltipOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeydown);
+    onCleanup(() => document.removeEventListener("keydown", handleKeydown));
+  });
+
   function toggleCategory(cat: string) {
     setActiveCategories((prev) =>
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
@@ -111,7 +125,7 @@ export default function Directory() {
           <div class="flex flex-col lg:flex-row gap-md">
             {/* Title + tooltip */}
             <div class="flex-col lg:w-1/2">
-              <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-7xl">
+              <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-6xl">
                 Directory
               </h1>
               <div class="relative mt-md">
@@ -122,19 +136,7 @@ export default function Directory() {
                   aria-controls="info-tooltip"
                   onClick={() => setTooltipOpen((v) => !v)}
                 >
-                  <svg
-                    class="w-6 h-6"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle cx="12" cy="12" r="10" stroke-width="2" />
-                    <path
-                      d="M12 16v-4M12 8h.01"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                  </svg>
+                  <span class="text-xl leading-none" aria-hidden="true">ⓘ</span>
                   <span>What is this?</span>
                 </button>
                 <Show when={tooltipOpen()}>
@@ -166,13 +168,13 @@ export default function Directory() {
             <div class="flex justify-end gap-sm md:gap-md md:w-1/2 h-16 md:h-20 leading-tight">
               <button
                 data-form="builder-application"
-                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
               >
                 Join the directory
               </button>
               <button
                 data-form="builder-promo"
-                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all duration-fast focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
               >
                 Suggest a platform
               </button>
@@ -201,7 +203,7 @@ export default function Directory() {
                             <span>{cat}</span>
                             <Show when={isActive()}>
                               <span class="filter-x" aria-hidden="true">
-                                ×
+                                ✕
                               </span>
                             </Show>
                           </button>
@@ -234,7 +236,7 @@ export default function Directory() {
                       <div class="bg-white space-y-md p-5 lg:p-md rounded border-2">
                         {/* Name + URL */}
                         <div class="builder-row-header">
-                          <h3 class="text-2xl lg:text-3xl">
+                          <h3 class="text-xl lg:text-2xl">
                             <Show
                               when={builder.link}
                               fallback={
@@ -282,11 +284,9 @@ export default function Directory() {
                                 {(cat) => {
                                   const colors = getCategoryColors(cat);
                                   return (
-                                    <span
-                                      class={`inline-block rounded-lg px-3 py-2 ${colors.bg} ${colors.text} text-sm`}
-                                    >
+                                    <Badge color={colors.badge} size="sm">
                                       {cat}
-                                    </span>
+                                    </Badge>
                                   );
                                 }}
                               </For>
@@ -297,9 +297,9 @@ export default function Directory() {
                               builder.country && builder.country.length > 0
                             }
                           >
-                            <div class="text-sm bg-light px-3 py-2 rounded-lg text-dark">
+                            <Badge color="lighter" size="sm">
                               {builder.country.join(", ")}
-                            </div>
+                            </Badge>
                           </Show>
                         </div>
                       </div>

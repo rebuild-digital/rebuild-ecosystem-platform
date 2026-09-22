@@ -40,7 +40,7 @@ export default function FaqAccordion(props: FaqAccordionProps) {
             <details class="group">
               <summary class="flex items-center gap-sm sm:gap-lg px-lg py-md cursor-pointer list-none">
                 <span
-                  class="text-3xl w-6 shrink-0 transition-transform duration-200 group-open:hidden"
+                  class="text-3xl w-6 shrink-0 transition-transform transition-rebuild group-open:hidden"
                   aria-hidden="true"
                 >
                   +

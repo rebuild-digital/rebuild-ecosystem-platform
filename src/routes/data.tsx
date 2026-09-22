@@ -41,7 +41,7 @@ export default function Data() {
         <section class="pb-2xl" aria-label="Introduction">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl items-start">
             <div>
-              <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl mb-lg">
+              <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl mb-lg">
                 Social
                 <br class="hidden lg:inline" /> Platform
                 <br class="hidden lg:inline" /> Economy
@@ -63,7 +63,7 @@ export default function Data() {
             </div>
             <div
               class="rounded-lg overflow-hidden lg:hidden"
-              style="aspect-ratio: 13/7;"
+              style="aspect-ratio: 16/9;"
             >
               <SignalField
                 cols={13}

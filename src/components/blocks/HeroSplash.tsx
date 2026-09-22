@@ -11,6 +11,9 @@ export default function HeroSplash(props: HeroSplashProps) {
   const interval = () => props.interval ?? 4000;
 
   onMount(() => {
+    const motionOk = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!motionOk) return;
+
     const timer = setInterval(() => {
       setActiveIndex((i) => (i + 1) % props.images.length);
     }, interval());
@@ -56,20 +59,17 @@ export default function HeroSplash(props: HeroSplashProps) {
         </For>
       </div>
 
-      {/* Gradient Overlay */}
+      {/* Color overlay — mix-blend-multiply tints the image without washing it out */}
       <div
-        class="absolute bottom-0 left-0 w-full h-full pointer-events-none z-20"
+        class="absolute inset-0 bg-dark/65 mix-blend-multiply pointer-events-none z-20"
+        aria-hidden="true"
+      />
+      {/* Bottom gradient — extra contrast for CTA text in the lower third */}
+      <div
+        class="absolute bottom-0 left-0 w-full h-1/3 pointer-events-none z-20"
         aria-hidden="true"
         style={{
-          background: `linear-gradient(
-            to bottom,
-            rgba(34, 34, 62, 0.75) 0%,
-            rgba(34, 34, 62, 0.5) 20%,
-            rgba(34, 34, 62, 0) 40%,
-            rgba(34, 34, 62, 0) 60%,
-            rgba(34, 34, 62, 0.5) 80%,
-            rgba(34, 34, 62, 0.75) 100%
-          )`,
+          background: "linear-gradient(to top, rgba(34,34,62,0.6) 0%, transparent 100%)",
         }}
       />
 
@@ -84,19 +84,19 @@ export default function HeroSplash(props: HeroSplashProps) {
             <div class="flex flex-row flex-wrap gap-sm w-max md:w-full min-w-full md:min-w-0">
               <button
                 data-form="builder-promo"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Help map the platforms
               </button>
               <button
                 data-form="newsletter"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Stay involved
               </button>
               <button
                 data-form="gathering-invitation-rebuild3"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Request invitation
               </button>
@@ -104,7 +104,7 @@ export default function HeroSplash(props: HeroSplashProps) {
                 href="https://letter.rebuild.net"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all duration-fast hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
+                class="bg-splash-button border-2 border-light px-md py-sm text-light text-base no-underline transition-all transition-rebuild hover:bg-light hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue whitespace-nowrap"
               >
                 Sign the rebuild letter
               </a>

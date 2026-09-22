@@ -7,6 +7,9 @@ export interface ProgrammesPreviewProps {
 
 export default function ProgrammesPreview(props: ProgrammesPreviewProps) {
   onMount(() => {
+    const motionOk = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!motionOk) return;
+
     const items = document.querySelectorAll<HTMLElement>(".programme-item");
     if (!items.length) return;
 

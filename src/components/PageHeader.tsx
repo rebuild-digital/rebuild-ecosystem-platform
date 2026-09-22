@@ -9,7 +9,7 @@ export default function PageHeader(props: PageHeaderProps) {
   return (
     <div class="md:pt-xl">
       <div class="mb-lg lg:mb-5xl font-normal flex flex-col lg:flex-row justify-between items-start">
-        <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-7xl">
+        <h1 class="font-normal mb-sm lg:mb-0 text-4xl md:text-5xl lg:text-6xl">
           {props.title}
         </h1>
         <Show when={props.description}>

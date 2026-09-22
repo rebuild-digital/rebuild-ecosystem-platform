@@ -62,7 +62,7 @@ export default function InsightsListing() {
                   </a>
                 </Show>
                 <div class="mt-md">
-                  <h3 class="text-xl lg:text-3xl">
+                  <h3 class="text-xl lg:text-2xl">
                     <a
                       href={insight.url}
                       class="text-dark no-underline hover:underline"

@@ -3,6 +3,7 @@ import { Show, For } from "solid-js";
 import { events } from "~/data/events";
 import ImageCredit from "~/components/ImageCredit";
 import QuoteCarousel from "~/components/QuoteCarousel";
+import Section from "~/components/Section";
 import FaqAccordion from "~/components/FaqAccordion";
 import GatheringCountdown from "~/components/GatheringCountdown";
 import Engage from "~/components/blocks/Engage";
@@ -41,10 +42,10 @@ export default function Rebuild2() {
       <section class="pt-xl pb-lg">
         <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-md">
           <div>
-            <h1 class="font-normal text-4xl md:text-5xl lg:text-7xl mb-xs">
+            <h1 class="font-normal text-4xl md:text-5xl lg:text-6xl mb-xs">
               Rebuild 2
             </h1>
-            <div class="flex gap-8 lg:gap-16">
+            <div class="flex gap-lg lg:gap-2xl">
               <p>Helsinki, Finland</p>
               <p>Aug 30 – Sep 01</p>
             </div>
@@ -72,8 +73,8 @@ export default function Rebuild2() {
         </div>
 
         {/* Tagline + countdown */}
-        <div class="mt-xl flex flex-col space-y-16 lg:space-y-0 lg:flex-row justify-between">
-          <h2 class="text-xl md:text-2xl xl:text-3xl max-w-[45ch] leading-tight font-normal">
+        <div class="mt-xl flex flex-col space-y-2xl lg:space-y-0 lg:flex-row justify-between">
+          <h2 class="text-2xl md:text-3xl max-w-[45ch] leading-tight font-normal">
             The second gathering for the people building Europe's future social
             platforms. The summer camp where we teach each other how to build,
             design, and scale social platforms.
@@ -89,19 +90,13 @@ export default function Rebuild2() {
       </section>
 
       {/* Programme highlights */}
-      <section
-        class="py-xl sm:py-3xl"
-        style={{
-          "margin-left": "calc(-50vw + 50%)",
-          "margin-right": "calc(-50vw + 50%)",
-          width: "100vw",
-          "background-color": "rgba(107, 161, 204, 0.1)",
-        }}
+      <Section
+        fullBleed
+        class="py-xl sm:py-3xl bg-blue-light"
       >
-        <div class="max-w-max-width mx-auto px-md">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-xl lg:gap-3xl">
-            <div class="space-y-2xl pr-8">
-              <h3 class="text-3xl mb-16">Programme highlights</h3>
+            <div class="space-y-2xl pr-lg">
+              <h3 class="text-2xl mb-2xl">Programme highlights</h3>
               <For each={event.proofPoints}>
                 {(point) => (
                   <div>
@@ -127,8 +122,7 @@ export default function Rebuild2() {
               />
             </div>
           </div>
-        </div>
-      </section>
+      </Section>
 
       {/* Quotes */}
       <QuoteCarousel quotes={quotes} interval={10000} />

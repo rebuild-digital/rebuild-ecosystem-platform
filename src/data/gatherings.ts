@@ -32,7 +32,7 @@ export const gatherings: Gathering[] = [
     endDate: "Mar 03",
     image: "/assets/images/rebuild1-pic.webp",
     imageCredit: "Fernanda Cebrián",
-    titleColor: "#669e67",
+    titleColor: "var(--color-green)",
   },
   {
     id: "rebuild-2",
@@ -44,7 +44,7 @@ export const gatherings: Gathering[] = [
     startDate: "Aug 30",
     endDate: "Sep 01",
     image: "/assets/images/splash-7.webp",
-    titleColor: "#6ba1cc",
+    titleColor: "var(--color-blue)",
   },
   {
     id: "rebuild-3",
@@ -57,7 +57,7 @@ export const gatherings: Gathering[] = [
     endDate: "Dec 15",
     image: "/assets/images/paris.webp",
     imageCredit: "HANVIN CHEONG",
-    titleColor: "#e1aeb0",
+    titleColor: "var(--color-blush)",
     ctaSecondary: { text: "Get notified", dataForm: "newsletter" },
   },
 ];

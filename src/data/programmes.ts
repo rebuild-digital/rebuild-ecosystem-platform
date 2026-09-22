@@ -11,27 +11,27 @@ export const programmes: Programme[] = [
     title: "Investor programme",
     description:
       "Bringing together investors from across Europe taking an active part in rebuilding social platforms",
-    color: "#669e67",
+    color: "var(--color-green)",
   },
   {
     id: "talent",
     title: "Talent programme",
     description:
       "Attracting and directing top talents to social platform start-ups",
-    color: "#e1aeb0",
+    color: "var(--color-blush)",
   },
   {
     id: "public-funds",
     title: "Public funds programme",
     description:
       "Bringing public funds together to support social platforms",
-    color: "#bf6e36",
+    color: "var(--color-orange)",
   },
   {
     id: "board",
     title: "Board programme",
     description:
       "Activating pioneers and digital leaders in committed board positions",
-    color: "#ac1d24",
+    color: "var(--color-red)",
   },
 ];

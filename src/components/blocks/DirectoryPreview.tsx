@@ -1,5 +1,6 @@
 import { For, Show } from "solid-js";
 import Section from "~/components/Section";
+import { buttonClass } from "~/lib/buttonClass";
 
 export interface DirectoryPlatform {
   name: string;
@@ -78,16 +79,16 @@ export default function DirectoryPreview(props: DirectoryPreviewProps) {
         </Show>
 
         <div class="mt-xl md:mt-3xl flex flex-col md:flex-row justify-end items-start md:items-center gap-lg">
-          <div class="flex gap-sm md:gap-md">
+          <div class="flex flex-wrap gap-sm md:gap-md">
             <button
               data-form="builder-application"
-              class="inline-block px-sm md:px-lg py-xs md:py-md bg-dark border-2 border-dark text-light hover:underline transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade cursor-pointer"
+              class={buttonClass({ size: "lg" })}
             >
               Join the directory
             </button>
             <button
               data-form="builder-promo"
-              class="inline-block px-sm md:px-lg py-xs md:py-md bg-transparent border-2 border-dark text-dark hover:underline transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade cursor-pointer"
+              class={buttonClass({ variant: "secondary", size: "lg" })}
             >
               Suggest a platform
             </button>

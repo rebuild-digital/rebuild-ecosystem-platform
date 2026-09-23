@@ -61,7 +61,7 @@ export default function HeroSplash(props: HeroSplashProps) {
 
       {/* Color overlay — mix-blend-multiply tints the image without washing it out */}
       <div
-        class="absolute inset-0 bg-dark/65 mix-blend-multiply pointer-events-none z-20"
+        class="absolute inset-0 bg-dark/40 mix-blend-multiply pointer-events-none z-20"
         aria-hidden="true"
       />
       {/* Bottom gradient — extra contrast for CTA text in the lower third */}

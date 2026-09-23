@@ -6,7 +6,7 @@ import {
 	createAsync,
 	cache,
 } from "@solidjs/router";
-import { Suspense } from "solid-js";
+import { Show, Suspense } from "solid-js";
 import BlockRenderer from "~/components/blocks/BlockRenderer";
 import type { BlockDefinition } from "~/components/blocks/registry";
 import splashImages from "~/data/splashImages";
@@ -155,11 +155,16 @@ export default function Home() {
 					blocks={heroBlock()}
 				/>
 				{/* All other blocks sit inside a max-width container matching the Eleventy layout */}
-				<div class='lg:max-w-max-width mx-auto px-md'>
-					<BlockRenderer
-						blocks={contentBlocks()}
-					/>
-				</div>
+				{/* Build the blocks only once the data has resolved. Lazy blocks that
+				    are still loading on a cold server otherwise finish with the empty
+				    first-pass props, and hydration fails against the real data (#50). */}
+				<Show when={data()}>
+					<div class='lg:max-w-max-width mx-auto px-md'>
+						<BlockRenderer
+							blocks={contentBlocks()}
+						/>
+					</div>
+				</Show>
 			</Suspense>
 		</main>
 	);

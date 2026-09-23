@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "vinxi dev",
     "build": "vinxi build",
-    "start": "vinxi start"
+    "start": "vinxi start",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
     "@notionhq/client": "^5.26.0",
@@ -18,9 +20,11 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.17",
+    "@types/node": "^22.20.4",
     "playwright": "^1.63.0",
     "tailwindcss": "^4.1.17",
-    "typescript": "^5.7.3"
+    "typescript": "^5.7.3",
+    "vitest": "^5.0.1"
   },
   "engines": {
     "node": ">=18"

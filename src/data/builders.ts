@@ -3,6 +3,7 @@
 import { Client } from "@notionhq/client";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { dailyOrder } from "~/lib/dailyOrder";
 
 const CACHE_FILE = path.join(process.cwd(), ".cache/builders.json");
 const MEMORY_TTL = 5 * 60 * 1000;
@@ -43,30 +44,6 @@ function writeFileCache(data: Builder[]) {
   } catch {
     // cache write failed, non-fatal
   }
-}
-
-function dailySeed(): number {
-  const d = new Date();
-  return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
-}
-
-function seededShuffle<T>(arr: T[], seed: number): T[] {
-  const a = [...arr];
-  let s = seed;
-  for (let i = a.length - 1; i > 0; i--) {
-    s = (s * 1664525 + 1013904223) & 0x7fffffff;
-    const j = s % (i + 1);
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// The file cache holds the unshuffled list; every path shuffles exactly once
-// from a canonical (id-sorted) order, so a given day always gives one order
-// no matter whether it came from Notion, the file, or a legacy shuffled file.
-function dailyOrder(data: Builder[]): Builder[] {
-  const canonical = [...data].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
-  return seededShuffle(canonical, dailySeed());
 }
 
 async function fetchFromNotion(): Promise<Builder[]> {
@@ -130,6 +107,7 @@ async function fetchFromNotion(): Promise<Builder[]> {
     order: page.properties.Order?.number || 999,
   }));
 
+  // The file cache holds the unshuffled list; dailyOrder() runs on every read.
   writeFileCache(data);
   const shuffled = dailyOrder(data);
   memCache = { data: shuffled, ts: Date.now() };

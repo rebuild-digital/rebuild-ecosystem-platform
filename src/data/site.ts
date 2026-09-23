@@ -20,6 +20,8 @@ export interface SiteConfig {
   title: string;
   description: string;
   url: string;
+  // Only production is indexable; staging and local stay noindex.
+  indexable: boolean;
   defaultImage: string;
   logo: string;
   logoWhite: string;
@@ -34,6 +36,7 @@ const site: SiteConfig = {
   title: "Rebuild",
   description: "A sprint for European social platforms",
   url: import.meta.env.VITE_SITE_URL ?? "http://localhost:3000",
+  indexable: import.meta.env.VITE_SITE_INDEXABLE === "true",
   defaultImage: "/assets/images/social-3-2400.webp",
   logo: "/assets/images/logo.svg",
   logoWhite: "/assets/images/logo-white.svg",

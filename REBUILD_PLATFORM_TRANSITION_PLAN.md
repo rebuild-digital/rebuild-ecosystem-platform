@@ -339,7 +339,7 @@ user_badges: { userId → user.id, badgeId → badges.id,
 - Double-check MX + SPF + DKIM + DMARC are identical to Cloudflare's — email deliverability depends on these.
 - At **GoDaddy**, change nameservers from Cloudflare to Bunny's.
 - Watch propagation.
-- **Once the domain resolves to Risved:** update `BETTER_AUTH_URL` from the staging URL to `https://www.rebuild.net` in Risved env vars and redeploy. No users exist yet, so no sessions to migrate.
+- **Once the domain resolves to Risved:** update `BETTER_AUTH_URL` from the staging URL to `https://www.rebuild.net`, set `VITE_SITE_URL` to the production URL and `VITE_SITE_INDEXABLE=true` (this lifts the staging `noindex`, see §1.7) in Risved env vars, and redeploy. No users exist yet, so no sessions to migrate.
 
 ### 4.3 Verify
 - Site resolves and serves the SolidStart app over HTTPS (Risved auto-TLS) at `rebuild.net` and `www`.
@@ -393,6 +393,7 @@ Maintain in Risved (encrypted), by phase introduced:
 | `PIRSCH_*` | 1 | Analytics |
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |
+| `VITE_SITE_INDEXABLE` | 1 (set `true` at Phase 4) | Unset = `noindex` everywhere (staging); `true` = indexable (production) |
 | `DATABASE_URL` | 2 | Scaleway Postgres — use the **scoped app role**, not the master user (see §7) |
 | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | 3 (URL updated to prod domain at Phase 4) | Auth |
 | `SCALEWAY_TEM_*` | 3 | Transactional email (magic links) |

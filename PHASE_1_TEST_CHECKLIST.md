@@ -137,6 +137,7 @@ VITE_SITE_URL=http://localhost:3000       # or staging URL
 - [ ] `NOTION_BUILDERS_DB_ID` — Builders database ID
 - [ ] `API_URL` — `https://rebuild-production.b-cdn.net` (Bunny Edge Script)
 - [ ] `VITE_SITE_URL` — staging URL (e.g. `https://next.rebuild.net`)
+- [ ] `VITE_SITE_INDEXABLE` — leave **unset** on staging (serves `noindex`); set to `true` only at the Phase 4 cutover
 - [ ] `BUNNY_CDN_URL` — (if used for asset URLs)
 - [ ] `PIRSCH_CODE` — analytics snippet code
 - [ ] `MAILERLITE_API_KEY` — (if needed beyond Edge Script)

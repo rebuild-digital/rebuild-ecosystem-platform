@@ -4,10 +4,13 @@ import { Suspense } from "solid-js";
 import { getEspeaData } from "~/data/espea";
 import SignalField from "~/components/SignalField";
 import AnimateNumber from "~/components/AnimateNumber";
+import { guardServer } from "~/lib/guardServer";
 
 const getDataPageData = cache(async () => {
   "use server";
-  return await getEspeaData();
+  return guardServer("espea-data", async () => {
+    return await getEspeaData();
+  });
 }, "espea-data");
 
 export const route = {

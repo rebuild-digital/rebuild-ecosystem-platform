@@ -2,22 +2,26 @@ import { Title, Meta } from "@solidjs/meta";
 import { createAsync, cache, useParams } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
 import { getInsightBySlug } from "~/data/insights";
+import { NotFound } from "~/components/ErrorPage";
+import { guardServer } from "~/lib/guardServer";
 
 const getInsightData = cache(async (slug: string) => {
   "use server";
-  const insight = await getInsightBySlug(slug);
-  if (!insight) return null;
-  return {
-    title: insight.frontmatter.title,
-    date: insight.frontmatter.date,
-    author: insight.frontmatter.author,
-    tags: insight.frontmatter.tags,
-    excerpt: insight.frontmatter.excerpt,
-    featured_image: insight.frontmatter.featured_image,
-    featured_image_credit: insight.frontmatter.featured_image_credit,
-    featured_image_credit_theme: insight.frontmatter.featured_image_credit_theme,
-    html: insight.html,
-  };
+  return guardServer("insight-detail", async () => {
+    const insight = await getInsightBySlug(slug);
+    if (!insight) return null;
+    return {
+      title: insight.frontmatter.title,
+      date: insight.frontmatter.date,
+      author: insight.frontmatter.author,
+      tags: insight.frontmatter.tags,
+      excerpt: insight.frontmatter.excerpt,
+      featured_image: insight.frontmatter.featured_image,
+      featured_image_credit: insight.frontmatter.featured_image_credit,
+      featured_image_credit_theme: insight.frontmatter.featured_image_credit_theme,
+      html: insight.html,
+    };
+  });
 }, "insight-detail");
 
 export const route = {
@@ -43,13 +47,11 @@ export default function InsightDetail() {
       <Show
         when={data()}
         fallback={
-          <div class="py-xl">
-            <h1 class="text-4xl font-normal text-dark mb-md">Not found</h1>
-            <p class="text-darker">This insight could not be found.</p>
-            <a href="/insights/" class="text-dark underline mt-md inline-block">
-              Back to insights
-            </a>
-          </div>
+          <NotFound
+            message="This insight doesn't exist, or it has moved. The full list is on the insights page."
+            backHref="/insights/"
+            backLabel="Back to insights"
+          />
         }
       >
         {(insight) => (

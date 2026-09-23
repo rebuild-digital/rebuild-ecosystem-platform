@@ -45,7 +45,10 @@ function Layout(props: { children: any }) {
         title={`${site.title} — Insights`}
         href="/feed.xml"
       />
-      <Meta name="robots" content="index, follow" />
+      <Meta
+        name="robots"
+        content={site.indexable ? "index, follow" : "noindex, nofollow"}
+      />
 
       <a
         href="#main-content"

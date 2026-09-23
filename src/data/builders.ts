@@ -3,7 +3,7 @@
 import { Client } from "@notionhq/client";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { dailyOrder } from "~/lib/dailyOrder";
+import { dailyOrder } from "../lib/dailyOrder";
 
 const CACHE_FILE = path.join(process.cwd(), ".cache/builders.json");
 const MEMORY_TTL = 5 * 60 * 1000;

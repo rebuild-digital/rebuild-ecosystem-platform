@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "Katharina Birkenbach has spent 20 years watching tech design lose its playfulness."
-featured_image: "/assets/images/katharina-birkenbach-1.webp"
+featured_image: "/assets/images/katharina-birkenbach-1-2400.webp"
 published: true
 ---
 

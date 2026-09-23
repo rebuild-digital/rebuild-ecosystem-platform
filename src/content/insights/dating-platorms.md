@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "Meet the founders who are rewriting the rules of attraction"
-featured_image: "/assets/images/dating-platforms-1.webp"
+featured_image: "/assets/images/dating-platforms-1-2400.webp"
 published: true
 ---
 

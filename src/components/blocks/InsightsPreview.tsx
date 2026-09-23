@@ -1,4 +1,5 @@
 import { For, Show } from "solid-js";
+import { srcSet } from "~/lib/images";
 
 export interface InsightPreviewItem {
   url: string;
@@ -36,6 +37,8 @@ export default function InsightsPreview(props: InsightsPreviewProps) {
                   >
                     <img
                       src={insight.featured_image}
+                      srcset={srcSet(insight.featured_image)}
+                      sizes="(min-width: 768px) 33vw, 100vw"
                       alt={insight.title}
                       class="w-full aspect-video object-cover mb-md"
                     />

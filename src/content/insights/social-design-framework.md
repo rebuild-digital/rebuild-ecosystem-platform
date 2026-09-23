@@ -5,7 +5,7 @@ author: "Rebuild Team"
 tags:
   - Frameworks
 excerpt: "Breaking down the essential elements that make social platforms work"
-featured_image: "/assets/images/sdf-image.webp"
+featured_image: "/assets/images/sdf-image-2400.webp"
 published: true
 ---
 

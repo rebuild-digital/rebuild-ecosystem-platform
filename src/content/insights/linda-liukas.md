@@ -5,7 +5,7 @@ author: "Matt Muir"
 tags:
   - Stories
 excerpt: "Permission to roam: why Linda Liukas wants to give children back the internet"
-featured_image: "/assets/images/linda-liukas-1.webp"
+featured_image: "/assets/images/linda-liukas-1-2400.webp"
 published: true
 ---
 
@@ -25,7 +25,7 @@ She's struck by how narrow the conversation about children and tech has become. 
 
 You can't remove kids from the internet anyway. Linda calls herself part of the "hinge generation" (we might say Xennial), having had an offline childhood coupled with early internet moments that felt like teleportation: "whoa I can be anybody anywhere and travel seven times in a second around the world." She wants other kids to have that opportunity too. Her metaphor is the Japanese show Old Enough! where toddlers are sent on errands while a camera follows: you watch them panic, fail, recover, but you also see the social scaffolding that enables this culture of experimentation and low-stakes risk-taking, cities built for kids, community support, public policy that makes streets safer, and a culture where parents allow agency. Europe, she argues, should bring that spirit online: give kids "permission to roam the internet," stay interested in what happens there, and, as she puts it more simply: "Build an internet that is worthy of our children."
 
-![Linda Liukas on stage at Rebuild 1](/assets/images/linda-liukas-2.webp)
+![Linda Liukas on stage at Rebuild 1](/assets/images/linda-liukas-2-2400.webp)
 
 A lot of her thinking comes from the literal computer playground she designed in Helsinki, a huge input-output machine where kids crawl through representations of CPU and RAM. She and her team didn't ask kids to draw fantasy playgrounds; instead they asked about experiences: something fun they had experienced on a phone and in a playground; something scary in both; and something they were proud of building digitally and physically. The findings were blunt. First: for many kids, "public space is now a Fortnite lobby." This led her to the realisation that we should design public spaces, physical and digital, that are as welcoming as the places kids actually gather. Second: "a lot of the scary stuff has moved from public spaces to digital spaces." Every single child could name one or two scary online experiences: a video, a call, "bad people." Third: kids don't separate digital making from physical making. They're proud of forest huts and snow castles, and equally proud of Minecraft worlds. "We just need a language… more metaphors, more stories" to bridge those experiences.
 

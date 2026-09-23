@@ -2301,10 +2301,10 @@ inside an otherwise working page:
 
 #### Page errors
 
-- **404 — not found:** needs a
-  `src/routes/[...404].tsx` route (none
-  exists yet) that returns HTTP 404 via
-  `<HttpStatusCode code={404} />`.
+- **404 — not found:**
+  `src/routes/[...404].tsx` returns HTTP
+  404 via `<HttpStatusCode code={404} />`
+  (`NotFound` in `ErrorPage.tsx`).
   Content: page-title h1 "Page not
   found", one paragraph ("This page
   doesn't exist, or it has moved."),
@@ -2312,12 +2312,14 @@ inside an otherwise working page:
   homepage". Pages that look up content
   by slug (e.g. `insights/[slug]`) reuse
   the same layout and status code.
-- **500 — unexpected error:** an
-  app-level `<ErrorBoundary>` in
-  `app.tsx`. h1 "Something went wrong",
-  one paragraph saying it's on our side,
-  a "Try again" button that resets the
-  boundary, and a contact link.
+- **500 — unexpected error:**
+  `SafeErrorBoundary` in `app.tsx`
+  (`ServerError` in `ErrorPage.tsx`). h1
+  "Something went wrong", one paragraph
+  saying it's on our side, a "Try again"
+  button that reloads the page, and a
+  contact link. Error pages are
+  `noindex`.
 - Both use the standard page-title
   pattern (`text-4xl md:text-5xl lg:text-6xl`)
   and page padding, inside the normal
@@ -2328,7 +2330,10 @@ inside an otherwise working page:
 `error.message`, database errors, or
 internal ids to the reader. Log them on
 the server with the user id — never the
-email (see AGENTS.md).
+email. Solid serializes thrown errors to
+the browser, so every `"use server"`
+query runs inside `guardServer()` (see
+AGENTS.md, hard rule 8).
 
 ## Badge, Tag, and Chip Styles
 

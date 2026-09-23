@@ -170,14 +170,16 @@
      Z-INDEX
      =========================================== */
 
-  --z-0: 0;
-  --z-10: 10;
-  --z-20: 20;
-  --z-30: 30;
-  --z-40: 40;
-  --z-50: 50;
-  --z-max: 999;
-  --z-auto: auto;
+  /* Tailwind v4 reads z-* utilities from the --z-index-* namespace;
+     named values like z-max only exist if declared here. */
+  --z-index-0: 0;
+  --z-index-10: 10;
+  --z-index-20: 20;
+  --z-index-30: 30;
+  --z-index-40: 40;
+  --z-index-50: 50;
+  --z-index-max: 999;
+  --z-index-auto: auto;
 
   /* ===========================================
      BREAKPOINTS
@@ -246,7 +248,7 @@
     position: fixed;
     top: 1rem;
     left: 1rem;
-    z-index: var(--z-max);
+    z-index: var(--z-index-max);
     padding: 1rem 1.5rem;
     background-color: var(--color-dark);
     color: var(--color-light);
@@ -437,21 +439,6 @@
 
 /* Components Layer - Reusable component patterns */
 @layer components {
-  /* Filter Button Component */
-  .filter-button {
-    @apply inline-flex items-center gap-xs px-md lg:px-lg py-xs lg:py-sm text-sm rounded-4xl;
-    @apply border-2 border-dark text-dark;
-    @apply transition-colors cursor-pointer;
-    transition-duration: var(--transition-duration-fast);
-    transition-timing-function: var(--ease-rebuild);
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
-  }
-
-  /* Hidden X icon within filter buttons */
-  .filter-x {
-    @apply text-lg leading-none;
-  }
-
   /* Rich Text Component - Keep this as a semantic wrapper for markdown content */
   .rich-text {
     line-height: 1.7;

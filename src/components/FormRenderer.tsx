@@ -1,6 +1,7 @@
-import { createSignal, createEffect, For, Show, on } from "solid-js";
+import { createSignal, createEffect, createMemo, For, Show, on } from "solid-js";
 import type { FormConfig, FormField } from "~/lib/formConfig";
 import { submitForm } from "~/lib/formSubmit";
+import { buttonClass } from "~/lib/buttonClass";
 
 const inputClass =
   "w-full px-sm py-xs border-2 border-lighter bg-white text-dark text-base focus:border-dark focus:outline-none transition-rebuild";
@@ -52,6 +53,17 @@ export default function FormRenderer(props: {
     }
     return init;
   }
+
+  // Submit stays disabled until every visible required field has a value.
+  // Format checks (email, URL) still run in validate() on submit.
+  const requiredFilled = createMemo(() => {
+    const vals = values();
+    return props.config.fields.every((f) => {
+      if (f.hidden || !f.required) return true;
+      const v = vals[f.name];
+      return f.type === "checkbox" ? !!v : !!v && String(v).trim() !== "";
+    });
+  });
 
   function setValue(name: string, value: string | boolean) {
     setValues((prev) => ({ ...prev, [name]: value }));
@@ -163,13 +175,21 @@ export default function FormRenderer(props: {
           </p>
         </Show>
 
-        <button
-          type="submit"
-          disabled={submitting()}
-          class="w-full px-lg py-sm bg-dark text-light text-lg border-2 border-dark hover:bg-darker transition-all transition-rebuild cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {submitting() ? "Submitting…" : "Submit"}
-        </button>
+        <div>
+          <button
+            type="submit"
+            disabled={submitting() || !requiredFilled()}
+            aria-describedby={requiredFilled() ? undefined : "form-required-hint"}
+            class={buttonClass({ size: "lg", class: "w-full" })}
+          >
+            {submitting() ? "Submitting…" : "Submit"}
+          </button>
+          <Show when={!requiredFilled()}>
+            <p id="form-required-hint" class={helpClass}>
+              Fill in all fields marked <span class="text-red">*</span> to submit.
+            </p>
+          </Show>
+        </div>
       </form>
     </Show>
   );

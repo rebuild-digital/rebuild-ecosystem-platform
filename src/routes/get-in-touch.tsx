@@ -1,6 +1,7 @@
 import { Title, Meta } from "@solidjs/meta";
 import { For } from "solid-js";
 import PageHeader from "~/components/PageHeader";
+import { buttonClass } from "~/lib/buttonClass";
 
 const links = [
   { label: "Email us", href: "mailto:team@rebuild.net" },
@@ -50,11 +51,12 @@ export default function GetInTouch() {
         </div>
 
         <div class="mt-4xl pb-6xl">
-          <h2 class="text-2xl">
-            <a class="underline" href="/downloads/rebuild-press-kit-dec25.zip">
-              Download press kit
-            </a>
-          </h2>
+          <a
+            href="/downloads/rebuild-press-kit-dec25.zip"
+            class={buttonClass({ size: "lg" })}
+          >
+            Download press kit
+          </a>
         </div>
       </section>
     </>

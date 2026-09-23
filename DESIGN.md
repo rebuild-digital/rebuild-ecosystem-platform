@@ -400,16 +400,20 @@ components:
   # BUTTONS — Special purpose
   # =============================================
 
-  # Filter pill buttons (directory, programme filters)
-  filter-button:
-    backgroundColor: transparent
+  # Filter pill buttons (directory filters) — filled Chip, lg size.
+  # Shown for one hue; each category uses its own hue's light/tint/base.
+  filter-chip:
+    backgroundColor: "{colors.blue-light}"
     textColor: "{colors.dark}"
     rounded: "{rounded.full}"
     padding: 8px 24px
-    typography: "{typography.button-sm}"
-  filter-button-hover:
-    backgroundColor: "{colors.dark}"
-    textColor: "{colors.white}"
+    typography: "{typography.button-md}"
+  filter-chip-hover:
+    backgroundColor: "{colors.blue-tint}"
+    textColor: "{colors.dark}"
+  filter-chip-active:
+    backgroundColor: "{colors.blue}"
+    textColor: "{colors.dark}"
 
   # Hero splash CTA buttons (outlined, on image)
   splash-cta-button:
@@ -767,6 +771,8 @@ elements. Use semi-transparent overlays (`bg-dark/50`) for modals and scrims.
 | `max` | 999   | Modal overlays (FormSidebar), skip-link |
 
 **Rule:** always use the token scale. Do not introduce ad-hoc z-index values.
+Tokens live under `--z-index-*` in `app.css` — Tailwind v4 only generates
+named utilities like `z-max` from that namespace.
 The `max` layer is reserved for elements that must sit above everything,
 including the fixed header.
 
@@ -775,7 +781,7 @@ including the fixed header.
 - **Modal scrim:** `bg-dark/50` full-screen fixed overlay.
 - **Image credits:** `bg-dark/50 text-white` (light theme) or
   `bg-light/80 text-dark` (dark theme) — small absolute-positioned labels.
-- **Hero text contrast:** `mix-blend-multiply` with `dark` at 60–70% opacity,
+- **Hero text contrast:** `mix-blend-multiply` with `dark` at 40% opacity,
   plus a simplified bottom gradient covering the lower third.
 - **Past-event images:** `grayscale(100%)` on the image, then a
   `mix-blend-multiply` color overlay at 40% opacity using the event's brand
@@ -826,7 +832,7 @@ and color.
 
 All interactive elements receive a visible focus indicator on `:focus-visible`:
 2px `blue` outline with 2px offset. This is enforced globally in `app.css` on
-`a`, `button`, `input[type="checkbox"]`, and `.filter-button`. Apply the same
+`a`, `button`, and `input[type="checkbox"]`. Apply the same
 pattern to any new interactive element:
 
 ```
@@ -1037,9 +1043,11 @@ background. Checked state shows a "✕" (U+2715) via `::after` pseudo-element.
 
 ### Submit button
 
-Full-width, `dark` background, `light` text, 2px `dark` border, `text-lg`.
-Hover: `bg-darker`. Follows the primary button pattern but is always
-full-width within the form context.
+`button-primary-lg-dark` (via `buttonClass({ size: "lg" })`), always
+full-width within the form context. No border. Disabled (50% opacity,
+`not-allowed` cursor) until every visible required field has a value, with a
+short hint below pointing at the `*` fields; format checks (email, URL) still
+run on submit.
 
 ## Components
 
@@ -1050,7 +1058,8 @@ and typography do the work.
 ### Buttons — Primary
 
 Three sizes, six color themes, no border/outline. Rounded corners always match
-the size token. Text color is whichever of `dark` or `white` meets WCAG AA
+the size token. Use `buttonClass()` from `~/lib/buttonClass` to apply these
+(works on `<button>` and `<a>` alike) rather than hand-writing the classes. Text color is whichever of `dark` or `white` meets WCAG AA
 contrast on that background.
 
 **`dark` is the default primary button.** Use it for all standard actions
@@ -1139,9 +1148,9 @@ Available in all brand colors plus neutrals. Text is always `dark`
 
 #### Current usage
 
-Directory cards use the `Badge` component (`~/components/Badge.tsx`) with
-per-category color mapping defined in `CATEGORY_COLORS`. Country labels
-use the `lighter` variant.
+Directory cards use the `Badge` component (`~/components/Badge.tsx`) at size
+`md`, with per-category color mapping defined in `CATEGORY_COLORS`. Country
+labels use the `lighter` variant.
 
 Insights posts should use the `lighter` variant for topic tags when tag
 data is added to the data model.
@@ -1166,9 +1175,7 @@ The original pattern comes from the directory/programme filter buttons.
 - Active: colored `--light` background, 2px `dark` border, `dark` text,
   dismiss ✕ (U+2715) appended.
 - Hover (inactive): `lighter` background.
-- The existing `.filter-button` class uses this variant with `xs` (8px)
-  vertical / `md` (24px) horizontal padding. This is the one button type
-  that keeps a visible border.
+- This is the one button type that keeps a visible border.
 
 **Filled:**
 - Default: `--light` variant of the brand color, no border, `dark` text.
@@ -1178,9 +1185,12 @@ The original pattern comes from the directory/programme filter buttons.
 
 #### Filter pill color mapping
 
-Each filter category maps to a brand color. When active, the pill shows that
-color's `--light` variant as background, shifting to `--tint` on hover and
-`--base` (default value) when selected.
+Directory filters use the **filled** variant at size `lg` (`<Chip
+variant="filled" size="lg">`). Each category keeps the hue from
+`CATEGORY_COLORS` in `directory.tsx` (the same hue as its card badge):
+`--light` background by default, `--tint` on hover, `--base` when selected.
+Selected text is `white` on red and `dark` on every other hue (see the
+contrast table under Buttons).
 
 ### Card Component
 
@@ -1237,7 +1247,7 @@ Fixed top navigation with two visual modes:
 Full-viewport (90vh) image slideshow with text overlay and CTA buttons.
 
 **Image overlay:** two layers —
-1. Full-bleed `bg-dark/65` with `mix-blend-multiply` (tints without washing
+1. Full-bleed `bg-dark/40` with `mix-blend-multiply` (tints without washing
    out the image).
 2. Bottom-third gradient (`rgba(34,34,62,0.6)` → transparent) for extra CTA
    text contrast.

@@ -3,26 +3,27 @@ import { createAsync, cache } from "@solidjs/router";
 import { createSignal, createEffect, createMemo, onCleanup, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
+import Chip, { type ChipColor } from "~/components/Chip";
+import { buttonClass } from "~/lib/buttonClass";
 
-type BadgeColor = "red" | "blue" | "green" | "orange" | "blush" | "blonde" | "dark" | "lighter";
-
-const CATEGORY_COLORS: Record<string, { badge: BadgeColor; bg: string; text: string }> = {
-  Bundled: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
-  Community: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
-  Groups: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
-  Networking: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
-  Messaging: { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
-  Microblogging: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
-  Forum: { badge: "red", bg: "bg-red-tint", text: "text-dark" },
-  Dating: { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
-  Events: { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
-  Location: { badge: "green", bg: "bg-green-tint", text: "text-dark" },
-  "Resource sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
-  "Photo sharing": { badge: "blush", bg: "bg-blush-tint", text: "text-dark" },
-  "Video sharing": { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
-  "Creator platform": { badge: "blue", bg: "bg-blue-tint", text: "text-dark" },
-  "Social marketplace": { badge: "orange", bg: "bg-orange-tint", text: "text-dark" },
-  Other: { badge: "blonde", bg: "bg-blonde-tint", text: "text-dark" },
+// One hue per category, shared by the filter chips and the card badges.
+const CATEGORY_COLORS: Record<string, ChipColor> = {
+  Bundled: "red",
+  Community: "blue",
+  Groups: "green",
+  Networking: "orange",
+  Messaging: "blue",
+  Microblogging: "red",
+  Forum: "red",
+  Dating: "blush",
+  Events: "orange",
+  Location: "green",
+  "Resource sharing": "blonde",
+  "Photo sharing": "blush",
+  "Video sharing": "blonde",
+  "Creator platform": "blue",
+  "Social marketplace": "orange",
+  Other: "blonde",
 };
 
 const CATEGORY_ORDER = [
@@ -44,7 +45,7 @@ const CATEGORY_ORDER = [
   "Other",
 ];
 
-function getCategoryColors(cat: string) {
+function getCategoryColor(cat: string): ChipColor {
   return CATEGORY_COLORS[cat] ?? CATEGORY_COLORS["Other"];
 }
 
@@ -165,19 +166,21 @@ export default function Directory() {
             </div>
 
             {/* CTAs */}
-            <div class="flex justify-end gap-sm md:gap-md md:w-1/2 h-16 md:h-20 leading-tight">
-              <button
-                data-form="builder-application"
-                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
-              >
-                Join the directory
-              </button>
-              <button
-                data-form="builder-promo"
-                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
-              >
-                Suggest a platform
-              </button>
+            <div class="flex lg:justify-end items-start lg:w-1/2">
+              <div class="flex flex-col gap-sm">
+                <button
+                  data-form="builder-application"
+                  class={buttonClass({ size: "lg" })}
+                >
+                  Join the directory
+                </button>
+                <button
+                  data-form="builder-promo"
+                  class={buttonClass({ variant: "secondary", size: "lg" })}
+                >
+                  Suggest a platform
+                </button>
+              </div>
             </div>
           </div>
         </section>
@@ -191,24 +194,17 @@ export default function Directory() {
                 <div class="mt-lg mb-lg" id="category-filters-wrapper">
                   <div class="flex gap-xs flex-wrap" id="category-filters">
                     <For each={allCategories()}>
-                      {(cat) => {
-                        const colors = getCategoryColors(cat);
-                        const isActive = () => activeCategories().includes(cat);
-                        return (
-                          <button
-                            class={`filter-button${isActive() ? ` ${colors.bg} ${colors.text}` : ""}`}
-                            onClick={() => toggleCategory(cat)}
-                            aria-pressed={isActive()}
-                          >
-                            <span>{cat}</span>
-                            <Show when={isActive()}>
-                              <span class="filter-x" aria-hidden="true">
-                                ✕
-                              </span>
-                            </Show>
-                          </button>
-                        );
-                      }}
+                      {(cat) => (
+                        <Chip
+                          variant="filled"
+                          size="lg"
+                          color={getCategoryColor(cat)}
+                          active={activeCategories().includes(cat)}
+                          onToggle={() => toggleCategory(cat)}
+                        >
+                          {cat}
+                        </Chip>
+                      )}
                     </For>
                   </div>
                 </div>
@@ -281,14 +277,11 @@ export default function Directory() {
                           <Show when={builder.category.length > 0}>
                             <div class="flex gap-xs flex-wrap">
                               <For each={builder.category}>
-                                {(cat) => {
-                                  const colors = getCategoryColors(cat);
-                                  return (
-                                    <Badge color={colors.badge} size="sm">
-                                      {cat}
-                                    </Badge>
-                                  );
-                                }}
+                                {(cat) => (
+                                  <Badge color={getCategoryColor(cat)} size="md">
+                                    {cat}
+                                  </Badge>
+                                )}
                               </For>
                             </div>
                           </Show>
@@ -297,7 +290,7 @@ export default function Directory() {
                               builder.country && builder.country.length > 0
                             }
                           >
-                            <Badge color="lighter" size="sm">
+                            <Badge color="lighter" size="md">
                               {builder.country.join(", ")}
                             </Badge>
                           </Show>

@@ -979,16 +979,17 @@ including the fixed header.
 ## Shapes
 
 Rectangular by default. Rounded corners
-are reserved for buttons and badges;
-tags, chips, and badges always receive
-`rounded-full`.
+are reserved for buttons, badges, and
+cards that opt in to the soft `sm`
+corner. Tags, chips, and badges always
+receive `rounded-full`.
 
 ### Border radius
 
 | Token  | Value  | Use                                    |
 | ------ | ------ | -------------------------------------- |
 | `none` | 0px    | Default for cards, inputs, containers  |
-| `sm`   | 4px    | Small buttons                          |
+| `sm`   | 4px    | Small buttons, rounded cards (`<Card rounded>`) |
 | `md`   | 8px    | Medium buttons                         |
 | `lg`   | 12px   | Large buttons, image containers (rare) |
 | `xl`   | 16px   | Available                              |
@@ -1004,13 +1005,17 @@ tags, chips, and badges always receive
 
 **Guidance:** buttons use the radius
 that matches their size (`sm` → `sm`,
-`md` → `md`, `lg` → `lg`). Cards,
-images, and containers are rectangular
-(`none`) unless specifically designed.
-All badges, tags, and chips use
-`rounded-full` — no exceptions. Form
-inputs are rectangular; the radio button
-is the only round form control.
+`md` → `md`, `lg` → `lg`). Images and
+containers are rectangular (`none`)
+unless specifically designed. Cards are
+rectangular by default and may use the
+soft `sm` corner (4px) through the
+`Card` component's `rounded` prop. They
+never use a larger radius. All badges,
+tags, and chips use `rounded-full` — no
+exceptions. Form inputs are rectangular;
+the radio button is the only round form
+control.
 
 ### Borders
 
@@ -1798,19 +1803,58 @@ shifting to `--tint` on hover and
 
 ### Card Component
 
-Cards are content containers. The system
-has no shared card base class — each
-variant is composed from utility
-classes. These are the common principles
-extracted from the directory cards.
+Cards are content containers. Every card
+is built on the shared `Card` component
+(`src/components/Card.tsx`). **Don't
+hand-roll card surfaces with utility
+classes.** Use `Card` and add a prop or
+variant if something is missing.
+
+```tsx
+import Card, { CardMedia } from "~/components/Card";
+
+<Card padding="responsive" rounded class="space-y-md">…</Card> // directory
+<Card variant="filled" class="flex flex-col h-full">           // tool
+  <CardMedia src={thumb} alt="" fallback={…} />
+  <div class="p-md">…</div>
+</Card>
+<Card as="a" variant="plain" href={url} class="group block">   // insight
+  <CardMedia src={image} alt={title} class="mb-md" />
+</Card>
+```
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `variant` | `outlined` (`bg-white border-2 border-dark`), `filled` (`bg-lighter`), `plain` (no surface) | `outlined` |
+| `padding` | `none`, `md` (`p-md`), `responsive` (`p-5 lg:p-md`) | `none` |
+| `rounded` | `true` adds the soft 4px corner (`rounded-sm`) | `false` |
+| `as` | `div`, `article`, `li`, `a` | `div` |
+
+`CardMedia` is the card image slot. It
+has a fixed aspect ratio (`aspect`:
+`video` | `square`), cover-crops the
+image, and lazy-loads it by default. It
+adds a `srcset` automatically for images
+that have web-sized `-2400`/`-1200`
+variants; pass `sizes` to match the
+card's grid width. It shows a
+`placeholder` background (`lighter` |
+`muted`), and renders `fallback` in the
+same box when there is no `src`.
+Children such as `<ImageCredit>` are
+layered on top of the image.
 
 #### Principles
 
 - **Surface:** `bg-white` with
-  `border-2` (inherits `border-dark`).
-- **Radius:** `rounded-none`
-  (rectangular). Cards do not get
-  rounded corners.
+  `border-2 border-dark` (the default
+  `outlined` variant).
+- **Radius:** rectangular
+  (`rounded-none`) by default. Cards
+  *may* have a soft 4px corner
+  (`rounded-sm`) via `<Card rounded>`.
+  The directory card uses it. Never go
+  above `sm` on a card.
 - **Padding:** `p-md` (24px) on desktop,
   `p-5` (20px) as a compact alternative.
 - **Internal spacing:** `space-y-md`
@@ -1830,37 +1874,48 @@ reference):
   and country pill.
 - Outer: `break-inside-avoid mb-xs`.
 - Inner:
-  `bg-white space-y-md p-5 lg:p-md rounded border-2`.
+  `<Card padding="responsive" rounded class="space-y-md">`
+  (outlined, soft 4px corner).
 
-**Tool card:**
+**Tool card** (`ToolCard.tsx`):
 
-- `bg-lighter`, no border, no rounded
-  corners.
-- Image at top with `aspect-video`,
+- `<Card variant="filled">`, with no
+  border and no rounded corners.
+- `<CardMedia>` (video) at the top, and
   content in `p-md`.
 - Action buttons use
   `border-2 border-dark`.
 
-**Insight post card:**
+**Insight post card**
+(`InsightsPreview.tsx`,
+`routes/insights/index.tsx`):
 
-- No surface — image and title only
-  (`overflow-hidden mb-xl`).
-- Image with `aspect-video`, title link
-  below with `mt-md`.
+- `<Card variant="plain">`: image and
+  title only, with no surface. The home
+  preview makes the whole card a link
+  (`as="a"`); the listing uses
+  `as="article"` with a linked image and
+  title.
+- `<CardMedia>` (video), with the title
+  below it.
 
-**Gathering card:**
+**Gathering card**
+(`GatheringsPreview.tsx`):
 
-- No surface — image with colored
-  overlay label.
-- Fixed-height image (`h-125`),
-  location/date row, optional CTA
+- `<Card variant="plain">`: an image
+  with a colored overlay label.
+- A fixed-height image (`h-125`, custom
+  because of the grayscale and overlay
+  treatment for past gatherings), a
+  location/date row, and optional CTA
   buttons.
 
-**Person card:**
+**Person card** (`PersonCard.tsx`):
 
-- No surface — square image
-  (`aspect-square bg-muted`), name,
-  specialty, bio.
+- `<Card variant="plain">` with
+  `<CardMedia aspect="square" placeholder="muted">`,
+  followed by the name, specialty and
+  bio.
 
 ### Header
 
@@ -2570,18 +2625,22 @@ system and avoiding common drift.
   matters).
 - **Don't introduce new colors.** The
   30-value palette (6 chromatic × 4
-  stops
-  - 6 neutrals) is the complete set.
+  stops + 6 neutrals) is the complete
+  set.
 - **Don't use shadows.** Not for
   elevation, not for hover, not for
   depth. This is a shadowless design
   system by deliberate choice.
 - **Don't use gradients** outside the
   hero splash overlay.
-- **Don't use rounded corners on cards,
-  containers, or inputs.** They stay
-  rectangular. Only buttons, badges,
-  pills, and radio buttons get radii.
+- **Don't use large radii on cards, or
+  any radius on containers or inputs.**
+  Containers and inputs stay
+  rectangular. Cards may use the soft
+  4px corner (`<Card rounded>`) but
+  nothing larger. Beyond that, only
+  buttons, badges, pills, and radio
+  buttons get radii.
 - **Don't put borders on standard
   buttons.** Primary and secondary
   buttons are borderless. Don't add

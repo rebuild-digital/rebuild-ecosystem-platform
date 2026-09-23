@@ -3,6 +3,7 @@ import { createAsync, cache } from "@solidjs/router";
 import { createSignal, createEffect, createMemo, onCleanup, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
+import Card from "~/components/Card";
 import { guardServer } from "~/lib/guardServer";
 
 type BadgeColor = "red" | "blue" | "green" | "orange" | "blush" | "blonde" | "dark" | "lighter";
@@ -250,7 +251,7 @@ export default function Directory() {
                 <For each={filtered()}>
                   {(builder) => (
                     <div class="break-inside-avoid mb-xs">
-                      <div class="bg-white space-y-md p-5 lg:p-md rounded border-2">
+                      <Card padding="responsive" rounded class="space-y-md">
                         {/* Name + URL */}
                         <div class="builder-row-header">
                           <h3 class="text-xl lg:text-2xl">
@@ -319,7 +320,7 @@ export default function Directory() {
                             </Badge>
                           </Show>
                         </div>
-                      </div>
+                      </Card>
                     </div>
                   )}
                 </For>

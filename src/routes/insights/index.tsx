@@ -4,7 +4,7 @@ import { For, Show, Suspense } from "solid-js";
 import PageHeader from "~/components/PageHeader";
 import { getAllInsights } from "~/data/insights";
 import { guardServer } from "~/lib/guardServer";
-import { srcSet } from "~/lib/images";
+import Card, { CardMedia } from "~/components/Card";
 
 const getInsightsData = cache(async () => {
   "use server";
@@ -54,16 +54,13 @@ export default function InsightsListing() {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-xl pb-6xl">
           <For each={data() ?? []}>
             {(insight) => (
-              <article class="overflow-hidden mb-xl">
+              <Card as="article" variant="plain" class="overflow-hidden mb-xl">
                 <Show when={insight.featured_image}>
-                  <a href={insight.url}>
-                    <img
+                  <a href={insight.url} class="block">
+                    <CardMedia
                       src={insight.featured_image}
-                      srcset={srcSet(insight.featured_image)}
                       sizes="(min-width: 768px) 50vw, 100vw"
                       alt={insight.title}
-                      loading="lazy"
-                      class="w-full aspect-video object-cover"
                     />
                   </a>
                 </Show>
@@ -77,7 +74,7 @@ export default function InsightsListing() {
                     </a>
                   </h3>
                 </div>
-              </article>
+              </Card>
             )}
           </For>
         </div>

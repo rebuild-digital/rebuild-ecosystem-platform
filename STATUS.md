@@ -3,7 +3,8 @@
 _Last updated: 2026-09-23_
 
 ## Where we are
-**Phase 0 (architecture + planning) is complete. Phase 1 (SolidStart rebuild) is in progress.**
+**Phases 0 and 1 are complete. Phase 2 (Postgres + directory off Notion) is next.**
+Phase 1 was signed off on 2026-09-23 without the parallel-run week (see `docs/decisions/0004-phase-1-signoff.md`). The SolidStart app runs on Risved staging; Eleventy stays in production until Phase 4.
 Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `AGENTS.md` / `CLAUDE.md`.
 
 **Re-sequenced 2026-09-23:** DNS cutover moved from Phase 2 to **Phase 4**, after Postgres (now 2) and Auth (now 3). Everything is built and proven on staging first; DNS is the last, isolated infra change. After cutover, only `BETTER_AUTH_URL` changes (staging → production) and the app is redeployed. No users exist before cutover, so there are no sessions to migrate.
@@ -19,17 +20,21 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 | Phase | What | Status |
 | --- | --- | --- |
 | 0 | Decisions + plan | ✅ Done |
-| 1 | SolidStart rebuild on Risved staging, feature-parity, still Notion+forms | ▶️ **In progress** |
-| 2 | Postgres + migrate directory off Notion | ⬜ Pending |
+| 1 | SolidStart rebuild on Risved staging, feature-parity, still Notion+forms | ✅ Done (2026-09-23) |
+| 2 | Postgres + migrate directory off Notion | ▶️ **Next** |
 | 3 | Auth (Better Auth, invite-only, profiles, association, registration, badges) — built and tested on staging | ⬜ Pending |
 | 4 | DNS cutover to Bunny + domain → Risved; `BETTER_AUTH_URL` → production | ⬜ Pending |
 | 5 | Decap CMS for editorial | ⬜ Deferred (independent; can run alongside any phase) |
 
-## Immediate next steps (Phase 1 — see `PHASE_1_BRIEF.md`)
-1. Create Risved account, connect the repo, confirm the SolidStart app deploys to staging.
-2. Capture current Cloudflare DNS records now (cheap insurance for Phase 4).
-3. Finish the SEO & URL preservation gate (plan §1.7): redirect map, canonicals, sitemap/RSS, staging `noindex`.
-4. Walk `PHASE_1_TEST_CHECKLIST.md` against staging.
+## Immediate next steps
+**Close out Phase 1**
+1. Merge #59 (fixes the broken production build and makes staging `noindex`), and redeploy staging with `VITE_SITE_INDEXABLE` **unset**. Confirm with `curl -sI <staging-url> | grep -i x-robots-tag`.
+
+**Phase 2 (plan §Phase 2)**
+1. Provision Scaleway Managed PostgreSQL (dev tier, EU region). Create the **scoped app role** (plan §7.6) and put its `DATABASE_URL` (`sslmode=require`) in Risved.
+2. Add Drizzle and the `platforms` / `categories` / `platform_categories` schema (§2.2).
+3. Write the Notion → Postgres migration, including moving logos to Bunny (§2.3a). Dry-run it against a throwaway database and reconcile (§2.3).
+4. Switch the directory read path to Postgres behind a feature flag. Select only `[public]` columns where `status = 'published'` (§2.4).
 
 ## Open items (from plan §9)
 1. Platform-association rigor (self-serve vs approval).

@@ -168,13 +168,13 @@ export default function Directory() {
             <div class="flex justify-end gap-sm md:gap-md md:w-1/2 h-16 md:h-20 leading-tight">
               <button
                 data-form="builder-application"
-                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs bg-dark text-light hover:bg-darker transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade cursor-pointer"
               >
                 Join the directory
               </button>
               <button
                 data-form="builder-promo"
-                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue cursor-pointer"
+                class="inline-block px-sm md:px-lg py-xs md:py-md bg-light hover:bg-lighter text-dark transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade cursor-pointer"
               >
                 Suggest a platform
               </button>
@@ -221,9 +221,23 @@ export default function Directory() {
             <Show
               when={(data() ?? []).length > 0}
               fallback={
-                <p class="text-lg text-darker py-xl">
-                  No platforms available. This is definitely an error.
-                </p>
+                <div class="py-xl space-y-md">
+                  <p class="text-lg text-darker">
+                    We couldn't load the directory just now — the problem is
+                    on our side, not yours. Try again in a moment, or{" "}
+                    <a href="/get-in-touch/" class="underline">
+                      get in touch
+                    </a>{" "}
+                    if it keeps happening.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    class="px-md py-xs bg-lighter hover:bg-light text-dark rounded-md transition-rebuild"
+                  >
+                    Try again
+                  </button>
+                </div>
               }
             >
               <div

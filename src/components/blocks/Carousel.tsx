@@ -102,7 +102,7 @@ export default function Carousel(props: CarouselProps) {
                       </p>
                       <a
                         href={slide.ctaLink}
-                        class="inline-block px-lg py-sm bg-transparent border-2 border-dark text-dark hover:bg-dark hover:text-light transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue no-underline w-fit"
+                        class="inline-block px-lg py-sm bg-transparent border-2 border-dark text-dark hover:bg-dark hover:text-light transition-all transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade no-underline w-fit"
                       >
                         {slide.ctaText}
                       </a>
@@ -119,7 +119,7 @@ export default function Carousel(props: CarouselProps) {
         <For each={props.slides}>
           {(_, i) => (
             <button
-              class="carousel-dot w-3 h-3 border-0 cursor-pointer transition-all transition-rebuild hover:bg-darker focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+              class="carousel-dot w-3 h-3 border-0 cursor-pointer transition-all transition-rebuild hover:bg-darker focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade"
               classList={{
                 "bg-dark! w-8!": i() === current(),
                 "bg-muted": i() !== current(),
@@ -131,7 +131,7 @@ export default function Carousel(props: CarouselProps) {
           )}
         </For>
         <button
-          class="carousel-pause ml-sm px-sm py-xxs text-xs text-darker bg-transparent border-0 cursor-pointer transition-all transition-rebuild hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+          class="carousel-pause ml-sm px-sm py-xxs text-xs text-darker bg-transparent border-0 cursor-pointer transition-all transition-rebuild hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade"
           onClick={togglePlay}
         >
           {playing() ? "Stop carousel" : "Start carousel"}

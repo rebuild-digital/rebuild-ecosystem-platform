@@ -1,0 +1,9 @@
+# Gitignored files Claude Code copies into new worktrees (.gitignore syntax).
+# Only files that match here AND are gitignored are copied.
+# https://code.claude.com/docs/en/worktrees
+
+# Local secrets so the app runs (Notion, DB, etc.) — never committed.
+.env
+
+# Preview/dev-server config for the Claude desktop app.
+.claude/launch.json

@@ -2,14 +2,14 @@ import { createSignal, createEffect, onMount, onCleanup, For, Show } from "solid
 import { useLocation } from "@solidjs/router";
 import site from "~/data/site";
 
-export default function Header() {
+export default function Header(props: { solid?: boolean }) {
   const [mobileOpen, setMobileOpen] = createSignal(false);
   const [scrolledPastHero, setScrolledPastHero] = createSignal(false);
   const [kbOpenDropdown, setKbOpenDropdown] = createSignal<number | null>(null);
   const location = useLocation();
 
   const isHome = () => location.pathname === "/";
-  const isTransparent = () => isHome() && !scrolledPastHero();
+  const isTransparent = () => isHome() && !scrolledPastHero() && !props.solid;
 
   onMount(() => {
     const header = document.querySelector("header") as HTMLElement | null;
@@ -64,8 +64,15 @@ export default function Header() {
             <div class="w-auto self-center">
               <a href="/">
                 <img
-                  class="h-6 w-auto"
+                  class="logo-dark h-6 w-auto"
                   src={site.logo}
+                  alt="Rebuild logo."
+                  width="120"
+                  height="24"
+                />
+                <img
+                  class="logo-white h-6 w-auto"
+                  src={site.logoWhite}
                   alt="Rebuild logo."
                   width="120"
                   height="24"

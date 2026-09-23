@@ -241,6 +241,43 @@
   transition-timing-function: var(--ease-rebuild);
 }
 
+/* ===========================================
+   PAGE TRANSITIONS
+   Driven by src/lib/pageTransition.ts. The page fades out to the background
+   color on leave (.pt-leave) and fades in from it on enter (.pt-enter).
+   With .pt-hold the header stays put and only the content fades.
+   =========================================== */
+html {
+  background-color: var(--color-white);
+}
+
+body,
+#app > main,
+#app > footer {
+  transition: opacity 220ms var(--ease-rebuild);
+}
+
+html.pt-leave:not(.pt-hold) body,
+html.pt-enter:not(.pt-hold) body,
+html.pt-hold.pt-leave #app > main,
+html.pt-hold.pt-leave #app > footer,
+html.pt-hold.pt-enter #app > main,
+html.pt-hold.pt-enter #app > footer {
+  opacity: 0;
+}
+
+html.pt-leave body {
+  pointer-events: none;
+}
+
+img[data-pt-img] {
+  transition: opacity 220ms var(--ease-rebuild);
+}
+
+img[data-pt-img="hidden"] {
+  opacity: 0;
+}
+
 /* Base Layer - Global styles and resets */
 @layer base {
   /* Skip Navigation Link */
@@ -261,7 +298,7 @@
   .skip-link:focus,
   .skip-link:focus-visible {
     transform: translateY(0);
-    outline: 2px solid var(--color-blue);
+    outline: 2px solid var(--color-blue-shade);
     outline-offset: 2px;
   }
 
@@ -318,7 +355,7 @@
   }
 
   a:focus-visible {
-    @apply outline-2 outline-blue outline-offset-2;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   /* Images */
@@ -333,7 +370,7 @@
   }
 
   button:focus-visible {
-    @apply outline-2 outline-blue outline-offset-2;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   button:disabled {
@@ -356,8 +393,7 @@
   }
 
   input[type="checkbox"]:focus-visible {
-    outline: 1px solid var(--color-dark);
-    outline-offset: 2px;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   input[type="checkbox"]:checked::after {
@@ -368,7 +404,6 @@
     transform: translate(-50%, -50%);
     color: var(--color-dark);
     font-size: 18px;
-    font-weight: bold;
     line-height: 1;
   }
 
@@ -799,8 +834,23 @@
     @apply text-dark;
   }
 
-  header.transparent img:not(#mobile-menu img) {
-    filter: brightness(0) invert(1);
+  /* Logo: only the dark and white variants exist (see DESIGN.md → Logo Usage) */
+  header .logo-white {
+    display: none;
+  }
+
+  header.transparent .logo-white {
+    display: block;
+  }
+
+  header.transparent .logo-dark {
+    display: none;
+  }
+
+  /* Focus ring on the dark hero: blue-shade is too close to dark, so use blue */
+  header.transparent a:not(#mobile-menu a):not([role="menu"] a):focus-visible,
+  header.transparent button:not(#mobile-menu button):focus-visible {
+    @apply outline-blue;
   }
 
   header.transparent .beta-banner {
@@ -882,10 +932,43 @@
     }
   }
 
+  /* Loader: three dots light up in turn, one step each (see DESIGN.md → Loading states) */
+  .loader-dot {
+    width: 0.375em;
+    height: 0.375em;
+    border-radius: 9999px;
+    background-color: currentColor;
+    opacity: 0.25;
+    animation: loader-step 900ms steps(1, end) infinite;
+  }
+
+  .loader-dot:nth-child(2) {
+    animation-delay: -600ms;
+  }
+
+  .loader-dot:nth-child(3) {
+    animation-delay: -300ms;
+  }
+
+  @keyframes loader-step {
+    0% {
+      opacity: 1;
+    }
+    33.333%,
+    100% {
+      opacity: 0.25;
+    }
+  }
+
   /* Accessibility: disable marquee and pulse animations for reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     .marquee-content {
       animation: none;
+    }
+
+    .loader-dot {
+      animation: none;
+      opacity: 1;
     }
 
     .beta-pulse {

@@ -25,7 +25,7 @@ const primaryColorMap: Record<ButtonColor, string> = {
 const secondaryClass = "bg-lighter text-dark hover:not-disabled:bg-light";
 
 const baseClass =
-  "inline-flex items-center justify-center text-center leading-none no-underline border-0 cursor-pointer transition-colors transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue disabled:opacity-50 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center text-center leading-none no-underline border-0 cursor-pointer transition-colors transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade disabled:opacity-50 disabled:cursor-not-allowed";
 
 export function buttonClass(opts: {
   variant?: ButtonVariant;

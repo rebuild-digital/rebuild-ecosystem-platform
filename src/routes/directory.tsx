@@ -5,6 +5,7 @@ import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
 import Chip, { type ChipColor } from "~/components/Chip";
 import { buttonClass } from "~/lib/buttonClass";
+import { guardServer } from "~/lib/guardServer";
 
 // One hue per category, shared by the filter chips and the card badges.
 const CATEGORY_COLORS: Record<string, ChipColor> = {
@@ -51,15 +52,17 @@ function getCategoryColor(cat: string): ChipColor {
 
 const getDirectoryData = cache(async () => {
   "use server";
-  const builders = await getBuilders();
-  return builders.map((b) => ({
-    id: b.id,
-    name: b.name,
-    link: b.link,
-    category: b.category,
-    description: b.description,
-    country: b.country,
-  }));
+  return guardServer("directory-data", async () => {
+    const builders = await getBuilders();
+    return builders.map((b) => ({
+      id: b.id,
+      name: b.name,
+      link: b.link,
+      category: b.category,
+      description: b.description,
+      country: b.country,
+    }));
+  });
 }, "directory-data");
 
 export const route = {
@@ -217,9 +220,23 @@ export default function Directory() {
             <Show
               when={(data() ?? []).length > 0}
               fallback={
-                <p class="text-lg text-darker py-xl">
-                  No platforms available. This is definitely an error.
-                </p>
+                <div class="py-xl space-y-md">
+                  <p class="text-lg text-darker">
+                    We couldn't load the directory just now — the problem is
+                    on our side, not yours. Try again in a moment, or{" "}
+                    <a href="/get-in-touch/" class="underline">
+                      get in touch
+                    </a>{" "}
+                    if it keeps happening.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => window.location.reload()}
+                    class="px-md py-xs bg-lighter hover:bg-light text-dark rounded-md transition-rebuild"
+                  >
+                    Try again
+                  </button>
+                </div>
               }
             >
               <div

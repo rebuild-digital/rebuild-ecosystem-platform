@@ -4,10 +4,13 @@ import { Suspense } from "solid-js";
 import { getEspeaData } from "~/data/espea";
 import SignalField from "~/components/SignalField";
 import AnimateNumber from "~/components/AnimateNumber";
+import { guardServer } from "~/lib/guardServer";
 
 const getDataPageData = cache(async () => {
   "use server";
-  return await getEspeaData();
+  return guardServer("espea-data", async () => {
+    return await getEspeaData();
+  });
 }, "espea-data");
 
 export const route = {
@@ -33,7 +36,7 @@ export default function Data() {
       <Meta property="og:description" content="Key numbers on the European social platform economy — revenue, market concentration, and economic outflows." />
       <Meta
         property="og:image"
-        content="/assets/images/thumbnail_platformeconomy.webp"
+        content="/assets/images/thumbnail_platformeconomy-2400.webp"
       />
 
       <Suspense>

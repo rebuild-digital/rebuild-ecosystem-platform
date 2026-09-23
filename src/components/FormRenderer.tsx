@@ -2,13 +2,21 @@ import { createSignal, createEffect, createMemo, For, Show, on } from "solid-js"
 import type { FormConfig, FormField } from "~/lib/formConfig";
 import { submitForm } from "~/lib/formSubmit";
 import { buttonClass } from "~/lib/buttonClass";
+import Loader from "~/components/Loader";
 
-const inputClass =
-  "w-full px-sm py-xs border-2 border-lighter bg-white text-dark text-base focus:border-dark focus:outline-none transition-rebuild";
-const inputFilledClass = "border-darker";
-const labelClass = "block text-sm text-darker mb-[4px]";
-const helpClass = "text-xs text-dark/60 mt-[3px]";
-const errorClass = "text-sm text-red mt-[2px]";
+// Border is 2px in every state; only the color changes (see DESIGN.md → Form Input Styles).
+const inputBaseClass =
+  "w-full px-sm py-xs border-2 bg-white text-dark text-base transition-rebuild focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade";
+const labelClass = "block text-sm text-darker mb-xxs";
+const helpClass = "text-xs text-darker mt-xxs";
+const errorClass = "text-sm text-red mt-xxs";
+
+// Empty → muted, filled → darker, active (focus) → dark, error → red (wins over focus).
+function inputClass(value: string | boolean, error?: string) {
+  if (error) return `${inputBaseClass} border-red`;
+  const filled = String(value ?? "").trim() !== "";
+  return `${inputBaseClass} ${filled ? "border-darker" : "border-muted"} focus:border-dark`;
+}
 
 function validateEmail(v: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
@@ -182,7 +190,11 @@ export default function FormRenderer(props: {
             aria-describedby={requiredFilled() ? undefined : "form-required-hint"}
             class={buttonClass({ size: "lg", class: "w-full" })}
           >
-            {submitting() ? "Submitting…" : "Submit"}
+            <Show when={submitting()} fallback="Submit">
+              <span class="inline-flex items-center gap-xs">
+                Submitting <Loader decorative />
+              </span>
+            </Show>
           </button>
           <Show when={!requiredFilled()}>
             <p id="form-required-hint" class={helpClass}>
@@ -247,11 +259,8 @@ function FieldInput(props: {
             onInput={(e) => props.onInput(e.currentTarget.value)}
             placeholder={f().placeholder}
             rows={3}
-            class={`${inputClass} resize-y`}
-            classList={{
-              "border-red!": !!props.error,
-              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
-            }}
+            class={`${inputClass(props.value, props.error)} resize-y`}
+            aria-invalid={props.error ? "true" : undefined}
           />
         </Show>
 
@@ -261,11 +270,8 @@ function FieldInput(props: {
             name={f().name}
             value={String(props.value ?? "")}
             onChange={(e) => props.onInput(e.currentTarget.value)}
-            class={inputClass}
-            classList={{
-              "border-red!": !!props.error,
-              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
-            }}
+            class={inputClass(props.value, props.error)}
+            aria-invalid={props.error ? "true" : undefined}
           >
             <For each={f().options}>
               {(opt) => <option value={opt.value}>{opt.label}</option>}
@@ -287,11 +293,8 @@ function FieldInput(props: {
             value={String(props.value ?? "")}
             onInput={(e) => props.onInput(e.currentTarget.value)}
             placeholder={f().placeholder}
-            class={inputClass}
-            classList={{
-              "border-red!": !!props.error,
-              [inputFilledClass]: !props.error && !!props.value && String(props.value).trim() !== "",
-            }}
+            class={inputClass(props.value, props.error)}
+            aria-invalid={props.error ? "true" : undefined}
           />
         </Show>
 

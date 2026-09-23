@@ -8,7 +8,7 @@ The Rebuild platform: a directory of European social platforms plus, increasingl
 ## Stack (do not substitute without a decision record)
 - **Framework:** SolidStart (SolidJS), **server preset (Nitro/node-server)** — never the static preset (auth needs a runtime).
 - **Hosting:** Hetzner via Risved (git-push deploys).
-- **DB:** Scaleway Managed PostgreSQL, accessed via **Drizzle** (typed schema + migrations).
+- **DB:** Postgres via Risved's managed add-on (private network, same server), accessed via **Drizzle** (typed schema + migrations). See `docs/decisions/0005-risved-postgres.md`.
 - **Auth:** Better Auth, **magic-link**, **invite-only** (no public signup).
 - **Email:** Scaleway TEM. **DNS:** Bunny. **CDN/media:** Bunny Storage. **CMS (later):** Decap.
 
@@ -20,7 +20,7 @@ The Rebuild platform: a directory of European social platforms plus, increasingl
 ## Hard rules
 1. **Public vs internal columns.** Tables carry `[public]` and `[internal]` fields. Server load functions and APIs return **only the fields the page needs** — never whole rows. The public directory returns public columns only; **never** expose contact PII, `status`, `priority`, `notes`, or any `[internal]` field to the client.
 2. **PII discipline.** Never log emails, tokens, or magic-link URLs (log user *ids*). No PII in analytics event props. See plan §7.
-3. **TLS to DB** (`sslmode=require`). App connects with the **scoped app role**, not the master DB user.
+3. **DB access.** App connects with the **scoped app role** where one exists, never a superuser. TLS (`sslmode=require`) whenever the connection leaves the host's private network. Risved's private Docker network is the only exception.
 4. **Block components live in code** (`src/components/blocks/` + `registry.ts`); the CMS only references them. Pages are ordered arrays of typed blocks rendered via `<Dynamic>`.
 5. **Media:** store files in Bunny Storage, store only URLs in Postgres. Never persist expiring third-party (e.g. Notion) file URLs.
 6. **Additive & reversible.** New tables, feature flags, staging first. Don't do destructive changes without a rollback path.

@@ -1887,10 +1887,15 @@ reference):
   `border-2 border-dark`.
 
 **Insight post card**
-(`InsightsPreview.tsx`):
+(`InsightsPreview.tsx`,
+`routes/insights/index.tsx`):
 
-- `<Card as="a" variant="plain">`: image
-  and title only, with no surface.
+- `<Card variant="plain">`: image and
+  title only, with no surface. The home
+  preview makes the whole card a link
+  (`as="a"`); the listing uses
+  `as="article"` with a linked image and
+  title.
 - `<CardMedia>` (video), with the title
   below it.
 

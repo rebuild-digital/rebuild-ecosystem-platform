@@ -1,4 +1,4 @@
-# Typecheck and unit tests on every PR and on pushes to main.
+# Typecheck, unit tests and a schema/migration drift check on every PR and on pushes to main.
 name: Checks
 
 on:
@@ -21,3 +21,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+      # The committed migrations must match src/server/db/schema.ts.
+      - name: Migrations match the schema
+        run: |
+          npm run db:generate
+          test -z "$(git status --porcelain -- drizzle)" || { git status --short -- drizzle; echo "Schema changed without a migration: run npm run db:generate and commit drizzle/"; exit 1; }

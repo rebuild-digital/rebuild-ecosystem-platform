@@ -1,0 +1,28 @@
+# When a PR merges, every bullet under a "Follow-ups" / "Not in this PR" /
+# "Saved for later" heading that isn't already linked to an issue (#123)
+# becomes an issue — unless an open issue with a matching title exists.
+# See AGENTS.md → Workflow.
+name: Follow-up issues
+
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  follow-ups:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: .github/scripts
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const { run } = require("./.github/scripts/follow-ups.cjs");
+            await run({ github, context, core });

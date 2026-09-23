@@ -53,7 +53,7 @@ These three rules are repeated in `CLAUDE.md` and `DESIGN.md` on purpose. They a
 ## Workflow
 - Work **one phase at a time** (see the plan's phases). A phase's **Verification list is its acceptance criteria** — not done until all pass in staging.
 - Small, single-purpose PRs. Don't start the next phase until the current one is verified.
-- Before Phase 4 ships, the **Security/PII checklist (§7)** must be satisfied — it's a hard gate.
+- Before Phase 3 ships, the **Security/PII checklist (§7)** must be satisfied — it's a hard gate.
 - Record significant choices in `docs/decisions/` (one short ADR each).
 - **Every follow-up gets an issue.** List work a PR leaves undone under a `## Follow-ups` heading (or "Not in this PR" / "Saved for later"). Before opening the PR, check each item against open issues (`gh issue list --search "<keywords>"`). If one exists, link it; if not, create it with enough context to act on without the PR (what, where in the code, which DESIGN.md or plan section, acceptance), labelled `follow-up`. Then end each bullet with its issue number, e.g. "Skeleton fallbacks (#47)". When a PR merges, `.github/workflows/follow-up-issues.yml` creates a bare issue for any bullet still without a `#number` and comments the links on the PR. That's a safety net, not a substitute: its issues only quote the bullet.
 

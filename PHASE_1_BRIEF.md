@@ -6,12 +6,12 @@ Standalone brief for executing Phase 1. Pairs with `REBUILD_PLATFORM_TRANSITION_
 Rebuild the current rebuild.net exactly as it behaves today — in server-rendered SolidStart, deployed to a Risved **staging** subdomain. **No new features.** Still reads Notion + the JSON data files; forms still hit the existing Bunny Edge / MailerLite / Notion backends. The live Eleventy site stays untouched and in production the whole time.
 
 ## Guardrails (what Phase 1 does NOT do)
-- ❌ No DNS change (that's Phase 2). ❌ No Postgres/database (Phase 3). ❌ No auth (Phase 4). ❌ No CMS (Phase 5).
+- ❌ No Postgres/database (that's Phase 2). ❌ No auth (Phase 3). ❌ No DNS change (Phase 4). ❌ No CMS (Phase 5).
 - ✅ Server preset, staging only, feature parity, reversible at any moment.
 
 ## What changed vs. the old `SOLIDSTART_MIGRATION_PLAN.md` (important — don't follow the old doc blindly)
 The old 8-phase doc is superseded on three points. If you or Claude Code reference it, override these:
-1. **Server preset, not static.** Old doc used `preset: "static"` + prerender. Use **`preset: "node-server"`** — auth in Phase 4 needs a live runtime, and we're not deploying to Vercel.
+1. **Server preset, not static.** Old doc used `preset: "static"` + prerender. Use **`preset: "node-server"`** — auth in Phase 3 needs a live runtime, and we're not deploying to Vercel.
 2. **Deploy to Risved/Hetzner, not Vercel.** Everywhere the old doc says Vercel, it's now Risved on a Hetzner box.
 3. **Build the block registry during the rebuild.** New requirement (reorderable components). Convert repeating page sections into registered blocks (see plan §4).
 Everything else about Phase 1 (Notion still the directory source, forms unchanged) is as the old doc describes.
@@ -24,7 +24,7 @@ Everything else about Phase 1 (Notion still the directory source, forms unchange
 → *Verify:* the hello-world is reachable at a Risved URL over HTTPS.
 
 **0b. Capture current DNS now.** In Cloudflare, export/screenshot every record for rebuild.net — A/AAAA, CNAME, **MX, SPF, DKIM, DMARC**, TXT — and note the current Cloudflare nameservers. Save as `compliance/dns-current.md` (or similar).
-→ *Verify:* you have a complete record list and the nameservers written down. (This is Phase 2 insurance, captured cheaply now.)
+→ *Verify:* you have a complete record list and the nameservers written down. (This is Phase 4 insurance, captured cheaply now.)
 
 **0c. Inventory the current site.** List every page/route, every component, every client script, every data file, and every form. Confirm against the live site (the docs may have drifted). Note specifically:
 - Exact page list + their URLs (for the redirect map).
@@ -72,7 +72,7 @@ Wire the five forms (`newsletter`, `builder-promo`, `builder-application`, `gath
 ## Step 8 — SEO & URL preservation gate (plan §1.7)
 - Build the **redirect map** from the Step 0c inventory; 301 anything whose URL changed.
 - Canonical tags correct; `sitemap.xml` + RSS generate (at the confirmed path); meta/OG tags on every page.
-- **Staging is `noindex`** (flip to indexable only at Phase 2 cutover).
+- **Staging is `noindex`** (flip to indexable only at Phase 4 cutover).
 → *Verify:* redirect map complete and tested; canonicals correct; sitemap/RSS validate; staging returns `noindex`.
 
 ## Step 9 — Deploy to Risved staging & parallel-run

@@ -13,7 +13,7 @@ Three intertwined workstreams, sequenced so each changes **one variable at a tim
 
 1. **Framework:** Eleventy (Nunjucks + vanilla JS) → **SolidStart** (SolidJS, server-rendered).
 2. **European service migration:** hosting → **Hetzner via Risved**; DNS → **Bunny** (registration stays at GoDaddy); the directory data source → off **Notion** into **Postgres**.
-3. **User accounts feature:** invite-only accounts for **ecosystem participants** (group one), with profile editing, platform association, and event registration — live in advance of Rebuild 2.
+3. **User accounts feature:** invite-only accounts for **ecosystem participants** (group one), with profile editing, platform association, and event registration.
 
 Plus a fourth, deliberately deferred: an editorial **CMS (Decap)** for insights/pages, and a **block-based component architecture** built during the rebuild so pages can be composed from reusable, reorderable components.
 
@@ -103,16 +103,16 @@ src/components/blocks/
 | --- | --- | --- | --- |
 | 0 | Decisions + this doc | — | — |
 | 1 | SolidStart rebuild on Risved/Hetzner, **feature-parity**, still reading Notion + markdown | Framework + host | Eleventy site still live; SolidStart on staging subdomain only |
-| 2 | **DNS cutover** to Bunny + point domain at Risved | DNS only | Revert nameservers to Cloudflare |
-| 3 | Postgres + migrate directory off Notion | Directory data source | Keep Notion read path behind a flag until verified |
-| 4 | **Auth feature** (Better Auth, magic link, profiles, platform association, event registration) | New stateful feature | Feature-flag/gate; DB is additive |
+| 2 | Postgres + migrate directory off Notion | Directory data source | Keep Notion read path behind a flag until verified |
+| 3 | **Auth feature** (Better Auth, magic link, profiles, platform association, event registration) | New stateful feature | Feature-flag/gate; DB is additive |
+| 4 | **DNS cutover** to Bunny + point domain at Risved | DNS only | Revert nameservers to Cloudflare |
 | 5 | Decap CMS for editorial content | Editorial editing layer | Content already in git; CMS is additive |
 
 Sequencing rationale:
-- **DNS before auth (not last):** Better Auth cookies, magic-link URLs, and callbacks are domain-bound. Building auth on the real production domain configures that once; building on staging then moving reconfigures all of it.
-- **Infra before accounts:** provisioning real user PII on infra you're about to migrate is painful. Land the EU host + DB before accounts exist.
 - **Directory to Postgres before auth:** users will edit platform profiles, so the directory must already be app-data in Postgres when auth arrives.
-- **Critical path to Rebuild 2:** Phases 1 → 3 → 4. DNS (2) and CMS (5) are comparatively independent; do not let the CMS block the auth deadline.
+- **Auth before DNS:** build and fully test auth on staging; then cut DNS over and update `BETTER_AUTH_URL` to the production domain. No real users exist before the cutover, so there are no sessions to migrate — just one env var to update and redeploy.
+- **DNS is isolated and last of the infra changes.** Highest blast radius (breaks site *and* email if wrong), so it's done alone, after everything else is proven on staging.
+- **CMS is independent.** It can run parallel to or after any other phase.
 
 ---
 
@@ -137,7 +137,7 @@ Sequencing rationale:
 - Conversion patterns: `{% if %}` → `<Show>`, `{% for %}` → `<For>`, `{{ var }}` → `{var()}`, class-based state → `createSignal`/`createMemo`, lifecycle → `onMount`/`onCleanup`.
 
 ### 1.3 Data layer (unchanged sources this phase)
-- `builders.js` (Notion) → `src/data/builders.ts`, keep build-time/server fetch + cache fallback. **Do not migrate off Notion yet** — that's Phase 3.
+- `builders.js` (Notion) → `src/data/builders.ts`, keep build-time/server fetch + cache fallback. **Do not migrate off Notion yet** — that's Phase 2.
 - `site.js` → typed `src/data/site.ts`.
 - Insights markdown → MDX collection utility.
 
@@ -157,8 +157,8 @@ Before this phase can be marked done, all of the following must hold:
 - **URL parity:** every existing URL either resolves to the same content or **301-redirects** to its new location. Produce an explicit **redirect map** from the old Eleventy routes; add redirects in SolidStart (or Risved/Nitro route rules) for anything that changed.
 - **Canonical tags** on every page point to the correct absolute URL.
 - **`sitemap.xml` and `rss.xml`** generate and match (or supersede) the old ones; **meta + Open Graph/social tags** present and correct on every page.
-- **No accidental `noindex`:** confirm staging is `noindex` (so Google doesn't index the staging subdomain) and production is indexable — this flips at Phase 2.
-- **Post-cutover (after Phase 2):** submit the new sitemap in Google Search Console + Bing Webmaster Tools; watch Coverage/crawl errors for two weeks.
+- **No accidental `noindex`:** confirm staging is `noindex` (so Google doesn't index the staging subdomain) and production is indexable — this flips at Phase 4.
+- **Post-cutover (after Phase 4):** submit the new sitemap in Google Search Console + Bing Webmaster Tools; watch Coverage/crawl errors for two weeks.
 
 ### Verification
 - Every page renders at parity; directory filters 100+ builders; insights sort/filter; carousel autoplay + keyboard nav; mobile menu; forms submit; RSS + sitemap generate; meta/social tags present; Lighthouse ≥ 90; **redirect map complete and tested; canonicals correct; staging is `noindex`.**
@@ -168,50 +168,15 @@ Before this phase can be marked done, all of the following must hold:
 
 ---
 
-## Phase 2 — DNS cutover to Bunny + point domain at Risved
-
-**Goal:** move nameservers Cloudflare → Bunny and point the domain at the Risved-hosted SolidStart site. Isolated, highest-blast-radius change. Registration stays at GoDaddy.
-
-### 2.1 Pre-cutover (do NOT skip — email must not break)
-- **Export every current DNS record from Cloudflare**: A/AAAA, CNAME, MX, TXT, and specifically **SPF, DKIM, DMARC** (email auth) and any verification TXT records. Save this as a checklist artifact.
-- Lower TTLs on the affected records 24–48h in advance to speed propagation/rollback.
-- Confirm the Risved app's target A/AAAA (or CNAME) for `rebuild.net` and `www`.
-
-### 2.2 Cutover
-- Create the zone in **Bunny DNS**; replicate **all** records exactly, with the apex A/AAAA pointing at the Risved app.
-- Double-check MX + SPF + DKIM + DMARC are identical to Cloudflare's — email deliverability depends on these.
-- At **GoDaddy**, change nameservers from Cloudflare to Bunny's.
-- Watch propagation.
-
-### 2.3 Verify
-- Site resolves and serves the SolidStart app over HTTPS (Risved auto-TLS) at `rebuild.net` and `www`.
-- **Send + receive test emails**; validate SPF/DKIM/DMARC alignment (e.g. via a mail-tester tool).
-- Analytics still recording; no console errors.
-
-### Rollback — step by step (you do NOT need to be confident in advance; follow this exactly)
-
-Do this the moment the site or email misbehaves after cutover. It reverses the one change you made (nameservers).
-
-1. **Log in to GoDaddy** → your domain → **Nameservers / DNS management**.
-2. Change the nameservers **back to the Cloudflare ones you recorded before cutover** (in Phase 2.1 you saved them — they look like `xxx.ns.cloudflare.com`). Save.
-3. **Do not delete the Cloudflare zone.** It's still there with all your records intact, which is why this rollback works instantly.
-4. Wait for propagation. Because you **pre-lowered TTLs** in Phase 2.1, this is usually minutes, not hours. Check progress at a DNS-propagation checker (e.g. search "dnschecker" and enter `rebuild.net`) — you're waiting for the nameservers to show the Cloudflare ones again.
-5. **Verify recovery:** load `https://rebuild.net` (should serve normally again) and **send yourself a test email** to confirm mail flow is back.
-6. Only after you've confirmed the Cloudflare path is healthy, investigate what went wrong on the Bunny side before re-attempting. Keep the Cloudflare zone live for at least a week after a *successful* cutover before considering it retired.
-
-**Why this is safe:** the cutover changed exactly one thing (which nameservers GoDaddy points to). Rolling back changes only that one thing back. Nothing was deleted, so there's nothing to rebuild.
-
----
-
-## Phase 3 — Postgres + migrate the directory off Notion
+## Phase 2 — Postgres + migrate the directory off Notion
 
 **Goal:** stand up Scaleway Managed PostgreSQL, model the directory + taxonomy in Drizzle, migrate the Notion directory data into it, and switch the site's directory read path to Postgres. Rendering is unchanged; only the source moves.
 
-### 3.1 Provision
+### 2.1 Provision
 - Create a **Scaleway Managed PostgreSQL** instance (dev tier to start; EU region). Capture `DATABASE_URL` into Risved env (encrypted).
 - Add **Drizzle** (`drizzle-orm`, `drizzle-kit`, `postgres`/`pg`).
 
-### 3.2 Schema (Plane B — directory + taxonomy)
+### 2.2 Schema (Plane B — directory + taxonomy)
 
 Mapped from the actual Notion "Platforms" database. Each Notion property is tagged **[public]** (renders on the site) or **[internal]** (curation/admin only, never public).
 
@@ -224,7 +189,7 @@ platforms: {
   description,                   // [public]   Notion "DESCRIPTION" (rich text)
   website,                       // [public]   Notion "WEBSITE" (URL)
   country,                       // [public]   Notion "COUNTRY" (single select)
-  logoUrl,                       // [public]   Notion "LOGO" (file) — see 3.3 migration note
+  logoUrl,                       // [public]   Notion "LOGO" (file) — see 2.3a media note
   // --- internal / curation only ---
   status,                        // [internal] publication state (from "PUBLISHED" checkbox) — see below
   priority,                      // [internal] curation triage (Notion "PRIORITY" select) — see below
@@ -251,7 +216,7 @@ platform_categories: { platformId → platforms.id,
 
 This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a Directus saved-view filter (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
 
-### 3.3 Migrate data (dry-run first, then reconcile)
+### 2.3 Migrate data (dry-run first, then reconcile)
 - **Dry run against a copy, never straight to production.** Run the migration into a throwaway/staging database first. The script reads the Notion Platforms DB via the existing token, transforms to the schema above, and inserts. Preserve slugs so existing URLs don't break.
 - **Reconcile before trusting it** — a short checklist the script (or you) verifies after the dry run:
   - Row count in `platforms` == number of Notion records.
@@ -262,24 +227,24 @@ This keeps the model faithful and lossless. Note that `discarded` platforms are 
 - Only after reconciliation passes, run it against production Postgres.
 - Keep the Notion read path behind a **feature flag** so you can flip back instantly if the Postgres path misbehaves.
 
-### 3.3a Media / images — the general strategy (applies beyond logos)
+### 2.3a Media / images — the general strategy (applies beyond logos)
 Notion (and any external CMS) hand out **temporary, expiring file URLs**, so you never store those URLs. The rule for all binary media in this project:
 1. **Store the file in Bunny Storage; store only the URL in Postgres.** During migration the script downloads each Notion file (logos here) and re-uploads to Bunny, then writes the stable Bunny CDN URL into `logoUrl`.
 2. **Serve + optimize via Bunny** (Bunny Optimizer handles resizing/format) rather than shipping originals.
-3. **Going forward**, user-uploaded images (profile avatars in Phase 4, block images in Phase 5) follow the same path: upload to Bunny Storage → store the URL. The database never holds binaries, only URLs.
+3. **Going forward**, user-uploaded images (profile avatars in Phase 3, block images in Phase 5) follow the same path: upload to Bunny Storage → store the URL. The database never holds binaries, only URLs.
 This keeps Postgres small, media on the CDN, and nothing dependent on a third party's expiring links.
 
-### 3.4 Switch read path
+### 2.4 Switch read path
 - Point `directory.tsx` (and any preview sections) at Postgres via Drizzle instead of the Notion fetch.
 - The public query selects **only the [public] columns** where `status = 'published'` — never contact PII, priority, notes, or status. Verify filter/sort parity against the live site.
 
-### 3.5 Curation experience (replacing the Notion admin)
+### 2.5 Curation experience (replacing the Notion admin)
 
 Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (views, the Published checkbox, the backlog). This is the plan for the second job.
 
-- **Now, solo (Phase 3):** use **local Drizzle Studio** (`drizzle-kit studio`). Zero setup, free, correct while you're the only editor and before any user PII exists.
-- **Graduate to Directus at Phase 4** — triggered by either **team members needing curation access** or **auth introducing user PII**, whichever comes first. Rationale: Drizzle Studio (and Drizzle Gateway) grant **blanket, all-tables** database access with no per-user roles; once teammates are involved and/or `users` holds PII, that's inappropriate — and note the platforms table *already* holds contact PII from day one. **Directus** solves this: point it at the same Postgres (it introspects the tables and adds only its own system tables, without modifying your schema), then use **role + field-level permissions** to scope curators to the platforms/categories collections and hide the PII/internal columns. It also restores the Notion-like experience: saved filtered **views** (backlog / in-review / published), a **status** control, and layouts (table/kanban/gallery).
-  - **Data-model note for the status workflow:** the `status` enum + saved filters in Directus *are* your Notion "views." No extra modelling needed beyond §3.2.
+- **Now, solo (Phase 2):** use **local Drizzle Studio** (`drizzle-kit studio`). Zero setup, free, correct while you're the only editor and before any user PII exists.
+- **Graduate to Directus at Phase 3** — triggered by either **team members needing curation access** or **auth introducing user PII**, whichever comes first. Rationale: Drizzle Studio (and Drizzle Gateway) grant **blanket, all-tables** database access with no per-user roles; once teammates are involved and/or `users` holds PII, that's inappropriate — and note the platforms table *already* holds contact PII from day one. **Directus** solves this: point it at the same Postgres (it introspects the tables and adds only its own system tables, without modifying your schema), then use **role + field-level permissions** to scope curators to the platforms/categories collections and hide the PII/internal columns. It also restores the Notion-like experience: saved filtered **views** (backlog / in-review / published), a **status** control, and layouts (table/kanban/gallery).
+  - **Data-model note for the status workflow:** the `status` enum + saved filters in Directus *are* your Notion "views." No extra modelling needed beyond §2.2.
 - **Destination (post-launch):** an optional **custom SolidStart `/admin`** (gated by a Better Auth admin role) keeps everything in one MIT codebase for the open-source blueprint. Build it when the crunch eases; Directus bridges until then.
 - License/sovereignty notes: Directus is **BSL 1.1** (source-available, free under €/$5M finances) — fine for Rebuild, but not OSI-open-source, so flag it in the blueprint. Self-host on Hetzner so data stays EU regardless of vendor incorporation. Drizzle Studio is not open-source either; Drizzle Gateway is a small paid, alpha tool — hence Directus is the better team destination.
 
@@ -291,25 +256,25 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
 
 ---
 
-## Phase 4 — Auth feature (Better Auth, invite-only, magic link)
+## Phase 3 — Auth feature (Better Auth, invite-only, magic link)
 
 **Goal:** ecosystem participants (group one) can be invited, log in via magic link, edit a bio/profile, associate with a platform, and register for events. No public sign-up page. Built on the now-stable, EU-hosted, Postgres-backed SolidStart app.
 
-### 4.0 Scope guardrails
+### 3.0 Scope guardrails
 - **Group one only:** ecosystem participants (platform builders, founders, investors, pioneers, media). Group two (general public) is a separate, later feature set — **do not build it now.**
 - **Invite-only enrollment:** there is **no "Create your account" CTA and no public signup page.** Accounts come into existence only via an invite.
-- **Curation-tool graduation trigger:** this phase introduces `users` + PII into the DB. That is the hard cutoff for retiring blanket-DB access (Drizzle Studio/Gateway) for anyone but you and moving team curation to **Directus with scoped roles** (see §3.5). Do not give teammates Drizzle Studio access after this phase.
+- **Curation-tool graduation trigger:** this phase introduces `users` + PII into the DB. That is the hard cutoff for retiring blanket-DB access (Drizzle Studio/Gateway) for anyone but you and moving team curation to **Directus with scoped roles** (see §2.5). Do not give teammates Drizzle Studio access after this phase.
 - **Passwordless:** magic link is the primary (and initial only) method. Passkey upgrade can be added later.
 - **Security & PII gate:** this phase does not ship to production until the **Security, PII & compliance checklist (§7)** has been walked and its items are in place. Auth is the point where real personal data goes live, so §7 is a hard gate here, not a nice-to-have.
 
-### 4.1 Better Auth setup
+### 3.1 Better Auth setup
 - Install Better Auth; configure the **Drizzle adapter** against Scaleway Postgres.
 - Enable the **magic-link** plugin; wire its email sender to **Scaleway TEM** (API or SMTP).
 - Mount the handler in SolidStart: `src/routes/api/auth/[...auth].ts` (per Better Auth's official SolidStart integration).
-- Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (production domain — this is why DNS came first), Scaleway TEM creds in Risved env.
+- Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (staging URL for now — updated to production domain after Phase 4 DNS cutover), Scaleway TEM creds in Risved env.
 - Let Better Auth generate its core tables (user, session, account, verification) in Postgres via its migration/CLI.
 
-### 4.2 Invite-only flow
+### 3.2 Invite-only flow
 - Add an **invites** table (or use Better Auth's organization/invitation plugin if the model fits):
   ```ts
   invites: { id, email, token (unique), invitedBy → user.id,
@@ -319,7 +284,7 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
 - **Gate account creation on a valid invite:** magic-link sign-in is only issued to emails with a valid pending invite (or existing users). No open self-registration path exists.
 - Admin path (minimal for now): a protected route/action to create invites and send the invite email via Scaleway TEM.
 
-### 4.3 App data model additions (Plane B)
+### 3.3 App data model additions (Plane B)
 ```ts
 // profile — the editable bio page (1:1 with user)
 profiles: { userId → user.id (PK), displayName, bio, avatarUrl,
@@ -346,23 +311,60 @@ user_badges: { userId → user.id, badgeId → badges.id,
 - **Association likely needs approval** (a participant claiming a platform), so `user_platforms.status` supports a pending→approved review step. Confirm the desired verification rigor before building the approval UI.
 - **Badges (schema only for now, no automation required).** Badges represent a user's prior activity/history of contribution with the project. The requirement is simply: a **catalog** (`badges`) you populate from a list, and a **`user_badges`** join that supports **bulk assignment** — e.g. "add badge X to every user whose email also appears in dataset Y." To make that matching clean and in-EU, **transfer the external datasets (letter signees, etc.) into this Postgres** and match in-database on normalized (lowercased/trimmed) email. Two light guardrails: (1) `displayOptIn` defaults to **false** so a badge is only shown publicly if the user opts in — a badge should never surface an affiliation the user didn't choose to display; (2) keep badge **labels about contribution** ("Founding platform", "Pioneer") rather than anything that reveals sensitive/political affiliation. Automation can come later; day one is just the schema + a bulk-assign action.
 
-### 4.4 Logged-in features
+### 3.4 Logged-in features
 - **Profile/bio editing:** protected route; user edits `profiles`; renders on a public bio page.
 - **Platform association:** logged-in user requests association with a platform; shows on the platform's directory subpage once approved.
-- **Event registration:** logged-in users register for Rebuild 2; streamlined vs. the anonymous form since identity is known.
+- **Event registration:** logged-in users register for events; streamlined vs. the anonymous form since identity is known.
 - Protect routes via Better Auth session checks in SolidStart server load/actions.
 
 ### Verification
-- Invite → magic-link email (via Scaleway TEM) → sign-in works end to end; no path exists to self-register without an invite; profile edits persist and render; platform association appears after approval; event registration writes correctly; sessions/cookies correct on the production domain; sign-out works.
+- Invite → magic-link email (via Scaleway TEM) → sign-in works end to end; no path exists to self-register without an invite; profile edits persist and render; platform association appears after approval; event registration writes correctly; sessions/cookies correct on the staging domain (production domain verified after Phase 4); sign-out works.
 
 ### Rollback
 - Auth is additive (new tables, new gated routes). Feature-flag the logged-in surfaces; the public site is unaffected if disabled.
 
 ---
 
+## Phase 4 — DNS cutover to Bunny + point domain at Risved
+
+**Goal:** move nameservers Cloudflare → Bunny and point the domain at the Risved-hosted SolidStart site. Isolated, highest-blast-radius change. Registration stays at GoDaddy. After cutover, update `BETTER_AUTH_URL` to the production domain and redeploy.
+
+### 4.1 Pre-cutover (do NOT skip — email must not break)
+- **Export every current DNS record from Cloudflare**: A/AAAA, CNAME, MX, TXT, and specifically **SPF, DKIM, DMARC** (email auth) and any verification TXT records. Save this as a checklist artifact. *(Capture this early, during Phase 1 — see `PHASE_1_BRIEF.md` Step 0b.)*
+- Lower TTLs on the affected records 24–48h in advance to speed propagation/rollback.
+- Confirm the Risved app's target A/AAAA (or CNAME) for `rebuild.net` and `www`.
+
+### 4.2 Cutover
+- Create the zone in **Bunny DNS**; replicate **all** records exactly, with the apex A/AAAA pointing at the Risved app.
+- Double-check MX + SPF + DKIM + DMARC are identical to Cloudflare's — email deliverability depends on these.
+- At **GoDaddy**, change nameservers from Cloudflare to Bunny's.
+- Watch propagation.
+- **Once the domain resolves to Risved:** update `BETTER_AUTH_URL` from the staging URL to `https://www.rebuild.net` in Risved env vars and redeploy. No users exist yet, so no sessions to migrate.
+
+### 4.3 Verify
+- Site resolves and serves the SolidStart app over HTTPS (Risved auto-TLS) at `rebuild.net` and `www`.
+- **Send + receive test emails**; validate SPF/DKIM/DMARC alignment (e.g. via a mail-tester tool).
+- **Auth still works on the production domain** — test a magic-link invite→sign-in flow.
+- Analytics still recording; no console errors.
+
+### Rollback — step by step (you do NOT need to be confident in advance; follow this exactly)
+
+Do this the moment the site or email misbehaves after cutover. It reverses the one change you made (nameservers).
+
+1. **Log in to GoDaddy** → your domain → **Nameservers / DNS management**.
+2. Change the nameservers **back to the Cloudflare ones you recorded before cutover** (in Phase 4.1 you saved them — they look like `xxx.ns.cloudflare.com`). Save.
+3. **Do not delete the Cloudflare zone.** It's still there with all your records intact, which is why this rollback works instantly.
+4. Wait for propagation. Because you **pre-lowered TTLs** in Phase 4.1, this is usually minutes, not hours. Check progress at a DNS-propagation checker (e.g. search "dnschecker" and enter `rebuild.net`) — you're waiting for the nameservers to show the Cloudflare ones again.
+5. **Verify recovery:** load `https://rebuild.net` (should serve normally again) and **send yourself a test email** to confirm mail flow is back.
+6. Revert `BETTER_AUTH_URL` to the staging URL if you changed it. Only after you've confirmed the Cloudflare path is healthy, investigate what went wrong on the Bunny side before re-attempting.
+
+**Why this is safe:** the cutover changed exactly one thing (which nameservers GoDaddy points to). Rolling back changes only that one thing back. Nothing was deleted, so there's nothing to rebuild.
+
+---
+
 ## Phase 5 — Decap CMS for editorial content (deferred)
 
-**Goal:** give the team a git-based editing UI for Plane A (insights + page copy), writing into the block schema. Not Rebuild-2-critical; can run parallel to or after Phase 4.
+**Goal:** give the team a git-based editing UI for Plane A (insights + page copy), writing into the block schema. Can run parallel to or after Phase 3.
 
 ### 5.1 Setup
 - Add Decap's static admin SPA at `/admin` with a config that mirrors the block schema (collections for insights + page singletons; the block list as a typed/variable-type list widget so editors add and reorder blocks).
@@ -386,14 +388,14 @@ Maintain in Risved (encrypted), by phase introduced:
 
 | Var | Phase | Purpose |
 | --- | --- | --- |
-| `NOTION_TOKEN`, `NOTION_BUILDERS_DB_ID` | 1 (retire after 3) | Notion directory during transition |
+| `NOTION_TOKEN`, `NOTION_BUILDERS_DB_ID` | 1 (retire after 2) | Notion directory during transition |
 | Bunny CDN / fonts vars | 1 | Assets |
 | `PIRSCH_*` | 1 | Analytics |
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |
-| `DATABASE_URL` | 3 | Scaleway Postgres — use the **scoped app role**, not the master user (see §7) |
-| `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | 4 | Auth |
-| `SCALEWAY_TEM_*` | 4 | Transactional email (magic links) |
+| `DATABASE_URL` | 2 | Scaleway Postgres — use the **scoped app role**, not the master user (see §7) |
+| `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | 3 (URL updated to prod domain at Phase 4) | Auth |
+| `SCALEWAY_TEM_*` | 3 | Transactional email (magic links) |
 | Decap OAuth client id/secret | 5 | CMS git auth |
 | `UMAMI_*` / analytics vars | later (optional) | Only if/when you self-host Umami |
 
@@ -401,7 +403,7 @@ Maintain in Risved (encrypted), by phase introduced:
 
 ## 7. Security, PII & compliance
 
-Everything here is deliberately **low-key and proportionate** to a small EU project — no enterprise ceremony. Walk this before Phase 4 ships (it's the §4.0 gate).
+Everything here is deliberately **low-key and proportionate** to a small EU project — no enterprise ceremony. Walk this before Phase 3 ships (it's the §3.0 gate).
 
 ### 7.1 What PII we hold, lawful basis, and the privacy notice
 Keep a short table (in the privacy policy and internally). One row per category:
@@ -413,7 +415,7 @@ Keep a short table (in the privacy policy and internally). One row per category:
 | Event registration | `event_registrations` | Consent | We store your registration + what you shared |
 | Badges via dataset matching | `user_badges` | Consent (opt-in to display) | Your email may be matched across Rebuild datasets to award contribution badges |
 
-**Action baked into the plan:** update the **privacy notice** as part of Phase 4, covering accounts, retention, and the cross-dataset badge matching. Keep it plain-language.
+**Action baked into the plan:** update the **privacy notice** as part of Phase 3, covering accounts, retention, and the cross-dataset badge matching. Keep it plain-language.
 
 ### 7.2 Data minimization
 Collect only what a feature needs. Specific call: platform **contact name/email is retained** because you use it to email associated people and confirm their affiliation once they make an account — that's a legitimate purpose. Once affiliation is confirmed (or a platform is user-managed), that contact PII can be minimized/removed. Don't collect fields "just in case."
@@ -484,13 +486,13 @@ Commit the provided **`AGENTS.md`** (canonical conventions: stack, the two data 
 
 ### 8.3 Testing strategy (proportionate — not 100% coverage theatre)
 - **Unit tests** for pure logic: slug generation, date/format utilities, the block registry, the Notion→Postgres transform functions.
-- **Integration tests** for the risky server paths, especially Phase 4: invite → magic-link issuance → sign-in → session; profile save; platform-association approval; the "public query returns no `[internal]` columns" guarantee (assert PII never appears in the response).
+- **Integration tests** for the risky server paths, especially Phase 3: invite → magic-link issuance → sign-in → session; profile save; platform-association approval; the "public query returns no `[internal]` columns" guarantee (assert PII never appears in the response).
 - **End-to-end (Playwright)** for the few critical user journeys: home/directory renders; a full invite→login→edit-profile→register flow.
-- **Migration test:** the Phase 3 dry-run + reconciliation checklist (§3.3) *is* the migration's test.
+- **Migration test:** the Phase 2 dry-run + reconciliation checklist (§2.3) *is* the migration's test.
 - Rule of thumb: test the things that would be **quietly wrong** (PII leaks, auth gates, migration data loss), not every getter.
 
 ### 8.4 Observability (can wait — but do the cheap half now)
-Full error monitoring can be deferred. But do the **cheap, high-value half at Phase 2**: an **uptime monitor** hitting `rebuild.net` every minute (so you learn about a bad DNS/deploy immediately), plus watch Risved's build/deploy logs. Add EU-hosted **error monitoring later** (e.g. self-hosted GlitchTip, a Sentry-compatible OSS option, on Risved) once auth is live and errors matter more. Not a launch blocker.
+Full error monitoring can be deferred. But do the **cheap, high-value half at Phase 4**: an **uptime monitor** hitting `rebuild.net` every minute (so you learn about a bad DNS/deploy immediately), plus watch Risved's build/deploy logs. Add EU-hosted **error monitoring later** (e.g. self-hosted GlitchTip, a Sentry-compatible OSS option, on Risved) once auth is live and errors matter more. Not a launch blocker.
 
 ### 8.5 Decision log (ADRs)
 Keep a lightweight `docs/decisions/` folder — one short markdown file per significant choice (why SolidStart, why Scaleway, why Decap, why Directus-for-curation, the badge display-opt-in rule). Each: context → decision → consequences. This is what makes the open-source blueprint legible to future contributors and reminds *you* why later. This whole plan is effectively ADR #0.
@@ -499,12 +501,12 @@ Keep a lightweight `docs/decisions/` folder — one short markdown file per sign
 
 ## 9. Open items to confirm before / during build
 
-1. **Platform association rigor** (Phase 4.3): self-serve claim vs. admin approval vs. lightweight verification? Affects the approval UI.
-2. **Event-registration fields** (Phase 4.3): reuse the existing gathering-form fields (identity group, contribution, etc.), or a streamlined logged-in version?
-3. **Admin surface** (Phase 4.2): how invites get created initially — a minimal protected route is assumed; confirm who administers it.
-4. **Scaleway PG sizing** (Phase 3.1): start dev-tier; decide when/whether to add HA before Rebuild 2 traffic.
-5. **Notion retirement** (post-Phase 3): confirm Notion is fully decommissioned as a directory source once Postgres is verified.
-6. **Which external datasets** (Phase 4.3 badges): confirm the list of datasets to transfer into Postgres for badge matching (letter signees + any others).
+1. **Platform association rigor** (Phase 3.3): self-serve claim vs. admin approval vs. lightweight verification? Affects the approval UI.
+2. **Event-registration fields** (Phase 3.3): reuse the existing gathering-form fields (identity group, contribution, etc.), or a streamlined logged-in version?
+3. **Admin surface** (Phase 3.2): how invites get created initially — a minimal protected route is assumed; confirm who administers it.
+4. **Scaleway PG sizing** (Phase 2.1): start dev-tier; decide when/whether to add HA based on traffic.
+5. **Notion retirement** (post-Phase 2): confirm Notion is fully decommissioned as a directory source once Postgres is verified.
+6. **Which external datasets** (Phase 3.3 badges): confirm the list of datasets to transfer into Postgres for badge matching (letter signees + any others).
 
 ---
 

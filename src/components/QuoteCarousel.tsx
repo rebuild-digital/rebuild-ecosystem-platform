@@ -157,7 +157,7 @@ export default function QuoteCarousel(props: QuoteCarouselProps) {
         </div>
         <div class="flex justify-center mt-lg">
           <button
-            class="bg-transparent border-0 text-darker px-sm py-xxs text-xs cursor-pointer transition-all transition-rebuild hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue"
+            class="bg-transparent border-0 text-darker px-sm py-xxs text-xs cursor-pointer transition-all transition-rebuild hover:text-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade"
             onClick={togglePlay}
           >
             {playing() ? "Stop carousel" : "Start carousel"}

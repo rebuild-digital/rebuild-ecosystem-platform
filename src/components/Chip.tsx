@@ -62,7 +62,7 @@ export default function Chip(props: {
 
   return (
     <button
-      class={`inline-flex items-center gap-xs rounded-full cursor-pointer transition-rebuild ${size()} ${classes()} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue ${props.class ?? ""}`}
+      class={`inline-flex items-center gap-xs rounded-full cursor-pointer transition-rebuild ${size()} ${classes()} focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade ${props.class ?? ""}`}
       onClick={props.onToggle}
       aria-pressed={props.active}
     >

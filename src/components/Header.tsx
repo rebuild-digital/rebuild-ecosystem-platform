@@ -64,8 +64,15 @@ export default function Header() {
             <div class="w-auto self-center">
               <a href="/">
                 <img
-                  class="h-6 w-auto"
+                  class="logo-dark h-6 w-auto"
                   src={site.logo}
+                  alt="Rebuild logo."
+                  width="120"
+                  height="24"
+                />
+                <img
+                  class="logo-white h-6 w-auto"
+                  src={site.logoWhite}
                   alt="Rebuild logo."
                   width="120"
                   height="24"

@@ -296,7 +296,7 @@ img[data-pt-img="hidden"] {
   .skip-link:focus,
   .skip-link:focus-visible {
     transform: translateY(0);
-    outline: 2px solid var(--color-blue);
+    outline: 2px solid var(--color-blue-shade);
     outline-offset: 2px;
   }
 
@@ -353,7 +353,7 @@ img[data-pt-img="hidden"] {
   }
 
   a:focus-visible {
-    @apply outline-2 outline-blue outline-offset-2;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   /* Images */
@@ -368,7 +368,7 @@ img[data-pt-img="hidden"] {
   }
 
   button:focus-visible {
-    @apply outline-2 outline-blue outline-offset-2;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   button:disabled {
@@ -391,8 +391,7 @@ img[data-pt-img="hidden"] {
   }
 
   input[type="checkbox"]:focus-visible {
-    outline: 1px solid var(--color-dark);
-    outline-offset: 2px;
+    @apply outline-2 outline-blue-shade outline-offset-2;
   }
 
   input[type="checkbox"]:checked::after {
@@ -403,7 +402,6 @@ img[data-pt-img="hidden"] {
     transform: translate(-50%, -50%);
     color: var(--color-dark);
     font-size: 18px;
-    font-weight: bold;
     line-height: 1;
   }
 
@@ -481,7 +479,7 @@ img[data-pt-img="hidden"] {
     @apply transition-colors cursor-pointer;
     transition-duration: var(--transition-duration-fast);
     transition-timing-function: var(--ease-rebuild);
-    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue;
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-shade;
   }
 
   /* Hidden X icon within filter buttons */
@@ -849,8 +847,23 @@ img[data-pt-img="hidden"] {
     @apply text-dark;
   }
 
-  header.transparent img:not(#mobile-menu img) {
-    filter: brightness(0) invert(1);
+  /* Logo: only the dark and white variants exist (see DESIGN.md → Logo Usage) */
+  header .logo-white {
+    display: none;
+  }
+
+  header.transparent .logo-white {
+    display: block;
+  }
+
+  header.transparent .logo-dark {
+    display: none;
+  }
+
+  /* Focus ring on the dark hero: blue-shade is too close to dark, so use blue */
+  header.transparent a:not(#mobile-menu a):not([role="menu"] a):focus-visible,
+  header.transparent button:not(#mobile-menu button):focus-visible {
+    @apply outline-blue;
   }
 
   header.transparent .beta-banner {
@@ -932,10 +945,43 @@ img[data-pt-img="hidden"] {
     }
   }
 
+  /* Loader: three dots light up in turn, one step each (see DESIGN.md → Loading states) */
+  .loader-dot {
+    width: 0.375em;
+    height: 0.375em;
+    border-radius: 9999px;
+    background-color: currentColor;
+    opacity: 0.25;
+    animation: loader-step 900ms steps(1, end) infinite;
+  }
+
+  .loader-dot:nth-child(2) {
+    animation-delay: -600ms;
+  }
+
+  .loader-dot:nth-child(3) {
+    animation-delay: -300ms;
+  }
+
+  @keyframes loader-step {
+    0% {
+      opacity: 1;
+    }
+    33.333%,
+    100% {
+      opacity: 0.25;
+    }
+  }
+
   /* Accessibility: disable marquee and pulse animations for reduced-motion */
   @media (prefers-reduced-motion: reduce) {
     .marquee-content {
       animation: none;
+    }
+
+    .loader-dot {
+      animation: none;
+      opacity: 1;
     }
 
     .beta-pulse {

@@ -27,6 +27,29 @@ The Rebuild platform: a directory of European social platforms plus, increasingl
 7. **Deletes cascade** across user-owned tables (`profiles`, `user_platforms`, `user_badges`, `event_registrations`).
 8. **Errors never reach the client raw.** Solid serializes thrown errors (message, stack, server paths) to the browser. Wrap every `"use server"` query body in `guardServer()` (`src/lib/guardServer.ts`); page errors go through `SafeErrorBoundary`, already in `app.tsx`.
 
+## Building features (applies to every UI or code change)
+These three rules are repeated in `CLAUDE.md` and `DESIGN.md` on purpose. They are not optional polish. A PR that breaks them is not done.
+
+1. **Design from `DESIGN.md`.** Read the relevant sections of `DESIGN.md` (tokens, components, states, accessibility, motion, voice) before building any feature, and follow them. The design system decides colors, type, spacing, radius, motion and copy. Personal taste doesn't.
+2. **Reuse before you create.** Build from the existing components (`src/components/`, `src/components/blocks/`), utilities (`src/lib/`, `src/app.css`) and patterns described in `DESIGN.md`. Being "on brand" doesn't justify a new component. The bar is *nothing existing can do this*. In order of preference:
+   - use an existing component as is;
+   - compose existing components;
+   - extend an existing component with a variant or prop;
+   - only then create a new one, and document it in `DESIGN.md` §Components in the same PR.
+
+   Don't create near-duplicates (a second card, button, badge, section wrapper, etc.). This rule exists to prevent codebase bloat.
+3. **Follow best practice, the Solid way.** Write DRY, accessible, performant code, and use what SolidJS/SolidStart provide instead of porting React habits:
+   - **DRY:** extract shared logic and markup once. Don't copy-paste blocks between routes or components. Reuse tokens and utilities, never hard-coded values.
+   - **Accessible:** meet WCAG 2.1 AA from the start. Use semantic HTML first and ARIA only where needed. Every interactive element needs keyboard support and a visible focus state, and every animation needs a reduced-motion guard (see `DESIGN.md` §Accessibility).
+   - **Performant:** render on the server by default and ship minimal client JS. Lazy-load heavy or below-the-fold pieces with `lazy()`. Size and lazy-load images. Don't add dependencies without need.
+   - **Idiomatic Solid:**
+     - Use fine-grained reactivity. Don't destructure props; use `splitProps`/`mergeProps`.
+     - Derive values with plain functions or `createMemo`, not `createEffect` plus a signal. Keep `createEffect` for real side effects, and clean up with `onCleanup`.
+     - Use control-flow components (`<Show>`, `<For>`/`<Index>`, `<Switch>`/`<Match>`, `<Dynamic>`) instead of ternaries and `.map()`.
+     - Use `createStore` for nested state.
+     - Load data with `query`/`createAsync` (and preload) and mutate with `action`. Use `"use server"` functions for server-only code.
+     - Wrap async UI in `<Suspense>`/`<ErrorBoundary>`.
+
 ## Workflow
 - Work **one phase at a time** (see the plan's phases). A phase's **Verification list is its acceptance criteria** — not done until all pass in staging.
 - Small, single-purpose PRs. Don't start the next phase until the current one is verified.

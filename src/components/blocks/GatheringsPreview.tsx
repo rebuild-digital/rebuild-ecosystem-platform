@@ -1,17 +1,11 @@
 import { For, Show } from "solid-js";
 import type { Gathering } from "~/data/gatherings";
 import Section from "~/components/Section";
+import Card from "~/components/Card";
+import ImageCredit from "~/components/ImageCredit";
 
 export interface GatheringsPreviewProps {
   gatherings: Gathering[];
-}
-
-function ImageCredit(props: { credit: string }) {
-  return (
-    <div class="absolute bottom-0 left-0 bg-dark/50 text-white text-[10px] px-xs py-xxs m-xs">
-      Photo by: {props.credit}
-    </div>
-  );
 }
 
 export default function GatheringsPreview(props: GatheringsPreviewProps) {
@@ -20,7 +14,7 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-3xl lg:gap-lg mb-2xl">
           <For each={props.gatherings}>
             {(gathering) => (
-              <div class="flex flex-col">
+              <Card variant="plain" class="flex flex-col">
                 <div class="relative">
                   <div class="relative h-125 overflow-hidden">
                     <img
@@ -91,7 +85,7 @@ export default function GatheringsPreview(props: GatheringsPreviewProps) {
                     </Show>
                   </div>
                 </Show>
-              </div>
+              </Card>
             )}
           </For>
         </div>

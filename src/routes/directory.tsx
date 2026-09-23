@@ -5,6 +5,7 @@ import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
 import Chip, { type ChipColor } from "~/components/Chip";
 import { buttonClass } from "~/lib/buttonClass";
+import Card from "~/components/Card";
 import { guardServer } from "~/lib/guardServer";
 
 // One hue per category, shared by the filter chips and the card badges.
@@ -246,7 +247,7 @@ export default function Directory() {
                 <For each={filtered()}>
                   {(builder) => (
                     <div class="break-inside-avoid mb-xs">
-                      <div class="bg-white space-y-md p-5 lg:p-md rounded border-2">
+                      <Card padding="responsive" rounded class="space-y-md">
                         {/* Name + URL */}
                         <div class="builder-row-header">
                           <h3 class="text-xl lg:text-2xl">
@@ -312,7 +313,7 @@ export default function Directory() {
                             </Badge>
                           </Show>
                         </div>
-                      </div>
+                      </Card>
                     </div>
                   )}
                 </For>

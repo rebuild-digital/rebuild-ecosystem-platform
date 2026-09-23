@@ -1,5 +1,5 @@
 import { Show } from "solid-js";
-import { srcSet } from "~/lib/images";
+import Card, { CardMedia } from "./Card";
 
 export interface ToolAction {
   text: string;
@@ -18,25 +18,17 @@ export interface Tool {
 
 export default function ToolCard(props: { tool: Tool }) {
   return (
-    <div class="bg-lighter flex flex-col h-full">
-      <div class="relative">
-        <Show
-          when={props.tool.thumbnail}
-          fallback={
-            <div class="bg-lighter aspect-video w-full flex items-center justify-center">
-              <span class="text-darker text-sm">No preview available</span>
-            </div>
-          }
-        >
-          <img
-            src={props.tool.thumbnail}
-            srcset={srcSet(props.tool.thumbnail)}
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            alt={props.tool.thumbnailAlt ?? ""}
-            class="w-full h-auto aspect-video object-cover"
-          />
-        </Show>
-      </div>
+    <Card variant="filled" class="flex flex-col h-full">
+      <CardMedia
+        src={props.tool.thumbnail}
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        alt={props.tool.thumbnailAlt ?? ""}
+        fallback={
+          <div class="w-full h-full flex items-center justify-center">
+            <span class="text-darker text-sm">No preview available</span>
+          </div>
+        }
+      />
 
       <div class="p-md flex flex-col flex-grow">
         <Show when={props.tool.version}>
@@ -94,6 +86,6 @@ export default function ToolCard(props: { tool: Tool }) {
           </Show>
         </div>
       </div>
-    </div>
+    </Card>
   );
 }

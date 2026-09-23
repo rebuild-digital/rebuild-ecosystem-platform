@@ -12,7 +12,7 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 ## Locked decisions (quick reference)
 - **Framework:** SolidStart, **server preset** (not static).
 - **Hosting:** Hetzner via Risved. **DNS:** Cloudflare → Bunny (registration stays at GoDaddy).
-- **DB:** Scaleway Managed PostgreSQL + Drizzle. **Auth:** Better Auth, magic-link, invite-only.
+- **DB:** Risved Postgres add-on + Drizzle (ADR 0005; Scaleway is the fallback). **Auth:** Better Auth, magic-link, invite-only.
 - **Email:** Scaleway TEM. **Media:** Bunny Storage. **CMS (later):** Decap. **Analytics:** Pirsch now, Umami optional later.
 - **Curation:** Drizzle Studio (solo, Phase 2) → Directus (team/PII, from Phase 3) → optional custom admin later.
 
@@ -28,19 +28,20 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 
 ## Immediate next steps
 **Close out Phase 1**
-1. Merge #59 (fixes the broken production build and makes staging `noindex`), and redeploy staging with `VITE_SITE_INDEXABLE` **unset**. Confirm with `curl -sI <staging-url> | grep -i x-robots-tag`.
+- Redeploy staging with `VITE_SITE_INDEXABLE` **unset** (#59 is merged). Confirm with `curl -sI <staging-url> | grep -i x-robots-tag`.
 
 **Phase 2 (plan §Phase 2)**
-1. Provision Scaleway Managed PostgreSQL (dev tier, EU region). Create the **scoped app role** (plan §7.6) and put its `DATABASE_URL` (`sslmode=require`) in Risved.
-2. Add Drizzle and the `platforms` / `categories` / `platform_categories` schema (§2.2).
-3. Write the Notion → Postgres migration, including moving logos to Bunny (§2.3a). Dry-run it against a throwaway database and reconcile (§2.3).
-4. Switch the directory read path to Postgres behind a feature flag. Select only `[public]` columns where `status = 'published'` (§2.4).
+1. ✅ Risved Postgres add-on enabled (2026-09-23); Risved injects `DATABASE_URL`. **Never press "Remove"** on it.
+2. Add Drizzle, the `platforms` / `categories` / `platform_categories` schema (§2.2), a local Docker Postgres for development, and migrations that run on deploy.
+3. Nightly encrypted off-server backup to Bunny Storage, plus one test restore (§7.11). Check whether the Risved user can create a scoped app role (§7.6).
+4. Write the Notion → Postgres migration, including moving logos to Bunny (§2.3a). Dry-run it against the local Postgres and reconcile (§2.3).
+5. Switch the directory read path to Postgres behind a feature flag. Select only `[public]` columns where `status = 'published'` (§2.4).
 
 ## Open items (from plan §9)
 1. Platform-association rigor (self-serve vs approval).
 2. Event-registration fields (reuse gathering form vs streamlined).
 3. Who administers invites.
-4. Scaleway PG sizing / when to add HA, based on traffic.
+4. Postgres capacity on the shared Risved server; move to Scaleway if it outgrows it.
 5. Notion retirement once the Postgres directory is verified (Phase 2).
 6. Which external datasets feed badge matching.
 

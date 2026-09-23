@@ -20,7 +20,7 @@ Every UI or code change must:
 - SolidStart **server preset**, never static.
 - Never leak `[internal]`/PII columns to the client; return only the fields a page needs.
 - Never log emails/tokens; log user ids.
-- App uses the **scoped DB role**; `sslmode=require`.
+- App uses the **scoped DB role** (where one exists); `sslmode=require` whenever the DB is reached over a network other than Risved's private one.
 - Store media in Bunny; store only URLs in Postgres.
 - Deletes cascade across user-owned tables.
 

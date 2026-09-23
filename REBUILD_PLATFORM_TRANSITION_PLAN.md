@@ -26,7 +26,7 @@ Plus a fourth, deliberately deferred: an editorial **CMS (Decap)** for insights/
 | Framework | SolidStart (SolidJS), **server preset (Nitro/Node)** | Auth needs a runtime; static export cannot host sessions/magic links. JSX familiarity for the maintainer. |
 | Hosting / deploy | Hetzner VPS via **Risved** | EU (Hetzner DE/FI), single-tenant, git-push deploys, AGPL, first-class SolidStart support. |
 | DNS | **Bunny DNS** (nameservers Cloudflare → Bunny) | EU provider; consolidates with existing Bunny CDN/fonts. Registration stays at GoDaddy. |
-| Database | **Scaleway Managed PostgreSQL** | French-incorporated, EU-only DCs, no CLOUD Act; consolidates with Scaleway TEM. Relational fit for taxonomy + concurrent writes. |
+| Database | **Risved Postgres** (adjacent container on the Risved-managed Hetzner server) | Already part of the hosting; EU (Hetzner), no extra processor or cost; reachable only on Risved's private network. Relational fit for taxonomy + concurrent writes. Backups are ours to run (§7.11). See ADR 0005. |
 | ORM | **Drizzle** | Typed schema + migrations; native Postgres; works with Better Auth. |
 | Auth | **Better Auth**, magic-link (passwordless), invite-only | Self-hostable library (runs in-app, on your infra — sovereignty unaffected by its Vercel ownership); official SolidStart integration. |
 | Transactional email | **Scaleway TEM** | EU (France), ~€0.25/1,000, API+SMTP; sends magic links + notifications. |
@@ -37,7 +37,7 @@ Plus a fourth, deliberately deferred: an editorial **CMS (Decap)** for insights/
 
 **Contingencies documented, not adopted now:**
 - If Better Auth's roadmap (now Vercel-steered) ever diverges badly → **Ory (Kratos)**, German-founded, self-hostable. Your auth data is in your own Postgres schema, so an exit is contained.
-- If Scaleway managed Postgres cost/control ever demands it → self-host Postgres on the Risved box. Migration is `pg_dump`/`pg_restore` (all just Postgres).
+- If running Postgres ourselves proves too fragile (backups, isolation from the app server, capacity) → **Scaleway Managed PostgreSQL** (French, EU-only, automated backups + PITR, encryption at rest). Migration is `pg_dump`/`pg_restore` (all just Postgres).
 - If Decap's editing UX proves too thin → run **Keystatic**'s admin as a standalone React app against the same repo (its Reader API reads fine into Solid; only its React admin needs separate hosting).
 
 ---
@@ -56,9 +56,9 @@ The single most important conceptual split in this project. Conflating these is 
 ### Plane B — Application data
 - **What:** user accounts, the **platform directory** records, taxonomy/categories, user↔platform associations, event registrations.
 - **Editors:** the app itself and (for their own profiles/platforms) logged-in users.
-- **Storage:** **Scaleway Postgres**, via Drizzle.
+- **Storage:** **Postgres** (Risved-managed container), via Drizzle.
 - **Tooling:** SolidStart server routes + Better Auth.
-- **Lifecycle:** live, concurrent, user-mutable; backed up by the managed DB provider.
+- **Lifecycle:** live, concurrent, user-mutable; backed up off the server by our own nightly job (§7.11).
 - **Public vs internal fields:** even within Plane B, not every field is public. The directory table alone carries **contact PII** (contact name + email) and **curation-only fields** (priority, notes, status) that must never render publicly. So the split is not just "content vs app data" — it's also **public columns vs admin-only columns within a single table**. This is what makes field-level permissions (Directus) matter, not just table-level ones.
 
 ### The crucial reframing
@@ -170,10 +170,14 @@ Before this phase can be marked done, all of the following must hold:
 
 ## Phase 2 — Postgres + migrate the directory off Notion
 
-**Goal:** stand up Scaleway Managed PostgreSQL, model the directory + taxonomy in Drizzle, migrate the Notion directory data into it, and switch the site's directory read path to Postgres. Rendering is unchanged; only the source moves.
+**Goal:** stand up Postgres (Risved's managed add-on), model the directory + taxonomy in Drizzle, migrate the Notion directory data into it, and switch the site's directory read path to Postgres. Rendering is unchanged; only the source moves.
 
 ### 2.1 Provision
-- Create a **Scaleway Managed PostgreSQL** instance (dev tier to start; EU region). Capture `DATABASE_URL` into Risved env (encrypted).
+- Enable **Risved's Postgres add-on** for the project. Risved injects `DATABASE_URL` (plus `POSTGRES_*`/`PG*`) into build, release and runtime. The database is reachable only on Risved's private Docker network, not from a laptop.
+- **Never press "Remove"** on the Postgres card in Risved: assume it deletes the volume and the data.
+- **Local development** uses a local Postgres (Docker). Schema migrations run on deploy (Drizzle migrations in the release/boot step), not from a laptop against the real database.
+- **Least-privilege role (§7.6):** check whether the Risved-provided user can create a limited app role. Record the outcome.
+- **Off-server backups (§7.11):** set up the nightly backup job and do one test restore.
 - Add **Drizzle** (`drizzle-orm`, `drizzle-kit`, `postgres`/`pg`).
 
 ### 2.2 Schema (Plane B — directory + taxonomy)
@@ -217,7 +221,7 @@ platform_categories: { platformId → platforms.id,
 This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a Directus saved-view filter (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
 
 ### 2.3 Migrate data (dry-run first, then reconcile)
-- **Dry run against a copy, never straight to production.** Run the migration into a throwaway/staging database first. The script reads the Notion Platforms DB via the existing token, transforms to the schema above, and inserts. Preserve slugs so existing URLs don't break.
+- **Dry run against a copy, never straight to production.** Run the migration into a throwaway local Postgres (Docker) first; the Risved database becomes production at Phase 4. The script reads the Notion Platforms DB via the existing token, transforms to the schema above, and inserts. Preserve slugs so existing URLs don't break.
 - **Reconcile before trusting it** — a short checklist the script (or you) verifies after the dry run:
   - Row count in `platforms` == number of Notion records.
   - Every distinct Notion CATEGORY value exists in `categories`, and multi-category platforms have the right number of `platform_categories` rows.
@@ -249,7 +253,7 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
 - License/sovereignty notes: Directus is **BSL 1.1** (source-available, free under €/$5M finances) — fine for Rebuild, but not OSI-open-source, so flag it in the blueprint. Self-host on Hetzner so data stays EU regardless of vendor incorporation. Drizzle Studio is not open-source either; Drizzle Gateway is a small paid, alpha tool — hence Directus is the better team destination.
 
 ### Verification
-- Directory renders identically from Postgres (public columns only); counts match Notion; category filters work; slugs/URLs unchanged; logos load from Bunny (not Notion); no contact PII or internal fields exposed in page source or API; build no longer depends on Notion for the directory.
+- Directory renders identically from Postgres (public columns only); counts match Notion; category filters work; slugs/URLs unchanged; logos load from Bunny (not Notion); no contact PII or internal fields exposed in page source or API; build no longer depends on Notion for the directory; **the nightly off-server backup has run and one test restore succeeded**; the §7.6 role outcome is recorded.
 
 ### Rollback
 - Flip the feature flag back to the Notion read path. Postgres additions are non-destructive to the running site.
@@ -268,7 +272,7 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
 - **Security & PII gate:** this phase does not ship to production until the **Security, PII & compliance checklist (§7)** has been walked and its items are in place. Auth is the point where real personal data goes live, so §7 is a hard gate here, not a nice-to-have.
 
 ### 3.1 Better Auth setup
-- Install Better Auth; configure the **Drizzle adapter** against Scaleway Postgres.
+- Install Better Auth; configure the **Drizzle adapter** against the app's Postgres.
 - Enable the **magic-link** plugin; wire its email sender to **Scaleway TEM** (API or SMTP).
 - Mount the handler in SolidStart: `src/routes/api/auth/[...auth].ts` (per Better Auth's official SolidStart integration).
 - Set `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` (staging URL for now — updated to production domain after Phase 4 DNS cutover), Scaleway TEM creds in Risved env.
@@ -394,7 +398,7 @@ Maintain in Risved (encrypted), by phase introduced:
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |
 | `VITE_SITE_INDEXABLE` | 1 (set `true` at Phase 4) | Unset = `noindex` everywhere (staging); `true` = indexable (production) |
-| `DATABASE_URL` | 2 | Scaleway Postgres — use the **scoped app role**, not the master user (see §7) |
+| `DATABASE_URL` | 2 | Postgres, injected by Risved's add-on. Swap in the **scoped app role** if one can be created (see §7.6) |
 | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` | 3 (URL updated to prod domain at Phase 4) | Auth |
 | `SCALEWAY_TEM_*` | 3 | Transactional email (magic links) |
 | Decap OAuth client id/secret | 5 | CMS git auth |
@@ -443,10 +447,10 @@ A DPA (Data Processing Agreement) is a standard contract every processor already
 2. Drop the PDF in a `compliance/dpa/` folder.
 3. Keep a one-line register: provider · what they process · DPA date/link.
 
-Providers to cover: **Scaleway** (DB + email), **Bunny**, **MailerLite**, **Pirsch/Umami**, **Risved**. All EU, so all straightforward. That register *is* your Article 30 record at this scale — done.
+Providers to cover: **Risved** (hosting + database; Hetzner as its sub-processor), **Scaleway** (email), **Bunny** (incl. backup storage), **MailerLite**, **Pirsch/Umami**. All EU, so all straightforward. That register *is* your Article 30 record at this scale — done.
 
 ### 7.6 Least-privilege DB access (plain-English)
-Scaleway gives you a **master** database user that can do anything (create/drop databases, read every table). If your app connects with that user and the app is ever compromised, the attacker inherits "anything." So: create a **second, limited role** that can only read/write *your app's tables* — not drop databases, not superuser. The app (`DATABASE_URL`) uses that limited role; you keep the master user for migrations/admin only. It's a few SQL statements once (`CREATE ROLE ... GRANT SELECT, INSERT, UPDATE, DELETE ON ...`). Blast radius shrinks from "everything" to "the app's own tables."
+Risved's add-on gives you **one** database user, likely the owner of the database (create/drop tables, read everything). If your app connects with that user and the app is ever compromised, the attacker inherits "anything." So: create a **second, limited role** that can only read/write *your app's tables* — not drop databases, not superuser. The app (`DATABASE_URL`) uses that limited role; you keep the master user for migrations/admin only. It's a few SQL statements once (`CREATE ROLE ... GRANT SELECT, INSERT, UPDATE, DELETE ON ...`). Blast radius shrinks from "everything" to "the app's own tables." **If the Risved user can't create roles** (no `CREATEROLE`), record that as an accepted risk in the decision log. The mitigation is that the database is reachable only from this app on Risved's private network.
 
 ### 7.7 PII never in logs, page source, or API
 - **Logs:** never log emails, tokens, or magic-link URLs. Log user *ids*, not emails. Check that error handlers don't dump request bodies containing PII.
@@ -454,8 +458,8 @@ Scaleway gives you a **master** database user that can do anything (create/drop 
 - **Analytics:** Pirsch/Umami are cookieless and store no PII — keep it that way (don't pass emails as event props).
 
 ### 7.8 Transport & storage
-- **TLS to the database:** connect to Scaleway with SSL required (`sslmode=require` in `DATABASE_URL`). Non-negotiable — auth tokens and PII cross that wire.
-- **At rest:** confirm the Scaleway managed instance encrypts at rest (it does; note it in the DPA register).
+- **TLS to the database:** required whenever database traffic crosses a network we don't control (`sslmode=require`). With Risved's add-on, traffic stays on the host's private Docker network, so plain connections are acceptable **only** there. If the database ever moves off-host (e.g. to Scaleway) or is exposed, TLS becomes mandatory again.
+- **At rest:** encryption at rest depends on the Hetzner disk and isn't guaranteed. Ask Risved, and note the answer in the DPA register. Backups (§7.11) **are** encrypted before they leave the server.
 
 ### 7.9 Rate limiting
 Rate-limit the auth, magic-link, and invite endpoints to stop email enumeration and abuse. Better Auth has rate-limiting config; enable it. Risved/Nitro can add a coarse layer too.
@@ -464,7 +468,7 @@ Rate-limit the auth, magic-link, and invite endpoints to stop email enumeration 
 No bespoke audit system — that *would* be bloat at this scale. You get enough from: **Directus's built-in activity log** (curation changes) and **Better Auth's events** (sign-ins, etc.). That's sufficient; revisit only if a real need appears.
 
 ### 7.11 Backups
-Scaleway Managed Postgres does automated backups + point-in-time recovery — enable and note the retention window. **Do one test restore** into a scratch DB so you know it works *before* you depend on it. Backups contain PII, so they inherit the retention rules above.
+Risved backs up only its own configuration, **not** the Postgres volume, so backups are ours. A **nightly logical backup** (`pg_dump` or equivalent), **encrypted**, shipped **off the server** to Bunny Storage (EU), keeping e.g. 14 daily + 8 weekly copies. On Risved Cloud there's no SSH, so the job runs inside the app or a sibling Risved project (mechanism decided in Phase 2). **Do one test restore** into a scratch DB so you know it works *before* you depend on it. No point-in-time recovery: the worst case loses up to a day of writes. Backups contain PII, so they inherit the retention rules above.
 
 ### 7.12 Breach process (simple, written down once)
 If personal data is exposed or you suspect it:
@@ -496,7 +500,7 @@ Commit the provided **`AGENTS.md`** (canonical conventions: stack, the two data 
 Full error monitoring can be deferred. But do the **cheap, high-value half at Phase 4**: an **uptime monitor** hitting `rebuild.net` every minute (so you learn about a bad DNS/deploy immediately), plus watch Risved's build/deploy logs. Add EU-hosted **error monitoring later** (e.g. self-hosted GlitchTip, a Sentry-compatible OSS option, on Risved) once auth is live and errors matter more. Not a launch blocker.
 
 ### 8.5 Decision log (ADRs)
-Keep a lightweight `docs/decisions/` folder — one short markdown file per significant choice (why SolidStart, why Scaleway, why Decap, why Directus-for-curation, the badge display-opt-in rule). Each: context → decision → consequences. This is what makes the open-source blueprint legible to future contributors and reminds *you* why later. This whole plan is effectively ADR #0.
+Keep a lightweight `docs/decisions/` folder — one short markdown file per significant choice (why SolidStart, why Risved Postgres, why Decap, why Directus-for-curation, the badge display-opt-in rule). Each: context → decision → consequences. This is what makes the open-source blueprint legible to future contributors and reminds *you* why later. This whole plan is effectively ADR #0.
 
 ---
 
@@ -505,7 +509,7 @@ Keep a lightweight `docs/decisions/` folder — one short markdown file per sign
 1. **Platform association rigor** (Phase 3.3): self-serve claim vs. admin approval vs. lightweight verification? Affects the approval UI.
 2. **Event-registration fields** (Phase 3.3): reuse the existing gathering-form fields (identity group, contribution, etc.), or a streamlined logged-in version?
 3. **Admin surface** (Phase 3.2): how invites get created initially — a minimal protected route is assumed; confirm who administers it.
-4. **Scaleway PG sizing** (Phase 2.1): start dev-tier; decide when/whether to add HA based on traffic.
+4. **Postgres capacity** (Phase 2.1): the database shares the Risved server with the app. Watch memory/disk; if it outgrows the box or needs HA, move to Scaleway (see §2 contingencies).
 5. **Notion retirement** (post-Phase 2): confirm Notion is fully decommissioned as a directory source once Postgres is verified.
 6. **Which external datasets** (Phase 3.3 badges): confirm the list of datasets to transfer into Postgres for badge matching (letter signees + any others).
 

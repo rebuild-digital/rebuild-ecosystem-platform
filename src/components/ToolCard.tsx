@@ -1,4 +1,5 @@
 import { Show } from "solid-js";
+import { srcSet } from "~/lib/images";
 
 export interface ToolAction {
   text: string;
@@ -29,6 +30,8 @@ export default function ToolCard(props: { tool: Tool }) {
         >
           <img
             src={props.tool.thumbnail}
+            srcset={srcSet(props.tool.thumbnail)}
+            sizes="(min-width: 1024px) 50vw, 100vw"
             alt={props.tool.thumbnailAlt ?? ""}
             class="w-full h-auto aspect-video object-cover"
           />

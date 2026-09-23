@@ -11,13 +11,13 @@ const ambassadors: Person[] = [
   },
   {
     name: "Linda Liukas",
-    image: "/assets/images/people/linda.webp",
+    image: "/assets/images/people/linda-2400.webp",
     specialty: "Children",
     bio: "As bestselling author of the Hello Ruby series, she's helped countless children and adults understand coding and technology through storytelling. Her work spans from children's books to city-scale learning initiatives and TED talks.",
   },
   {
     name: "Mathias Ockenfals",
-    image: "/assets/images/people/mathias.webp",
+    image: "/assets/images/people/mathias-2400.webp",
     specialty: "Marketplaces",
     bio: "Mathias founded The Marketplace Conference, Europe's leading event for marketplace funders and founders, positioning him as a key expert in understanding and navigating the dynamics of building successful marketplace businesses. As a partner at b2venture, he's personally led investments in more than 70 startups and supported founders through over 200 funding rounds.",
   },
@@ -29,13 +29,13 @@ const ambassadors: Person[] = [
   },
   {
     name: "Neil Murray",
-    image: "/assets/images/people/neil.webp",
+    image: "/assets/images/people/neil-2400.webp",
     specialty: "Venture Capital",
     bio: "Neil is a Solo GP and founder of The Nordic Web Ventures, investing in early-stage Nordic founders and startups. He was among the first investors in Sanity and Lovable. Before running his own fund, he founded Playmaker (YCW21).",
   },
   {
     name: "Roxanne Varza",
-    image: "/assets/images/people/roxanne.webp",
+    image: "/assets/images/people/roxanne-2400.webp",
     specialty: "Start-up ecosystem",
     bio: "Roxanne is the director of STATION F in Paris, the world's biggest startup campus. She is also an angel investor and on the board of media company NRJ Group. Previously editor of TechCrunch France, startup lead for Microsoft France and scout investor for Sequoia Capital and Atomico, she has cofounded Tech.eu, StartHer and Failcon Paris.",
   },
@@ -48,13 +48,13 @@ const ambassadors: Person[] = [
   },
   {
     name: "Christian Lindholm",
-    image: "/assets/images/christian-lindholm.webp",
+    image: "/assets/images/christian-lindholm-2400.webp",
     specialty: "Design",
     bio: "Christian is the inventor of the Navi Key user interface used on more than 600M phones. He is the father of Series 60 used on more than 250M early smartphones. He built KoruLab, a wearable operating system acquired by Google. Now Chairman and Co-Founder of Vertical and executive in residence at Aalto University, founder of the Future Interface Lab.",
   },
   {
     name: "Madeleine Gummer von Mohl",
-    image: "/assets/images/people/madeleine.webp",
+    image: "/assets/images/people/madeleine-2400.webp",
     specialty: "Ecosystem",
     bio: "Madeleine is founder and CEO of betahaus, one of Europe's largest networks of co-working spaces across Berlin, Hamburg, Sofia and Barcelona, she's mastered creating environments where creativity and collaboration thrive. Now Managing Partner at XTR Capital.",
   },
@@ -66,7 +66,7 @@ const ambassadors: Person[] = [
   },
   {
     name: "Marko Ahtisaari",
-    image: "/assets/images/people/marko.webp",
+    image: "/assets/images/people/marko-2400.webp",
     imageCredit: "Joi Ito",
     specialty: "Societal",
     bio: "A Finnish technology entrepreneur and design leader. Marko has been CEO and co-founder of two technology companies: Dopplr and the Sync Project. He was also EVP of design at Nokia and a Director's Fellow at the MIT Media Lab. He recently joined ICEYE as CMO and Board Chair at the CMI Peace Foundation.",

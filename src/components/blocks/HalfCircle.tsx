@@ -13,7 +13,7 @@ export default function HalfCircle() {
       </h2>
       <div class="relative">
         <img
-          src="/assets/images/half-circle.webp"
+          src="/assets/images/half-circle-2400.webp"
           alt=""
           aria-hidden="true"
           class="w-full h-auto hidden lg:block"

@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import ImageCredit from "./ImageCredit";
+import { srcSet } from "~/lib/images";
 
 export interface Person {
   name: string;
@@ -17,6 +18,8 @@ export default function PersonCard(props: { person: Person }) {
       <div class="w-full aspect-square bg-muted mb-md relative">
         <img
           src={props.person.image}
+          srcset={srcSet(props.person.image)}
+          sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
           alt={props.person.name}
           class="w-full h-full object-cover"
         />

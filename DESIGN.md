@@ -2073,14 +2073,26 @@ perceptible.
   (translateX + opacity,
   `--duration-slower` with
   `--ease-rebuild`).
+- **Page transitions:** on internal link
+  clicks the content fades out to the
+  background color, then the next page
+  fades in from it (220ms each,
+  `--ease-rebuild`). Between non-home
+  pages the header is held in place and
+  only `main` and the footer fade; to/from
+  the home page (transparent header) the
+  whole page fades. Images that aren't
+  decoded when a page reveals fade in on
+  their own. Implemented in
+  `src/lib/pageTransition.ts` (inline
+  head script) and the "Page transitions"
+  block in `app.css`. Skipped entirely
+  for `prefers-reduced-motion: reduce`.
 
 ### What does not animate
 
 - Layout shifts (no animated
   width/height changes).
-- Page transitions (not yet implemented
-  — `transition-rebuild` is intended for
-  future page transition work).
 - Scroll position.
 
 ### Reduced motion

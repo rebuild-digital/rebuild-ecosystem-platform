@@ -43,7 +43,7 @@ export const gatherings: Gathering[] = [
     location: "Helsinki, Finland",
     startDate: "Aug 30",
     endDate: "Sep 01",
-    image: "/assets/images/splash-7.webp",
+    image: "/assets/images/splash-7-2400.webp",
     titleColor: "var(--color-blue)",
   },
   {
@@ -55,7 +55,7 @@ export const gatherings: Gathering[] = [
     location: "Paris, France",
     startDate: "Dec 13",
     endDate: "Dec 15",
-    image: "/assets/images/paris.webp",
+    image: "/assets/images/paris-2400.webp",
     imageCredit: "HANVIN CHEONG",
     titleColor: "var(--color-blush)",
     ctaSecondary: { text: "Get notified", dataForm: "newsletter" },

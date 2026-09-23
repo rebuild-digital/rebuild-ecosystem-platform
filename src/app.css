@@ -239,6 +239,43 @@
   transition-timing-function: var(--ease-rebuild);
 }
 
+/* ===========================================
+   PAGE TRANSITIONS
+   Driven by src/lib/pageTransition.ts. The page fades out to the background
+   color on leave (.pt-leave) and fades in from it on enter (.pt-enter).
+   With .pt-hold the header stays put and only the content fades.
+   =========================================== */
+html {
+  background-color: var(--color-white);
+}
+
+body,
+#app > main,
+#app > footer {
+  transition: opacity 220ms var(--ease-rebuild);
+}
+
+html.pt-leave:not(.pt-hold) body,
+html.pt-enter:not(.pt-hold) body,
+html.pt-hold.pt-leave #app > main,
+html.pt-hold.pt-leave #app > footer,
+html.pt-hold.pt-enter #app > main,
+html.pt-hold.pt-enter #app > footer {
+  opacity: 0;
+}
+
+html.pt-leave body {
+  pointer-events: none;
+}
+
+img[data-pt-img] {
+  transition: opacity 220ms var(--ease-rebuild);
+}
+
+img[data-pt-img="hidden"] {
+  opacity: 0;
+}
+
 /* Base Layer - Global styles and resets */
 @layer base {
   /* Skip Navigation Link */

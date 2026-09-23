@@ -31,6 +31,7 @@ The Rebuild platform: a directory of European social platforms plus, increasingl
 - Small, single-purpose PRs. Don't start the next phase until the current one is verified.
 - Before Phase 4 ships, the **Security/PII checklist (§7)** must be satisfied — it's a hard gate.
 - Record significant choices in `docs/decisions/` (one short ADR each).
+- **Every follow-up gets an issue.** List work a PR leaves undone under a `## Follow-ups` heading (or "Not in this PR" / "Saved for later"). Before opening the PR, check each item against open issues (`gh issue list --search "<keywords>"`). If one exists, link it; if not, create it with enough context to act on without the PR (what, where in the code, which DESIGN.md or plan section, acceptance), labelled `follow-up`. Then end each bullet with its issue number, e.g. "Skeleton fallbacks (#47)". When a PR merges, `.github/workflows/follow-up-issues.yml` creates a bare issue for any bullet still without a `#number` and comments the links on the PR. That's a safety net, not a substitute: its issues only quote the bullet.
 
 ## Testing (proportionate)
 Unit: pure logic (slugs, dates, block registry, migration transforms). Integration: auth/invite flows + the "no `[internal]` column leaks" guarantee. E2E (Playwright): home/directory + invite→login→edit→register. Test the things that would be *quietly wrong* (PII leaks, auth gates, migration data loss).

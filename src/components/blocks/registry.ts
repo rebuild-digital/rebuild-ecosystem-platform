@@ -1,4 +1,13 @@
-import { lazy, type Component } from "solid-js";
+import type { Component } from "solid-js";
+import HeroSplash from "./HeroSplash";
+import TextSection from "./TextSection";
+import Carousel from "./Carousel";
+import DirectoryPreview from "./DirectoryPreview";
+import ProgrammesPreview from "./ProgrammesPreview";
+import InsightsPreview from "./InsightsPreview";
+import GatheringsPreview from "./GatheringsPreview";
+import Engage from "./Engage";
+import HalfCircle from "./HalfCircle";
 
 export interface BlockDefinition {
   type: string;
@@ -6,16 +15,18 @@ export interface BlockDefinition {
   wrapperClass?: string;
 }
 
+// Static imports, not lazy(): a lazy block suspends on the first server render
+// after a cold start, and the streamed markup then fails to hydrate.
 const registry: Record<string, Component<any>> = {
-  HeroSplash: lazy(() => import("./HeroSplash")),
-  TextSection: lazy(() => import("./TextSection")),
-  Carousel: lazy(() => import("./Carousel")),
-  DirectoryPreview: lazy(() => import("./DirectoryPreview")),
-  ProgrammesPreview: lazy(() => import("./ProgrammesPreview")),
-  InsightsPreview: lazy(() => import("./InsightsPreview")),
-  GatheringsPreview: lazy(() => import("./GatheringsPreview")),
-  Engage: lazy(() => import("./Engage")),
-  HalfCircle: lazy(() => import("./HalfCircle")),
+  HeroSplash,
+  TextSection,
+  Carousel,
+  DirectoryPreview,
+  ProgrammesPreview,
+  InsightsPreview,
+  GatheringsPreview,
+  Engage,
+  HalfCircle,
 };
 
 export function getBlock(type: string): Component<any> | undefined {

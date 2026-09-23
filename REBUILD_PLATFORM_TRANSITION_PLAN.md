@@ -225,14 +225,14 @@ platform_categories: { platformId → platforms.id,
 This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a Directus saved-view filter (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
 
 ### 2.3 Migrate data (dry-run first, then reconcile)
-- **Dry run against a copy, never straight to production.** Run the migration into a throwaway local Postgres (Docker) first; the Risved database becomes production at Phase 4. The script reads the Notion Platforms DB via the existing token, transforms to the schema above, and inserts. Preserve slugs so existing URLs don't break.
+- **Dry run against a copy, never straight to production.** `npm run db:import-notion` imports the live Notion data into a throwaway in-memory Postgres (PGlite), reconciles, then imports again to prove re-runs change nothing (`-- --database-url` targets your local Postgres instead). The code lives in `src/server/import/`. It reads **all** Notion rows (drafts carry curation data too), maps them per §2.2, and upserts on `notionId`. Slugs are generated once and never change afterwards. Rows that disappear from Notion are reported, never deleted.
 - **Reconcile before trusting it** — a short checklist the script (or you) verifies after the dry run:
   - Row count in `platforms` == number of Notion records.
   - Every distinct Notion CATEGORY value exists in `categories`, and multi-category platforms have the right number of `platform_categories` rows.
   - No `null` in required public fields (`name`, `slug`, `website`, `description`) for `published` rows.
-  - Spot-check 5–10 records field-by-field against Notion, including a multi-category one.
+  - **Every** record is compared (instead of a 5–10 record spot check) field by field against Notion, contact and enrichment fields included. Only names and field names are printed, never values.
   - Every logo resolves from Bunny (not Notion) — see media note below.
-- Only after reconciliation passes, run it against production Postgres.
+- Only after reconciliation passes, run it against production Postgres. Risved's database is private, so the import runs **at server boot**: set `NOTION_IMPORT=true` in Risved, redeploy, read the `[notion-import]` log lines, then unset it. Re-running syncs the latest Notion state, which is useful while the team still curates in Notion. Stop once curation moves to Postgres, or a re-run will overwrite edits made there.
 - Keep the Notion read path behind a **feature flag** so you can flip back instantly if the Postgres path misbehaves.
 
 ### 2.3a Media / images — the general strategy (applies beyond logos)
@@ -398,6 +398,8 @@ Maintain in Risved (encrypted), by phase introduced:
 | --- | --- | --- |
 | `NOTION_TOKEN`, `NOTION_BUILDERS_DB_ID` | 1 (retire after 2) | Notion directory during transition |
 | Bunny CDN / fonts vars | 1 | Assets |
+| `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_KEY`, `BUNNY_CDN_URL`, `BUNNY_STORAGE_HOST` | 2 | Logo re-hosting (§2.3a): storage zone, its password, its pull-zone URL, region endpoint (default `storage.bunnycdn.com`) |
+| `NOTION_IMPORT` | 2 (temporary) | `true` runs the Notion → Postgres import at boot (§2.3); unset afterwards |
 | `PIRSCH_*` | 1 | Analytics |
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |

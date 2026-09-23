@@ -34,7 +34,10 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 1. ✅ Risved Postgres add-on enabled (2026-09-23); Risved injects `DATABASE_URL`. **Never press "Remove"** on it.
 2. ✅ Drizzle, the `platforms` / `categories` / `platform_categories` schema (§2.2, ADR 0006), migrations that run at server boot, and PGlite-backed tests.
 3. Nightly encrypted off-server backup to Bunny Storage, plus one test restore (§7.11). Check whether the Risved user can create a scoped app role (§7.6).
-4. Write the Notion → Postgres migration, including moving logos to Bunny (§2.3a). Dry-run it against the local Postgres and reconcile (§2.3).
+4. ✅ Notion → Postgres import with field-by-field reconciliation (§2.3). Dry run passes against the live Notion data except two items:
+   - **Needs you:** a Bunny Storage zone + pull zone for logos (151 in Notion). Set `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_KEY`, `BUNNY_CDN_URL` (+ `BUNNY_STORAGE_HOST` if not Falkenstein) in `.env` and Risved.
+   - **Needs you:** one **published** Notion row has no name, website or description (shows as "Untitled"). Fix or unpublish it in Notion.
+   - Then run it on Risved: set `NOTION_IMPORT=true`, redeploy, check the `[notion-import]` log, unset.
 5. Switch the directory read path to Postgres behind a feature flag. Select only `[public]` columns where `status = 'published'` (§2.4).
 
 ## Open items (from plan §9)

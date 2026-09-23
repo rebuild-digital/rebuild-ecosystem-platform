@@ -4,6 +4,7 @@ import { dirname, join } from "node:path";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
 import { useStorage } from "nitropack/runtime";
 import { getDb } from "./db";
+import { formatImport, runNotionImport } from "./import";
 
 /**
  * Nitro plugin: apply pending Drizzle migrations when the server boots.
@@ -13,9 +14,13 @@ import { getDb } from "./db";
  * Nitro server asset (see app.config.ts). The migrator reads a folder, so
  * the assets are written to a temp dir first.
  *
- * Without DATABASE_URL (CI, local without Postgres) this is a no-op. A failed
- * migration is logged and the site keeps serving: nothing reads the
- * database yet, and the directory still falls back to Notion.
+ * With NOTION_IMPORT=true it then syncs the Notion directory into Postgres
+ * and logs the reconciliation (plan §2.3). That's the only way to import
+ * into Risved's private database: set the variable, redeploy, read the log.
+ *
+ * Without DATABASE_URL (CI, local without Postgres) this is a no-op. A
+ * failure is logged and the site keeps serving: nothing reads the database
+ * yet, and the directory still falls back to Notion.
  */
 export default function migrateDb() {
   if (!process.env.DATABASE_URL) {
@@ -38,7 +43,17 @@ async function runMigrations() {
     console.log("[db] Migrations applied.");
   } catch (err) {
     console.error("[db] Migration failed:", err);
+    return;
   } finally {
     await rm(dir, { recursive: true, force: true });
+  }
+
+  if (process.env.NOTION_IMPORT !== "true") return;
+  try {
+    const { report, checks, ok } = await runNotionImport(getDb());
+    for (const line of formatImport(report, checks)) console.log(`[notion-import] ${line}`);
+    console.log(`[notion-import] ${ok ? "Reconciliation passed." : "Reconciliation found problems (see above)."}`);
+  } catch (err) {
+    console.error("[notion-import] Failed:", err);
   }
 }

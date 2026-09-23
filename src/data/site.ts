@@ -22,6 +22,7 @@ export interface SiteConfig {
   url: string;
   defaultImage: string;
   logo: string;
+  logoWhite: string;
   author: string;
   language: string;
   newsletterSuccessMessage: string;
@@ -35,6 +36,7 @@ const site: SiteConfig = {
   url: import.meta.env.VITE_SITE_URL ?? "http://localhost:3000",
   defaultImage: "/assets/images/social-3-2400.webp",
   logo: "/assets/images/logo.svg",
+  logoWhite: "/assets/images/logo-white.svg",
   author: "Rebuild",
   language: "en",
   newsletterSuccessMessage:

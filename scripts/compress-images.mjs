@@ -12,11 +12,12 @@
  * long edge exceeds 2400 px or whose file exceeds 500 KB, writes foo-2400.webp
  * (long edge ≤ 2400) and foo-1200.webp (long edge ≤ 1200) next to foo.webp, and
  * regenerates src/data/imageWidths.ts (used for srcset, see src/lib/images.ts).
- * Originals are left in place.
+ * To add an image: drop the full-size original in, run the full pipeline.
  *
  *   node scripts/compress-images.mjs --resize                            # dry run
  *   node scripts/compress-images.mjs --resize --convert                  # write variants
  *   node scripts/compress-images.mjs --resize --convert --update-refs    # point src/ at -2400
+ *   node scripts/compress-images.mjs --resize --convert --update-refs --remove-originals
  *
  * Requires: cwebp (brew install webp)
  */
@@ -47,6 +48,11 @@ const PHOTO_QUALITY = 82;
 const PNG_QUALITY = 90;
 
 const RESIZE_QUALITY = 80;
+// Grainy photos that stay heavy at RESIZE_QUALITY (paths relative to IMAGES_DIR)
+const RESIZE_QUALITY_OVERRIDES = {
+  "margrethe.webp": 60,
+  "paris.webp": 60,
+};
 const VARIANT_EDGES = [2400, 1200]; // first entry is the one src/ refs point at
 const RESIZE_MIN_BYTES = 500_000; // re-encode below 2400 px too if heavier than this
 const VARIANT_RE = new RegExp(`-(${VARIANT_EDGES.join("|")})\\.webp$`);
@@ -277,10 +283,6 @@ function imageSize(file) {
 // --resize: web-sized variants
 
 function resizeImages() {
-  if (REMOVE_ORIGINALS) {
-    console.error("--remove-originals is not supported with --resize; originals are kept.");
-    process.exit(1);
-  }
   if (CONVERT && spawnSync("cwebp", ["-version"]).status !== 0) {
     console.error("cwebp not found. Install with: brew install webp");
     process.exit(1);
@@ -329,7 +331,7 @@ function resizeImages() {
       if (!existsSync(dest) || statSync(dest).mtimeMs < statSync(src).mtimeMs) {
         const resize = longEdge <= edge ? [] : size.width >= size.height ? ["-resize", String(edge), "0"] : ["-resize", "0", String(edge)];
         const result = spawnSync("cwebp", [
-          "-q", String(isPng ? PNG_QUALITY : RESIZE_QUALITY),
+          "-q", String(isPng ? PNG_QUALITY : RESIZE_QUALITY_OVERRIDES[relative(IMAGES_DIR, src)] ?? RESIZE_QUALITY),
           ...(isPng ? ["-alpha_q", "90"] : []),
           ...resize,
           "-m", "6",
@@ -359,7 +361,7 @@ function resizeImages() {
     console.log(
       `  ✓ ${label.padEnd(72)} ${humanSize(bytes).padStart(8)} → ${written.map((w) => `${w.edge}: ${humanSize(w.bytes)}`).join(", ")}  (${pct(bytes, main.bytes)})`
     );
-    renames.push({ publicFrom: publicPath(src), publicTo: publicPath(main.dest) });
+    renames.push({ src, publicFrom: publicPath(src), publicTo: publicPath(main.dest) });
   }
 
   if (!CONVERT) {
@@ -376,6 +378,23 @@ function resizeImages() {
   writeWidthManifest();
 
   if (UPDATE_REFS) updateRefs(renames);
+
+  if (REMOVE_ORIGINALS) {
+    // Re-read src/ so an original that something still points at is never removed
+    const refs = walk(SRC_DIR)
+      .filter((f) => /\.(tsx?|css|json|md)$/.test(f))
+      .map((f) => readFileSync(f, "utf8"))
+      .join("\n");
+    console.log("\nRemoving originals:");
+    for (const { src, publicFrom } of renames) {
+      if (refs.includes(publicFrom)) {
+        console.log(`  kept ${relative(ROOT, src)} (still referenced — pass --update-refs)`);
+        continue;
+      }
+      unlinkSync(src);
+      console.log(`  removed ${relative(ROOT, src)}`);
+    }
+  }
 }
 
 function writeWidthManifest() {

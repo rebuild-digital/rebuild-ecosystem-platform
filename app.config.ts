@@ -5,6 +5,7 @@ export default defineConfig({
   middleware: "./src/middleware.ts",
   server: {
     preset: "node-server",
+    plugins: ["./src/server/warmDataCaches.ts"],
     routeRules: {
       "/assets/**": {
         headers: { "Cache-Control": "public, max-age=31536000, immutable" },
@@ -12,9 +13,6 @@ export default defineConfig({
       "/fonts/**": {
         headers: { "Cache-Control": "public, max-age=31536000, immutable" },
       },
-      "/": { swr: 300 },
-      "/directory": { swr: 300 },
-      "/data": { swr: 300 },
     },
   },
   vite: {

@@ -60,7 +60,7 @@ export default function InsightsListing() {
                       sizes="(min-width: 768px) 50vw, 100vw"
                       alt={insight.title}
                       loading="lazy"
-                      class="w-full object-cover"
+                      class="w-full aspect-video object-cover"
                     />
                   </a>
                 </Show>

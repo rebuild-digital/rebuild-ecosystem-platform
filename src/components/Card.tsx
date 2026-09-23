@@ -23,19 +23,22 @@ type CardProps = ParentProps<
     as?: "div" | "article" | "li" | "a";
     variant?: CardVariant;
     padding?: CardPadding;
+    /** Soften the corners with the `sm` radius token (4px). */
+    rounded?: boolean;
     class?: string;
   } & Omit<JSX.AnchorHTMLAttributes<HTMLAnchorElement>, "class">
 >;
 
 /**
- * Shared card surface. Cards are always rectangular and shadowless (see
- * DESIGN.md §Card Component); variants only change the surface.
+ * Shared card surface. Cards are shadowless and rectangular by default; pass
+ * `rounded` for the soft 4px corner (see DESIGN.md §Card Component).
  */
 export default function Card(props: CardProps) {
   const [local, rest] = splitProps(props, [
     "as",
     "variant",
     "padding",
+    "rounded",
     "class",
     "children",
   ]);
@@ -46,6 +49,7 @@ export default function Card(props: CardProps) {
       class={[
         variantMap[local.variant ?? "outlined"],
         paddingMap[local.padding ?? "none"],
+        local.rounded && "rounded-sm",
         local.class,
       ]
         .filter(Boolean)

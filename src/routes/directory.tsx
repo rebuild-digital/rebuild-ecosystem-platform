@@ -234,7 +234,7 @@ export default function Directory() {
                 <For each={filtered()}>
                   {(builder) => (
                     <div class="break-inside-avoid mb-xs">
-                      <Card padding="responsive" class="space-y-md">
+                      <Card padding="responsive" rounded class="space-y-md">
                         {/* Name + URL */}
                         <div class="builder-row-header">
                           <h3 class="text-xl lg:text-2xl">

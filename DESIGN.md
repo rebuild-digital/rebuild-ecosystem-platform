@@ -783,15 +783,16 @@ including the fixed header.
 
 ## Shapes
 
-Rectangular by default. Rounded corners are reserved for buttons and badges;
-tags, chips, and badges always receive `rounded-full`.
+Rectangular by default. Rounded corners are reserved for buttons, badges, and
+cards that opt in to the soft `sm` corner. Tags, chips, and badges always
+receive `rounded-full`.
 
 ### Border radius
 
 | Token  | Value  | Use |
 |--------|--------|-----|
 | `none` | 0px    | Default for cards, inputs, containers |
-| `sm`   | 4px    | Small buttons |
+| `sm`   | 4px    | Small buttons, rounded cards (`<Card rounded>`) |
 | `md`   | 8px    | Medium buttons |
 | `lg`   | 12px   | Large buttons, image containers (rare) |
 | `xl`   | 16px   | Available |
@@ -806,8 +807,10 @@ tags, chips, and badges always receive `rounded-full`.
 | `full` | 9999px | Badges, tags, chips, filter pills |
 
 **Guidance:** buttons use the radius that matches their size (`sm` → `sm`,
-`md` → `md`, `lg` → `lg`). Cards, images, and containers are rectangular
-(`none`) unless specifically designed. All badges, tags, and chips use
+`md` → `md`, `lg` → `lg`). Images and containers are rectangular (`none`)
+unless specifically designed. Cards are rectangular by default and may use
+the soft `sm` corner (4px) through the `Card` component's `rounded` prop.
+They never use a larger radius. All badges, tags, and chips use
 `rounded-full` — no exceptions.
 
 ### Borders
@@ -1192,7 +1195,7 @@ something is missing.
 ```tsx
 import Card, { CardMedia } from "~/components/Card";
 
-<Card padding="responsive" class="space-y-md">…</Card>        // directory
+<Card padding="responsive" rounded class="space-y-md">…</Card> // directory
 <Card variant="filled" class="flex flex-col h-full">           // tool
   <CardMedia src={thumb} alt="" fallback={…} />
   <div class="p-md">…</div>
@@ -1206,6 +1209,7 @@ import Card, { CardMedia } from "~/components/Card";
 | --- | --- | --- |
 | `variant` | `outlined` (`bg-white border-2 border-dark`), `filled` (`bg-lighter`), `plain` (no surface) | `outlined` |
 | `padding` | `none`, `md` (`p-md`), `responsive` (`p-5 lg:p-md`) | `none` |
+| `rounded` | `true` adds the soft 4px corner (`rounded-sm`) | `false` |
 | `as` | `div`, `article`, `li`, `a` | `div` |
 
 `CardMedia` is the card image slot. It has a fixed aspect ratio
@@ -1219,7 +1223,9 @@ renders `fallback` in the same box when there is no `src`. Children such as
 #### Principles
 
 - **Surface:** `bg-white` with `border-2` (inherits `border-dark`).
-- **Radius:** `rounded-none` (rectangular). Cards do not get rounded corners.
+- **Radius:** rectangular (`rounded-none`) by default. Cards *may* have a soft
+  4px corner (`rounded-sm`) via `<Card rounded>`. The directory card uses it.
+  Never go above `sm` on a card.
 - **Padding:** `p-md` (24px) on desktop, `p-5` (20px) as a compact
   alternative.
 - **Internal spacing:** `space-y-md` (24px vertical rhythm).
@@ -1232,7 +1238,8 @@ renders `fallback` in the same box when there is no `src`. Children such as
 - Contains: name/link, description (max-width `55ch`), category badges, and
   country pill.
 - Outer: `break-inside-avoid mb-xs`.
-- Inner: `<Card padding="responsive" class="space-y-md">` (outlined).
+- Inner: `<Card padding="responsive" rounded class="space-y-md">` (outlined,
+  soft 4px corner).
 
 **Tool card** (`ToolCard.tsx`):
 - `<Card variant="filled">`, with no border and no rounded corners.
@@ -1589,8 +1596,9 @@ Ground rules for staying within the system and avoiding common drift.
 - **Don't use shadows.** Not for elevation, not for hover, not for depth.
   This is a shadowless design system by deliberate choice.
 - **Don't use gradients** outside the hero splash overlay.
-- **Don't use rounded corners on cards or containers.** They stay rectangular.
-  Only buttons, badges, and pills get radii.
+- **Don't use large radii on cards or containers.** Containers stay
+  rectangular. Cards may use the soft 4px corner (`<Card rounded>`) but
+  nothing larger. Beyond that, only buttons, badges, and pills get radii.
 - **Don't put borders on standard buttons.** Primary and secondary buttons are
   borderless. Don't add outlines to "make them look more clickable."
 - **Don't use colored buttons for routine actions.** A form's "Submit" is

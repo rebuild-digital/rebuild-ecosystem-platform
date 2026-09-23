@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "How a Nokia pioneer's four-button innovation transformed human-computer interaction."
-featured_image: "/assets/images/christian-lindholm.webp"
+featured_image: "/assets/images/christian-lindholm-2400.webp"
 published: true
 ---
 
@@ -15,7 +15,7 @@ Christian Lindholm’s first mobile phone was a Nokia 2210. “I got it when I s
 
 Lindholm remembers walking around with a different piece of kit, though, an Apple Newton PDA. He held the compact, Kindle-like computer in his hands while strolling through London in the years before joining Nokia, guiding himself not by GPS but with the Time Out A-Z map he’d downloaded onto it. There was no dot to guide him, so he’d often overshoot a turning and have to backtrack. “It was close to science fiction, nobody did it,” he laughs, wishing aloud that he could travel back in time and get some drone shots of the passersby gawking at him.
 
-<img class="w-full object-cover" src="/assets/images/Nokia_0120.webp" alt="Nokia 3310, Beetle." />
+<img class="w-full object-cover" src="/assets/images/Nokia_0120-2400.webp" alt="Nokia 3310, Beetle." />
 
 He was desperate for the future, researching emergent design at London Business School, “totally smitten” by the promise of a mobile phone. “When I saw these ads of Nokia phones on London cabs, I thought ‘What the hell, something is happening in Finland!’ So I applied for a job,” Lindholm says. And he got it. Within weeks he was back in the country where he’d grown up.
 

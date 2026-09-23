@@ -3,6 +3,7 @@ import { createAsync, cache } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
 import PageHeader from "~/components/PageHeader";
 import { getAllInsights } from "~/data/insights";
+import { srcSet } from "~/lib/images";
 
 const getInsightsData = cache(async () => {
   "use server";
@@ -55,6 +56,8 @@ export default function InsightsListing() {
                   <a href={insight.url}>
                     <img
                       src={insight.featured_image}
+                      srcset={srcSet(insight.featured_image)}
+                      sizes="(min-width: 768px) 50vw, 100vw"
                       alt={insight.title}
                       loading="lazy"
                       class="w-full aspect-video object-cover"

@@ -65,7 +65,7 @@ export default function Rebuild2() {
       <section class="pb-xl sm:pb-3xl">
         <div class="relative w-full aspect-auto md:aspect-video">
           <img
-            src="/assets/images/helsinki.webp"
+            src="/assets/images/helsinki-2400.webp"
             alt="Helsinki, Finland"
             class="w-full h-full object-cover"
           />
@@ -115,7 +115,7 @@ export default function Rebuild2() {
                 style="aspect-ratio: 1/1"
               />
               <img
-                src="/assets/images/gatherings-main/gatherings-main-5.webp"
+                src="/assets/images/gatherings-main/gatherings-main-5-2400.webp"
                 alt="Social lunch from Rebuild 1"
                 class="w-full object-cover hidden sm:block"
                 style="aspect-ratio: 16/9"

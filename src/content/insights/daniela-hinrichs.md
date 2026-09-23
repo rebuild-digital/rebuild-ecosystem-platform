@@ -23,7 +23,7 @@ They had three months to get the first version out. On 1 November 2003, Open Bus
 
 “We had momentum – we made sure that we used this momentum,” Daniela recalls, “Lars believed in the power of technology and the web to both connect people and make business.” Why the focus on business users? Daniela explains it was based on pragmatism: “We knew that the Myspace kids would need a platform when they graduated to business life – and business life is a long life. And people with jobs have money!”
 
-![Daniela Waschows - as she was named then - business card from openBC.](/assets/images/openBC_DH.webp "The openBC business card.")
+![Daniela Waschows - as she was named then - business card from openBC.](/assets/images/openBC_DH-2400.webp "The openBC business card.")
 
 Daniela’s role, as she remembers it, was “everything that wasn’t coding”; it was also in large part about defining the company, building a brand and developing the frameworks that would help create and maintain scaleable, valuable communities. She explains, “back then, social networking wasn’t just about driving engagement, but about fostering social interaction and communication.
 

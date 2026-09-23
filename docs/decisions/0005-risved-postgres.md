@@ -20,7 +20,7 @@ Use Risved's Postgres add-on for Plane B. We take on the operational gaps oursel
 - **Backups (plan §7.11):** a nightly logical backup, encrypted, shipped off the server to Bunny Storage (EU), plus one test restore. This must pass before Phase 2 is done. There's no SSH on Risved Cloud, so the job runs inside the app or a sibling Risved project; the mechanism is chosen in Phase 2.
 - **TLS (§7.8):** not required while traffic stays on the host's private network. TLS becomes mandatory if the database moves off-host or is exposed.
 - **Least privilege (§7.6):** create a limited app role if the Risved user can. If it can't, record that as an accepted risk, mitigated by private-network-only access.
-- **Development:** a local Docker Postgres. Migrations run on deploy. The real database isn't reachable from a laptop.
+- **Development:** your own local Postgres via `DATABASE_URL`; tests use PGlite (in-process). Migrations run at server boot (`src/server/migrateDb.ts`). The real database isn't reachable from a laptop.
 
 ## Consequences
 - No extra provider, cost or credentials. One fewer processor in the DPA register (Risved/Hetzner now process the database; Scaleway stays for email only).

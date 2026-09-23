@@ -175,14 +175,14 @@ Before this phase can be marked done, all of the following must hold:
 ### 2.1 Provision
 - Enable **Risved's Postgres add-on** for the project. Risved injects `DATABASE_URL` (plus `POSTGRES_*`/`PG*`) into build, release and runtime. The database is reachable only on Risved's private Docker network, not from a laptop.
 - **Never press "Remove"** on the Postgres card in Risved: assume it deletes the volume and the data.
-- **Local development** uses a local Postgres (Docker). Schema migrations run on deploy (Drizzle migrations in the release/boot step), not from a laptop against the real database.
+- **Local development** uses your own local Postgres (Postgres.app, Homebrew or Docker) via `DATABASE_URL`. Tests use **PGlite** (in-process Postgres), so CI needs no database. Schema migrations run **at server boot**: a Nitro plugin (`src/server/migrateDb.ts`) applies the `drizzle/` migrations, which ship inside `.output` as server assets. They never run from a laptop against the real database.
 - **Least-privilege role (§7.6):** check whether the Risved-provided user can create a limited app role. Record the outcome.
 - **Off-server backups (§7.11):** set up the nightly backup job and do one test restore.
-- Add **Drizzle** (`drizzle-orm`, `drizzle-kit`, `postgres`/`pg`).
+- Add **Drizzle** (`drizzle-orm`, `drizzle-kit`, `postgres`). Schema in `src/server/db/schema.ts`; generate migrations with `npm run db:generate` (CI fails if they drift from the schema).
 
 ### 2.2 Schema (Plane B — directory + taxonomy)
 
-Mapped from the actual Notion "Platforms" database. Each Notion property is tagged **[public]** (renders on the site) or **[internal]** (curation/admin only, never public).
+Mapped from the actual Notion "Platforms" database (property list re-checked against the live database on 2026-09-23; see ADR 0006). Each column is tagged **[public]** (renders on the site) or **[internal]** (curation/admin only, never public). The source of truth is `src/server/db/schema.ts`. Public reads select `publicPlatformColumns` from there, never whole rows.
 
 ```ts
 // platforms — the directory entries (migrated from Notion)
@@ -192,14 +192,18 @@ platforms: {
   name,                          // [public]   Notion Title
   description,                   // [public]   Notion "DESCRIPTION" (rich text)
   website,                       // [public]   Notion "WEBSITE" (URL)
-  country,                       // [public]   Notion "COUNTRY" (single select)
-  logoUrl,                       // [public]   Notion "LOGO" (file) — see 2.3a media note
+  country,                       // [public]   Notion "COUNTRY" (multi-select; first value kept — ADR 0006)
+  logoUrl,                       // [public]   Notion "LOGO" (files) — see 2.3a media note
+  stage,                         // [public]   Notion "Stage" (select: concept | alpha | beta | growth | shut_down)
+  foundingYear,                  // [public]   Notion "Founding Year" (number)
   // --- internal / curation only ---
-  status,                        // [internal] publication state (from "PUBLISHED" checkbox) — see below
+  notionId (unique),             // [internal] source Notion page id — idempotent re-runs + reconciliation
+  status,                        // [internal] publication state (from "PUBLISHED?" checkbox) — see below
   priority,                      // [internal] curation triage (Notion "PRIORITY" select) — see below
   contactName,                   // [internal] Notion "CONTACT NAME" — PII
   contactInfo,                   // [internal] Notion "CONTACT INFO" (email) — PII
-  notes,                         // [internal] Notion page body "NOTES"
+  notes,                         // [internal] Notion "NOTES" (rich-text property)
+  enrichment (jsonb),            // [internal] populated business metrics (capital raised, team size, rounds, …) — ADR 0006
   publishDate,                   // [internal] Notion "Publish Date" (date)
   createdAt,
   updatedAt                      // seed from Notion "Last edited"
@@ -216,7 +220,7 @@ platform_categories: { platformId → platforms.id,
 **Two separate curation axes (corrected).** Notion had two orthogonal fields, and they stay separate in Postgres rather than being merged:
 
 - **`status`** = publication lifecycle, from the **PUBLISHED checkbox**. Enum: `published | draft`. Migration: checkbox **checked → `published`**, unchecked → `draft`. The public directory query filters `where status = 'published'` — reproducing exactly what the checkbox did.
-- **`priority`** = curation triage, from the **PRIORITY select** (confirmed single-select). Enum, verbatim from Notion: `top | next | last | save_for_later | discarded`. Never public; drives the team's backlog ordering only.
+- **`priority`** = curation triage, from the **PRIORITY select** (confirmed single-select). Enum, from Notion's `Top | Next | Last | Save 4 Later | Discarded`: `top | next | last | save_for_later | discarded`. Never public; drives the team's backlog ordering only.
 
 This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a Directus saved-view filter (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
 

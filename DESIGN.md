@@ -482,6 +482,30 @@ overlay), no drop shadows anywhere, and minimal border radius.
 Buttons are either borderless text or outlined pills. The overall feeling is
 a curated programme booklet — restrained, typographic, confident.
 
+### Building with this system
+
+These rules apply to every new feature and are repeated in `AGENTS.md` and
+`CLAUDE.md` on purpose:
+
+1. **This document is the spec.** Read the relevant sections before building
+   anything, and follow them. Tokens, components, states, accessibility, motion
+   and voice described here are requirements, not suggestions.
+2. **Reuse before you create.** Build from the components and patterns
+   documented below and implemented in `src/components/` and
+   `src/components/blocks/`. A new component that is "on brand" is still a new
+   component, and it still adds bloat. Prefer, in order:
+   - use as is;
+   - compose existing pieces;
+   - extend an existing component with a variant or prop.
+
+   Only when nothing existing can do the job should you create something new.
+   Document it in [Components](#components) in the same PR, so the next
+   feature can reuse it.
+3. **Follow best practice, the Solid way.** Write DRY, accessible
+   (see [Accessibility](#accessibility)) and performant code. Use SolidJS and
+   SolidStart idioms rather than React habits. See `AGENTS.md`
+   §Building features for the specifics.
+
 ## Colors
 
 30 total values: six chromatic hues with four stops each (shade → base → tint →
@@ -1519,6 +1543,13 @@ Ground rules for staying within the system and avoiding common drift.
 
 ### Do
 
+- **Start from this document.** Check it before building any feature, and
+  follow what it specifies.
+- **Reuse existing components and patterns.** Use as is, compose, or extend
+  with a variant before creating anything new. Document any genuinely new
+  component in [Components](#components) in the same PR.
+- **Write DRY, accessible, performant, idiomatic SolidJS.** See `AGENTS.md`
+  §Building features.
 - **Use a single font weight.** ABC Social Mono Book (400) only. Create
   hierarchy with size and spacing.
 - **Keep it flat.** No shadows anywhere. Use borders and color fills to
@@ -1551,6 +1582,12 @@ Ground rules for staying within the system and avoiding common drift.
 
 ### Don't
 
+- **Don't invent new components or patterns because they look on brand.**
+  If an existing component can be used, composed, or extended, do that.
+  Near-duplicates (a second card, button, badge, or section wrapper) bloat the
+  codebase.
+- **Don't copy-paste markup or logic** between routes or components. Extract
+  and share it.
 - **Don't use bold or italic** on ABC Social Mono (except in `.rich-text`
   for CMS content where semantic markup matters).
 - **Don't introduce new colors.** The 30-value palette (6 chromatic × 4 stops

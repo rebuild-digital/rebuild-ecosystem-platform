@@ -10,6 +10,12 @@ This file is intentionally short: all project conventions live in `AGENTS.md` so
 - **Small PRs, describe intent, wait for review.** Prefer many small changes over one large one.
 - **Ask before assuming** on the plan's open items (§9) — especially platform-association rigor, event-registration fields, and which datasets feed badge matching.
 
+## Building features (full detail in AGENTS.md §Building features)
+Every UI or code change must:
+1. **Follow `DESIGN.md`.** Read the relevant sections before building, and follow its tokens, components, states, a11y and motion rules.
+2. **Reuse before you create.** Build from the existing components and patterns in `src/components/` and `DESIGN.md`. Being "on brand" doesn't justify a new component. Prefer, in order: use as is, compose, extend with a variant or prop. Create a new component only when nothing existing can do the job, and document it in `DESIGN.md` in the same PR. This prevents codebase bloat.
+3. **Follow best practice, the Solid way.** Write DRY, accessible (WCAG 2.1 AA) and performant code. Use SolidJS/SolidStart idioms: fine-grained signals and memos, control-flow components, `query`/`createAsync`/`action`, server functions and `<Suspense>`. Don't port React patterns.
+
 ## Non-negotiables (full detail in AGENTS.md §Hard rules)
 - SolidStart **server preset**, never static.
 - Never leak `[internal]`/PII columns to the client; return only the fields a page needs.

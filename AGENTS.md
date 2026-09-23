@@ -25,6 +25,7 @@ The Rebuild platform: a directory of European social platforms plus, increasingl
 5. **Media:** store files in Bunny Storage, store only URLs in Postgres. Never persist expiring third-party (e.g. Notion) file URLs.
 6. **Additive & reversible.** New tables, feature flags, staging first. Don't do destructive changes without a rollback path.
 7. **Deletes cascade** across user-owned tables (`profiles`, `user_platforms`, `user_badges`, `event_registrations`).
+8. **Errors never reach the client raw.** Solid serializes thrown errors (message, stack, server paths) to the browser. Wrap every `"use server"` query body in `guardServer()` (`src/lib/guardServer.ts`); page errors go through `SafeErrorBoundary`, already in `app.tsx`.
 
 ## Workflow
 - Work **one phase at a time** (see the plan's phases). A phase's **Verification list is its acceptance criteria** — not done until all pass in staging.

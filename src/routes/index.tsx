@@ -15,32 +15,35 @@ import { programmes } from "~/data/programmes";
 import { gatherings } from "~/data/gatherings";
 import { getBuilders } from "~/data/builders";
 import { getAllInsights } from "~/data/insights";
+import { guardServer } from "~/lib/guardServer";
 
 const getHomeData = cache(async () => {
 	"use server";
-	const [builders, insights] =
-		await Promise.all([
-			getBuilders(),
-			getAllInsights(),
-		]);
-	return {
-		builders: builders
-			.slice(0, 10)
-			.map((b) => ({
-				name: b.name,
-				link: b.link,
-				category: b.category,
-			})),
-		totalBuilders: builders.length,
-		insights: insights
-			.slice(0, 3)
-			.map((i) => ({
-				url: i.url,
-				title: i.title,
-				featured_image:
-					i.featured_image,
-			})),
-	};
+	return guardServer("home-data", async () => {
+		const [builders, insights] =
+			await Promise.all([
+				getBuilders(),
+				getAllInsights(),
+			]);
+		return {
+			builders: builders
+				.slice(0, 10)
+				.map((b) => ({
+					name: b.name,
+					link: b.link,
+					category: b.category,
+				})),
+			totalBuilders: builders.length,
+			insights: insights
+				.slice(0, 3)
+				.map((i) => ({
+					url: i.url,
+					title: i.title,
+					featured_image:
+						i.featured_image,
+				})),
+		};
+	});
 }, "home-data");
 
 export const route = {

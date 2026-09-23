@@ -3,6 +3,7 @@ import { createAsync, cache } from "@solidjs/router";
 import { createSignal, createEffect, createMemo, onCleanup, Suspense, For, Show } from "solid-js";
 import { getBuilders } from "~/data/builders";
 import Badge from "~/components/Badge";
+import { guardServer } from "~/lib/guardServer";
 
 type BadgeColor = "red" | "blue" | "green" | "orange" | "blush" | "blonde" | "dark" | "lighter";
 
@@ -50,15 +51,17 @@ function getCategoryColors(cat: string) {
 
 const getDirectoryData = cache(async () => {
   "use server";
-  const builders = await getBuilders();
-  return builders.map((b) => ({
-    id: b.id,
-    name: b.name,
-    link: b.link,
-    category: b.category,
-    description: b.description,
-    country: b.country,
-  }));
+  return guardServer("directory-data", async () => {
+    const builders = await getBuilders();
+    return builders.map((b) => ({
+      id: b.id,
+      name: b.name,
+      link: b.link,
+      category: b.category,
+      description: b.description,
+      country: b.country,
+    }));
+  });
 }, "directory-data");
 
 export const route = {

@@ -3,16 +3,19 @@ import { createAsync, cache } from "@solidjs/router";
 import { For, Show, Suspense } from "solid-js";
 import PageHeader from "~/components/PageHeader";
 import { getAllInsights } from "~/data/insights";
+import { guardServer } from "~/lib/guardServer";
 import { srcSet } from "~/lib/images";
 
 const getInsightsData = cache(async () => {
   "use server";
-  const insights = await getAllInsights();
-  return insights.map((i) => ({
-    url: i.url,
-    title: i.title,
-    featured_image: i.featured_image,
-  }));
+  return guardServer("insights-data", async () => {
+    const insights = await getAllInsights();
+    return insights.map((i) => ({
+      url: i.url,
+      title: i.title,
+      featured_image: i.featured_image,
+    }));
+  });
 }, "insights-data");
 
 export const route = {

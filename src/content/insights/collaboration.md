@@ -5,7 +5,7 @@ author: "Matt Muir"
 tags:
   - Stories
 excerpt: "Europe's new generation of social platforms share more than an ethos – they're building a movement"
-featured_image: "/assets/images/collaboration-1.webp"
+featured_image: "/assets/images/collaboration-1-2400.webp"
 published: true
 ---
 
@@ -29,7 +29,7 @@ As Anders Lemke-Holstein, the founder of Oase, puts it, "…the most important p
 
 What was equally clear was that there is a real appetite amongst European builders to create solutions that plug the very obvious gaps in the community-focused toolset, in ways that learn from the mistakes and missteps of the past 15 years.
 
-![Collaboration at Rebuild1](/assets/images/collaboration-2.webp)
+![Collaboration at Rebuild1](/assets/images/collaboration-2-2400.webp)
 
 As the team behind Mio told us: the sweet spot of a community-focused platform is where 'useful and flexible' meets 'intuitive and fun'. Building products that help people do the things that matter: meeting, communicating, accessing and sharing information, organising and mobilising small groups. With little friction and, crucially, with an ethos that is non-exploitative, non-extractive, and user-centric.
 

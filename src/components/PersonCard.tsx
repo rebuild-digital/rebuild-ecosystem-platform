@@ -1,5 +1,6 @@
 import { Show } from "solid-js";
 import ImageCredit from "./ImageCredit";
+import Card, { CardMedia } from "./Card";
 
 export interface Person {
   name: string;
@@ -13,17 +14,19 @@ export interface Person {
 
 export default function PersonCard(props: { person: Person }) {
   return (
-    <div>
-      <div class="w-full aspect-square bg-muted mb-md relative">
-        <img
-          src={props.person.image}
-          alt={props.person.name}
-          class="w-full h-full object-cover"
-        />
+    <Card variant="plain">
+      <CardMedia
+        src={props.person.image}
+        sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+        alt={props.person.name}
+        aspect="square"
+        placeholder="muted"
+        class="mb-md"
+      >
         <Show when={props.person.imageCredit}>
           <ImageCredit credit={props.person.imageCredit!} />
         </Show>
-      </div>
+      </CardMedia>
 
       <Show when={props.person.specialty}>
         <h3 class="text-xl md:text-2xl font-normal mb-sm underline">
@@ -54,6 +57,6 @@ export default function PersonCard(props: { person: Person }) {
           {props.person.name}
         </h3>
       </Show>
-    </div>
+    </Card>
   );
 }

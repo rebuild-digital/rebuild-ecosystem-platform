@@ -19,5 +19,12 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    server: {
+      watch: {
+        // Agent worktrees live under .claude/; their generated tsconfigs
+        // otherwise make Vite clear its cache and reload this dev server.
+        ignored: ["**/.claude/**"],
+      },
+    },
   },
 });

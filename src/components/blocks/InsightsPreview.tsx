@@ -1,4 +1,5 @@
 import { For, Show } from "solid-js";
+import Card, { CardMedia } from "~/components/Card";
 
 export interface InsightPreviewItem {
   url: string;
@@ -27,23 +28,22 @@ export default function InsightsPreview(props: InsightsPreviewProps) {
           <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
             <For each={props.insights.slice(0, 3)}>
               {(insight) => (
-                <a href={insight.url} class="group block no-underline">
-                  <Show
-                    when={insight.featured_image}
-                    fallback={
-                      <div class="w-full aspect-video bg-lighter mb-md" />
-                    }
-                  >
-                    <img
-                      src={insight.featured_image}
-                      alt={insight.title}
-                      class="w-full aspect-video object-cover mb-md"
-                    />
-                  </Show>
+                <Card
+                  as="a"
+                  variant="plain"
+                  href={insight.url}
+                  class="group block no-underline"
+                >
+                  <CardMedia
+                    src={insight.featured_image}
+                    sizes="(min-width: 768px) 33vw, 100vw"
+                    alt={insight.title}
+                    class="mb-md"
+                  />
                   <h3 class="text-xl md:text-2xl font-normal text-dark group-hover:underline transition-rebuild">
                     {insight.title}
                   </h3>
-                </a>
+                </Card>
               )}
             </For>
           </div>

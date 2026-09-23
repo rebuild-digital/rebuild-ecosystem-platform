@@ -5,7 +5,7 @@ author: "Sophia Epstein"
 tags:
   - Stories
 excerpt: "Felix Petersen on why you should build something that tastes good"
-featured_image: "/assets/images/felix-petersen-1.webp"
+featured_image: "/assets/images/felix-petersen-1-2400.webp"
 published: true
 ---
 
@@ -26,7 +26,7 @@ In short, Europeans have taste, and – as Petersen points out regarding the pos
 
 In contrast, scale no longer matters as much. We can build at a hyperlocal level, for a niche audience, and actually have something to say. “If you build things that the whole world should use, you need to be at the lowest common denominator,” he says, pointing to Facebook. “But if a teenager builds something for their group of friends, then it’s not universal – but that’s ok.”
 
-![Felix Petersen on stage at Rebuild 1.](/assets/images/felix-petersen-2.webp)
+![Felix Petersen on stage at Rebuild 1.](/assets/images/felix-petersen-2-2400.webp)
 
 When Petersen talks about what AI has done for builders you can see the glimmer of excitement in his eyes. He understands the risks and the “enshittification” associated with it, pointing specifically to the addition of advertisement to ChatGPT. “But, at the same time, I can’t deny that when I first saw it I was like ‘fuck this is great.’”
 

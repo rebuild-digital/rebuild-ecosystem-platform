@@ -61,6 +61,14 @@ function seededShuffle<T>(arr: T[], seed: number): T[] {
   return a;
 }
 
+// The file cache holds the unshuffled list; every path shuffles exactly once
+// from a canonical (id-sorted) order, so a given day always gives one order
+// no matter whether it came from Notion, the file, or a legacy shuffled file.
+function dailyOrder(data: Builder[]): Builder[] {
+  const canonical = [...data].sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+  return seededShuffle(canonical, dailySeed());
+}
+
 async function fetchFromNotion(): Promise<Builder[]> {
   const token = process.env.NOTION_TOKEN;
   const dbId = process.env.NOTION_BUILDERS_DB_ID;
@@ -122,8 +130,8 @@ async function fetchFromNotion(): Promise<Builder[]> {
     order: page.properties.Order?.number || 999,
   }));
 
-  const shuffled = seededShuffle(data, dailySeed());
-  writeFileCache(shuffled);
+  writeFileCache(data);
+  const shuffled = dailyOrder(data);
   memCache = { data: shuffled, ts: Date.now() };
   console.log(`Fetched ${data.length} platforms from the directory.`);
   return shuffled;
@@ -148,7 +156,7 @@ export async function getBuilders(): Promise<Builder[]> {
 
   const fileCached = readFileCache();
   if (fileCached && fileCached.length > 0) {
-    const shuffled = seededShuffle(fileCached, dailySeed());
+    const shuffled = dailyOrder(fileCached);
     memCache = { data: shuffled, ts: Date.now() };
     refreshInBackground();
     return shuffled;

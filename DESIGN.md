@@ -1184,9 +1184,37 @@ color's `--light` variant as background, shifting to `--tint` on hover and
 
 ### Card Component
 
-Cards are content containers. The system has no shared card base class — each
-variant is composed from utility classes. These are the common principles
-extracted from the directory cards.
+Cards are content containers. Every card is built on the shared
+`Card` component (`src/components/Card.tsx`). **Don't hand-roll card
+surfaces with utility classes.** Use `Card` and add a prop or variant if
+something is missing.
+
+```tsx
+import Card, { CardMedia } from "~/components/Card";
+
+<Card padding="responsive" class="space-y-md">…</Card>        // directory
+<Card variant="filled" class="flex flex-col h-full">           // tool
+  <CardMedia src={thumb} alt="" fallback={…} />
+  <div class="p-md">…</div>
+</Card>
+<Card as="a" variant="plain" href={url} class="group block">   // insight
+  <CardMedia src={image} alt={title} class="mb-md" />
+</Card>
+```
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `variant` | `outlined` (`bg-white border-2 border-dark`), `filled` (`bg-lighter`), `plain` (no surface) | `outlined` |
+| `padding` | `none`, `md` (`p-md`), `responsive` (`p-5 lg:p-md`) | `none` |
+| `as` | `div`, `article`, `li`, `a` | `div` |
+
+`CardMedia` is the card image slot. It has a fixed aspect ratio
+(`aspect`: `video` | `square`), cover-crops the image, and lazy-loads it
+by default. It adds a `srcset` automatically for images that have web-sized
+`-2400`/`-1200` variants; pass `sizes` to match the card's grid width. It
+shows a `placeholder` background (`lighter` | `muted`), and
+renders `fallback` in the same box when there is no `src`. Children such as
+`<ImageCredit>` are layered on top of the image.
 
 #### Principles
 
@@ -1204,23 +1232,26 @@ extracted from the directory cards.
 - Contains: name/link, description (max-width `55ch`), category badges, and
   country pill.
 - Outer: `break-inside-avoid mb-xs`.
-- Inner: `bg-white space-y-md p-5 lg:p-md rounded border-2`.
+- Inner: `<Card padding="responsive" class="space-y-md">` (outlined).
 
-**Tool card:**
-- `bg-lighter`, no border, no rounded corners.
-- Image at top with `aspect-video`, content in `p-md`.
+**Tool card** (`ToolCard.tsx`):
+- `<Card variant="filled">`, with no border and no rounded corners.
+- `<CardMedia>` (video) at the top, and content in `p-md`.
 - Action buttons use `border-2 border-dark`.
 
-**Insight post card:**
-- No surface — image and title only (`overflow-hidden mb-xl`).
-- Image with `aspect-video`, title link below with `mt-md`.
+**Insight post card** (`InsightsPreview.tsx`):
+- `<Card as="a" variant="plain">`: image and title only, with no surface.
+- `<CardMedia>` (video), with the title below it.
 
-**Gathering card:**
-- No surface — image with colored overlay label.
-- Fixed-height image (`h-125`), location/date row, optional CTA buttons.
+**Gathering card** (`GatheringsPreview.tsx`):
+- `<Card variant="plain">`: an image with a colored overlay label.
+- A fixed-height image (`h-125`, custom because of the grayscale and overlay
+  treatment for past gatherings), a location/date row, and optional CTA
+  buttons.
 
-**Person card:**
-- No surface — square image (`aspect-square bg-muted`), name, specialty, bio.
+**Person card** (`PersonCard.tsx`):
+- `<Card variant="plain">` with `<CardMedia aspect="square" placeholder="muted">`,
+  followed by the name, specialty and bio.
 
 ### Header
 

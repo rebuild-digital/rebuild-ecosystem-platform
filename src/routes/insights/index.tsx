@@ -57,7 +57,7 @@ export default function InsightsListing() {
                       src={insight.featured_image}
                       alt={insight.title}
                       loading="lazy"
-                      class="w-full object-cover"
+                      class="w-full aspect-video object-cover"
                     />
                   </a>
                 </Show>

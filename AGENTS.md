@@ -61,4 +61,4 @@ These three rules are repeated in `CLAUDE.md` and `DESIGN.md` on purpose. They a
 Unit: pure logic (slugs, dates, block registry, migration transforms). Integration: auth/invite flows + the "no `[internal]` column leaks" guarantee. E2E (Playwright): home/directory + invite→login→edit→register. Test the things that would be *quietly wrong* (PII leaks, auth gates, migration data loss).
 
 ## Verify current docs before trusting sketches
-Schema and config in the plan are **sketches**. For Better Auth (now under new ownership) and Directus, check the current official docs before implementing.
+Schema and config in the plan are **sketches**. For Better Auth (now under new ownership) and Decap, check the current official docs before implementing.

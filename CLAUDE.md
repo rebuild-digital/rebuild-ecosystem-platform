@@ -25,7 +25,7 @@ Every UI or code change must:
 - Deletes cascade across user-owned tables.
 
 ## Before implementing auth or CMS
-Better Auth is under new ownership and Directus/Decap evolve — **check the current official docs** before writing the integration; the plan's config blocks are sketches, not verified snippets.
+Better Auth is under new ownership and Decap evolves — **check the current official docs** before writing the integration; the plan's config blocks are sketches, not verified snippets.
 
 ## When you finish a phase
 Update `docs/decisions/` if a real choice was made, confirm the Verification list, and note anything that changed vs. the plan so `REBUILD_PLATFORM_TRANSITION_PLAN.md` can be kept accurate.

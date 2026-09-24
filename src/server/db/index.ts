@@ -13,7 +13,8 @@ export const casing = "snake_case";
 export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
 
 function connect(url: string) {
-  return drizzle(postgres(url, { max: 5 }), { schema, casing });
+  // onnotice: skip Postgres NOTICEs such as "schema already exists" on every boot.
+  return drizzle(postgres(url, { max: 5, onnotice: () => {} }), { schema, casing });
 }
 
 let db: ReturnType<typeof connect> | undefined;

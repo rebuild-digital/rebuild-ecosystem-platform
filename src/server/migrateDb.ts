@@ -49,6 +49,7 @@ async function runMigrations() {
   }
 
   if (process.env.NOTION_IMPORT !== "true") return;
+  console.log("[notion-import] Starting (Notion rows + logo uploads take a minute or two)…");
   try {
     const { report, checks, ok } = await runNotionImport(getDb());
     for (const line of formatImport(report, checks)) console.log(`[notion-import] ${line}`);

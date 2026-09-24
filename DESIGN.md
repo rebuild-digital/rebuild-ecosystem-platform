@@ -665,8 +665,12 @@ from darkest to lightest:
 - **Color overlays on images:** use the
   `dark` color in RGBA at varying
   opacities with `mix-blend-multiply`.
-  The hero splash uses a vertical
-  gradient (0.1–0.95); past-event
+  The hero splash layers a flat `dark`
+  tint (40%, multiply) with two
+  gradients: top half 0.75 → 0 so the
+  transparent header's nav stays
+  legible on bright images, bottom
+  third 0.6 → 0 behind the CTAs; past-event
   gathering cards use the gathering's
   brand color at 40% opacity over a
   grayscaled image. When overlaying

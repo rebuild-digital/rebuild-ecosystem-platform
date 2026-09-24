@@ -17,7 +17,7 @@ export async function runNotionImport(db: Db) {
   return { report, checks, ok: checks.every((c) => c.ok) };
 }
 
-const MAX_DETAILS = 10;
+const MAX_DETAILS = 20;
 
 /** Log-safe summary: platform names and counts, never contact fields. */
 export function formatImport(report: ImportReport, checks: Check[]): string[] {

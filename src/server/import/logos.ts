@@ -11,6 +11,26 @@ export interface LogoStore {
 }
 
 const MAX_BYTES = 5 * 1024 * 1024;
+const USER_AGENT = "Mozilla/5.0 (compatible; RebuildLogoImporter/1.0; +https://rebuild.net)";
+
+// Bot protection is inconsistent: some hosts reject requests without a
+// User-Agent, others reject ours, and some block intermittently. On 403/429
+// the download is retried with the next header set.
+const ATTEMPTS: { headers: Record<string, string>; delayMs: number }[] = [
+  { headers: { "User-Agent": USER_AGENT }, delayMs: 0 },
+  { headers: {}, delayMs: 0 },
+  { headers: { "User-Agent": USER_AGENT }, delayMs: 1500 },
+];
+
+async function download(url: string): Promise<Response> {
+  let res: Response | undefined;
+  for (const { headers, delayMs } of ATTEMPTS) {
+    if (delayMs) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    res = await fetch(url, { headers, signal: AbortSignal.timeout(TIMEOUT_MS) });
+    if (res.status !== 403 && res.status !== 429) return res;
+  }
+  return res!;
+}
 const TIMEOUT_MS = 20_000;
 
 const EXTENSIONS: Record<string, string> = {
@@ -56,7 +76,9 @@ export function bunnyLogoStore(env = process.env): LogoStore | null {
  * cache it forever and a changed logo gets a new URL.
  */
 export async function rehostLogo(source: LogoSource, slug: string, store: LogoStore): Promise<string> {
-  const res = await fetch(source.url, { signal: AbortSignal.timeout(TIMEOUT_MS) });
+  // URLs pasted into Notion can carry invisible characters before "http".
+  const url = source.url.trim().replace(/^[^h]+(?=https?:\/\/)/, "");
+  const res = await download(url);
   if (!res.ok) throw new Error(`download failed: HTTP ${res.status}`);
   const contentType = res.headers.get("content-type")?.split(";")[0].trim().toLowerCase() ?? "";
   const ext = EXTENSIONS[contentType];

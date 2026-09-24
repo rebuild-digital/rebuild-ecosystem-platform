@@ -94,6 +94,26 @@ describe("importPlatforms", () => {
     expect((await reconcile(db, renamed)).slice(0, 4).every((c) => c.ok)).toBe(true);
   });
 
+  it("strips invisible characters before a pasted logo URL and sends a User-Agent", async () => {
+    const pasted = page("c", {
+      name: "Pasted",
+      logo: { type: "external", url: "\u{FFFC}\u{FFFC}https://images.example/pasted.png" },
+    });
+    const report = await importPlatforms(db, [pasted], store);
+    expect(report.logos).toMatchObject({ rehosted: 1, failed: [] });
+    const [url, init] = vi.mocked(fetch).mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://images.example/pasted.png");
+    expect(new Headers(init.headers).get("user-agent")).toContain("RebuildLogoImporter");
+  });
+
+  it("retries a blocked logo download with other headers", async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(new Response("blocked", { status: 403 }));
+    const report = await importPlatforms(db, [pages[0]], store);
+    expect(report.logos).toMatchObject({ rehosted: 1, failed: [] });
+    const calls = vi.mocked(fetch).mock.calls as unknown as [string, RequestInit][];
+    expect(calls.map(([, init]) => new Headers(init.headers).has("user-agent"))).toEqual([true, false]);
+  });
+
   it("keeps the stored logo when Bunny isn't configured", async () => {
     await importPlatforms(db, pages, store);
     const report = await importPlatforms(db, pages, null);

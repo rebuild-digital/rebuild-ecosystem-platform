@@ -9,7 +9,8 @@
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:import-notion": "tsx --env-file=.env scripts/import-notion.ts"
   },
   "dependencies": {
     "@notionhq/client": "^5.26.0",
@@ -30,6 +31,7 @@
     "drizzle-kit": "^0.31.11",
     "playwright": "^1.63.0",
     "tailwindcss": "^4.1.17",
+    "tsx": "^4.23.15",
     "typescript": "^5.7.3",
     "vitest": "^5.0.1"
   },

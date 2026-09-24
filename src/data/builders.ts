@@ -3,7 +3,12 @@
 import { Client } from "@notionhq/client";
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { getDb } from "../server/db";
+import { listPublishedPlatforms } from "../server/db/directory";
 import { dailyOrder } from "../lib/dailyOrder";
+
+// Imports stay relative: this module is also bundled into the Nitro boot
+// plugin (warmDataCaches.ts), where "~" is the project root (ADR 0001).
 
 const CACHE_FILE = path.join(process.cwd(), ".cache/builders.json");
 const MEMORY_TTL = 5 * 60 * 1000;
@@ -11,19 +16,14 @@ const MEMORY_TTL = 5 * 60 * 1000;
 let memCache: { data: Builder[]; ts: number } | null = null;
 let pendingRefresh: Promise<Builder[]> | null = null;
 
+/** A published directory entry, public fields only. */
 export interface Builder {
   id: string;
   name: string;
   description: string;
-  imageUrl: string;
   link: string;
-  tags: string[];
   category: string[];
-  stage: string;
   country: string[];
-  yearFounded: number | null;
-  published: boolean;
-  order: number;
 }
 
 function readFileCache(): Builder[] | null {
@@ -88,23 +88,13 @@ async function fetchFromNotion(): Promise<Builder[]> {
     name: page.properties.Name?.title[0]?.plain_text || "Untitled",
     description:
       page.properties.DESCRIPTION?.rich_text[0]?.plain_text || "",
-    imageUrl:
-      page.properties.Image?.files[0]?.file?.url ||
-      page.properties.Image?.files[0]?.external?.url ||
-      "",
     link: page.properties.WEBSITE?.url || "",
-    tags:
-      page.properties.TAGS?.multi_select?.map((t: any) => t.name) || [],
     category:
       page.properties.CATEGORY?.multi_select?.map((t: any) => t.name) ||
       [],
-    stage: page.properties.STAGE?.select?.name || "",
     country:
       page.properties.COUNTRY?.multi_select?.map((t: any) => t.name) ||
       [],
-    yearFounded: page.properties["YEAR FOUNDED"]?.number || null,
-    published: page.properties["PUBLISHED?"]?.checkbox || false,
-    order: page.properties.Order?.number || 999,
   }));
 
   // The file cache holds the unshuffled list; dailyOrder() runs on every read.
@@ -127,7 +117,41 @@ function refreshInBackground() {
     });
 }
 
+/**
+ * The directory, from the source DIRECTORY_SOURCE selects (plan §2.4).
+ * "postgres" reads the migrated data; anything else keeps Notion. If
+ * Postgres fails or has no published platforms, it falls back to Notion,
+ * so a bad deploy or a missed import can't empty the directory.
+ */
 export async function getBuilders(): Promise<Builder[]> {
+  if (process.env.DIRECTORY_SOURCE === "postgres") {
+    try {
+      const builders = await getBuildersFromPostgres();
+      if (builders.length > 0) return builders;
+      console.warn("[directory] Postgres has no published platforms; using Notion.");
+    } catch (err) {
+      console.error("[directory] Postgres read failed; using Notion:", err);
+    }
+  }
+  return getBuildersFromNotion();
+}
+
+async function getBuildersFromPostgres(): Promise<Builder[]> {
+  const rows = await listPublishedPlatforms(getDb());
+  return dailyOrder(
+    rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      description: r.description ?? "",
+      link: r.website ?? "",
+      category: r.categories,
+      country: r.country ? [r.country] : [],
+    })),
+  );
+}
+
+/** Notion, behind a memory + file cache. Also warmed at boot as the fallback. */
+export async function getBuildersFromNotion(): Promise<Builder[]> {
   if (memCache && Date.now() - memCache.ts < MEMORY_TTL) {
     return memCache.data;
   }

@@ -15,6 +15,7 @@ import {
   pgEnum,
   pgTable,
   primaryKey,
+  smallint,
   text,
   timestamp,
   uuid,
@@ -88,6 +89,8 @@ export const platformCategories = pgTable(
     categoryId: uuid()
       .notNull()
       .references(() => categories.id, { onDelete: "cascade" }),
+    // Order as chosen in Notion; cards show category badges in this order.
+    position: smallint().notNull().default(0),
   },
   (t) => [primaryKey({ columns: [t.platformId, t.categoryId] }), index().on(t.categoryId)],
 );

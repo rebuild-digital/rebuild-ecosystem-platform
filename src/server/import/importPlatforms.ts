@@ -8,14 +8,14 @@
 // Reports name platforms (public data) but never contact fields.
 
 import { inArray, isNotNull, sql } from "drizzle-orm";
-import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
+import type { Db } from "../db";
 import * as schema from "../db/schema";
 import { type LogoStore, rehostLogo } from "./logos";
 import { type NotionPage, mapPage, slugify } from "./notion";
 
 const { categories, platformCategories, platforms } = schema;
 
-export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
+export type { Db };
 
 export interface ImportReport {
   notionRows: number;
@@ -187,9 +187,10 @@ export async function importPlatforms(
       await tx.delete(platformCategories).where(inArray(platformCategories.platformId, batch));
     }
     const links = mapped.flatMap((p) =>
-      [...new Set(p.categories)].map((name) => ({
+      [...new Set(p.categories)].map((name, position) => ({
         platformId: idByNotionId.get(p.notionId)!,
         categoryId: categoryIds.get(name)!,
+        position,
       })),
     );
     for (const batch of chunks(links, 1000)) await tx.insert(platformCategories).values(batch);

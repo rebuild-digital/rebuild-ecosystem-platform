@@ -53,7 +53,8 @@ export async function reconcile(db: Db, pages: NotionPage[], cdnUrl?: string): P
   const links = await db
     .select({ platformId: platformCategories.platformId, name: categories.name })
     .from(platformCategories)
-    .innerJoin(categories, eq(categories.id, platformCategories.categoryId));
+    .innerJoin(categories, eq(categories.id, platformCategories.categoryId))
+    .orderBy(platformCategories.platformId, platformCategories.position);
   const categoriesOf = new Map<string, string[]>();
   for (const l of links) categoriesOf.set(l.platformId, [...(categoriesOf.get(l.platformId) ?? []), l.name]);
   const categoryNames = new Set((await db.select({ name: categories.name }).from(categories)).map((c) => c.name));
@@ -83,9 +84,10 @@ export async function reconcile(db: Db, pages: NotionPage[], cdnUrl?: string): P
     const fields = COMPARED.filter((k) => !sameJson(row[k], p[k]));
     if (!sameJson(row.enrichment, p.enrichment)) fields.push("enrichment" as never);
     if (fields.length) fieldMismatches.push(`${p.name}: ${fields.join(", ")}`);
-    const got = [...(categoriesOf.get(row.id) ?? [])].sort();
-    const want = [...new Set(p.categories)].sort();
-    if (!sameJson(got, want)) linkMismatches.push(`${p.name}: ${got.length} links, expected ${want.length}`);
+    // Order matters: it's the badge order on the cards.
+    const got = categoriesOf.get(row.id) ?? [];
+    const want = [...new Set(p.categories)];
+    if (!sameJson(got, want)) linkMismatches.push(`${p.name}: [${got.join(", ")}], expected [${want.join(", ")}]`);
   }
   checks.push({ name: "Every field matches Notion", ok: fieldMismatches.length === 0, details: fieldMismatches });
   checks.push({

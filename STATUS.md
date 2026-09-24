@@ -34,11 +34,21 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 1. ✅ Risved Postgres add-on enabled (2026-09-23); Risved injects `DATABASE_URL`. **Never press "Remove"** on it.
 2. ✅ Drizzle, the `platforms` / `categories` / `platform_categories` schema (§2.2, ADR 0006), migrations that run at server boot, and PGlite-backed tests.
 3. Nightly encrypted off-server backup to Bunny Storage, plus one test restore (§7.11). Check whether the Risved user can create a scoped app role (§7.6).
-4. ✅ Notion → Postgres import with field-by-field reconciliation (§2.3). Dry run passes against the live Notion data except two items:
-   - **Needs you:** a Bunny Storage zone + pull zone for logos (151 in Notion). Set `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_KEY`, `BUNNY_CDN_URL` (+ `BUNNY_STORAGE_HOST` if not Falkenstein) in `.env` and Risved.
-   - **Needs you:** one **published** Notion row has no name, website or description (shows as "Untitled"). Fix or unpublish it in Notion.
-   - Then run it on Risved: set `NOTION_IMPORT=true`, redeploy, check the `[notion-import]` log, unset.
-5. Switch the directory read path to Postgres behind a feature flag. Select only `[public]` columns where `status = 'published'` (§2.4).
+4. ✅ Notion → Postgres import with field-by-field reconciliation (§2.3). The dry run passes; logos 138/151 are on Bunny.
+   - **Needs you:** replace 13 broken logos in Notion (listed on #63). Upload the files directly to `LOGO`.
+5. ✅ Directory read path behind `DIRECTORY_SOURCE` with Notion fallback (§2.4). Parity: 583/589 cards identical, and the rest are explained.
+6. **Go live on Risved** (needs you):
+   1. Set `NOTION_IMPORT=true`, redeploy, and check the `[notion-import]` log. Then unset it.
+   2. Set `DIRECTORY_SOURCE=postgres`, redeploy, and check `/directory` (no `[directory]` fallback lines in the log).
+
+**Phase 2 verification (plan §Phase 2)**
+- [x] Directory renders from Postgres, public columns only; counts match Notion; category filters work
+- [x] No contact PII or internal fields in page source (all 385 contact emails, 272 names and 141 notes scanned)
+- [x] Slugs generated and stable across re-runs (there are no platform URLs yet, so none can break)
+- [ ] Logos load from Bunny: 138/151, and 13 need replacing in Notion
+- [ ] The build no longer depends on Notion for the directory: after step 6 (Notion remains the fallback until retired, §9.5)
+- [ ] Nightly off-server backup has run, plus one test restore (step 3)
+- [ ] §7.6 app role outcome recorded (step 3)
 
 ## Open items (from plan §9)
 1. Platform-association rigor (self-serve vs approval).

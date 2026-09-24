@@ -40,7 +40,7 @@ export default function Badge(props: {
 
   return (
     <span
-      class={`inline-block rounded-full ${colors().bg} ${colors().text} ${size()} ${props.class ?? ""}`}
+      class={`inline-block rounded-full whitespace-nowrap leading-[1.2] ${colors().bg} ${colors().text} ${size()} ${props.class ?? ""}`}
     >
       {props.children}
     </span>

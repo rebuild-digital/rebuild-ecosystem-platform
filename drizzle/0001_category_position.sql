@@ -1,0 +1,1 @@
+ALTER TABLE "platform_categories" ADD COLUMN "position" smallint DEFAULT 0 NOT NULL;

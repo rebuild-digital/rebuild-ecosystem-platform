@@ -1,3 +1,4 @@
+import type { PgDatabase, PgQueryResultHKT } from "drizzle-orm/pg-core";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
@@ -8,8 +9,12 @@ import * as schema from "./schema";
 
 export const casing = "snake_case";
 
+/** Any Drizzle Postgres database with our schema (postgres.js in the app, PGlite in tests). */
+export type Db = PgDatabase<PgQueryResultHKT, typeof schema>;
+
 function connect(url: string) {
-  return drizzle(postgres(url, { max: 5 }), { schema, casing });
+  // onnotice: skip Postgres NOTICEs such as "schema already exists" on every boot.
+  return drizzle(postgres(url, { max: 5, onnotice: () => {} }), { schema, casing });
 }
 
 let db: ReturnType<typeof connect> | undefined;

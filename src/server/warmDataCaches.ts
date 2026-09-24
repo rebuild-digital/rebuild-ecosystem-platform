@@ -1,4 +1,4 @@
-import { getBuilders } from "../data/builders";
+import { getBuildersFromNotion } from "../data/builders";
 import { getEspeaData } from "../data/espea";
 
 /**
@@ -14,5 +14,5 @@ import { getEspeaData } from "../data/espea";
  * lazy path in place.
  */
 export default function warmDataCaches() {
-  void Promise.allSettled([getBuilders(), getEspeaData()]);
+  void Promise.allSettled([getBuildersFromNotion(), getEspeaData()]);
 }

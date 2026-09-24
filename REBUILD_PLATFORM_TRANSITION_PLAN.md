@@ -214,7 +214,8 @@ categories: { id, slug (unique), name }
 
 // platform_categories — many-to-many (a platform can have several categories)
 platform_categories: { platformId → platforms.id,
-                       categoryId → categories.id }  // PK (platformId, categoryId)
+                       categoryId → categories.id,
+                       position }                    // PK (platformId, categoryId); position = Notion order, used for badge order
 ```
 
 **Two separate curation axes (corrected).** Notion had two orthogonal fields, and they stay separate in Postgres rather than being merged:
@@ -243,8 +244,9 @@ Notion (and any external CMS) hand out **temporary, expiring file URLs**, so you
 This keeps Postgres small, media on the CDN, and nothing dependent on a third party's expiring links.
 
 ### 2.4 Switch read path
-- Point `directory.tsx` (and any preview sections) at Postgres via Drizzle instead of the Notion fetch.
-- The public query selects **only the [public] columns** where `status = 'published'` — never contact PII, priority, notes, or status. Verify filter/sort parity against the live site.
+- `getBuilders()` (`src/data/builders.ts`), which feeds `/directory` and the home preview, picks its source from **`DIRECTORY_SOURCE`**: `postgres` reads `listPublishedPlatforms()` (`src/server/db/directory.ts`), and anything else keeps Notion. If Postgres fails or has no published rows, it **falls back to Notion** and logs `[directory] …`, so a bad deploy or a missed import can't empty the directory. **Rollback** means unsetting `DIRECTORY_SOURCE` and redeploying.
+- The public query selects **only `publicPlatformColumns`** where `status = 'published'`, plus category names in Notion order. It never selects contact PII, priority, notes, status or enrichment.
+- Parity, checked on 2026-09-24 against the production build with the live data: **583 of 589** directory cards are identical, the filter chips are identical, and the home count is the same. The rest: 3 descriptions are now **complete** (the Notion reader kept only the first rich-text segment), Innocode shows one country (ADR 0006), and 2 were comparison artifacts. The card order changes once at the switch, because the daily shuffle is seeded by id, and Postgres ids differ from Notion's.
 
 ### 2.5 Curation experience (replacing the Notion admin)
 
@@ -400,6 +402,7 @@ Maintain in Risved (encrypted), by phase introduced:
 | Bunny CDN / fonts vars | 1 | Assets |
 | `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_KEY`, `BUNNY_CDN_URL`, `BUNNY_STORAGE_HOST` | 2 | Logo re-hosting (§2.3a): storage zone, its password, its pull-zone URL, region endpoint (default `storage.bunnycdn.com`) |
 | `NOTION_IMPORT` | 2 (temporary) | `true` runs the Notion → Postgres import at boot (§2.3); unset afterwards |
+| `DIRECTORY_SOURCE` | 2 | `postgres` serves the directory from Postgres (§2.4); unset = Notion. Falls back to Notion on errors |
 | `PIRSCH_*` | 1 | Analytics |
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |

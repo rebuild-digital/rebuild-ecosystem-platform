@@ -13,7 +13,7 @@ export default defineConfig({
   middleware: "./src/middleware.ts",
   server: {
     preset: "node-server",
-    plugins: ["./src/server/warmDataCaches.ts", "./src/server/migrateDb.ts"],
+    plugins: ["./src/server/warmDataCaches.ts", "./src/server/migrateDb.ts", "./src/server/backupDb.ts"],
     // Drizzle migrations ride along in the server bundle for migrateDb.ts.
     serverAssets: [{ baseName: "migrations", dir: "./drizzle" }],
     routeRules: {

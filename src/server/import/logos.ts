@@ -3,6 +3,7 @@
 // URL is stored in Postgres.
 
 import { createHash } from "node:crypto";
+import { bunnyStorage } from "../bunny";
 import type { LogoSource } from "./notion";
 
 export interface LogoStore {
@@ -11,6 +12,7 @@ export interface LogoStore {
 }
 
 const MAX_BYTES = 5 * 1024 * 1024;
+const TIMEOUT_MS = 20_000;
 const USER_AGENT = "Mozilla/5.0 (compatible; RebuildLogoImporter/1.0; +https://rebuild.net)";
 
 // Bot protection is inconsistent: some hosts reject requests without a
@@ -31,7 +33,6 @@ async function download(url: string): Promise<Response> {
   }
   return res!;
 }
-const TIMEOUT_MS = 20_000;
 
 const EXTENSIONS: Record<string, string> = {
   "image/png": "png",
@@ -45,27 +46,17 @@ const EXTENSIONS: Record<string, string> = {
 };
 
 /**
- * Bunny Storage via its HTTP API. Needs BUNNY_STORAGE_ZONE,
- * BUNNY_STORAGE_KEY (the zone's password) and BUNNY_CDN_URL (its pull
- * zone). BUNNY_STORAGE_HOST is the region endpoint (default Falkenstein).
+ * Logos go to the public zone behind BUNNY_CDN_URL (its pull zone). Needs
+ * BUNNY_STORAGE_ZONE and BUNNY_STORAGE_KEY; BUNNY_STORAGE_HOST is optional.
  * Returns null when not configured, so imports can run without logos.
  */
 export function bunnyLogoStore(env = process.env): LogoStore | null {
-  const zone = env.BUNNY_STORAGE_ZONE;
-  const key = env.BUNNY_STORAGE_KEY;
   const cdn = env.BUNNY_CDN_URL?.replace(/\/$/, "");
-  if (!zone || !key || !cdn) return null;
-  const host = env.BUNNY_STORAGE_HOST || "storage.bunnycdn.com";
-
+  if (!env.BUNNY_STORAGE_ZONE || !env.BUNNY_STORAGE_KEY || !cdn) return null;
+  const storage = bunnyStorage(env.BUNNY_STORAGE_ZONE, env.BUNNY_STORAGE_KEY, env.BUNNY_STORAGE_HOST || undefined);
   return {
     async put(path, body, contentType) {
-      const res = await fetch(`https://${host}/${zone}/${path}`, {
-        method: "PUT",
-        headers: { AccessKey: key, "Content-Type": contentType },
-        body,
-        signal: AbortSignal.timeout(TIMEOUT_MS),
-      });
-      if (!res.ok) throw new Error(`Bunny upload failed: HTTP ${res.status}`);
+      await storage.put(path, body, contentType);
       return `${cdn}/${path}`;
     },
   };

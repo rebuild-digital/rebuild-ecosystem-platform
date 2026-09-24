@@ -5,3 +5,4 @@ dist/
 .env
 .cache/
 .claude/launch.json
+rebuild-backup-identity.txt

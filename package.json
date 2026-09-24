@@ -10,13 +10,17 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:import-notion": "tsx --env-file=.env scripts/import-notion.ts"
+    "db:import-notion": "tsx --env-file=.env scripts/import-notion.ts",
+    "backup:keygen": "tsx scripts/backup-keygen.ts",
+    "db:restore": "tsx --env-file=.env scripts/restore-backup.ts"
   },
   "dependencies": {
     "@notionhq/client": "^5.26.0",
     "@solidjs/meta": "^0.29.4",
     "@solidjs/router": "^0.15.3",
     "@solidjs/start": "^1.1.0",
+    "age-encryption": "^0.3.1",
+    "croner": "^10.0.1",
     "drizzle-orm": "^0.45.3",
     "gray-matter": "^4.0.3",
     "marked": "^18.0.13",

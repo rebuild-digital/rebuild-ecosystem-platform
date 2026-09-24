@@ -33,13 +33,14 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 **Phase 2 (plan §Phase 2)**
 1. ✅ Risved Postgres add-on enabled (2026-09-23); Risved injects `DATABASE_URL`. **Never press "Remove"** on it.
 2. ✅ Drizzle, the `platforms` / `categories` / `platform_categories` schema (§2.2, ADR 0006), migrations that run at server boot, and PGlite-backed tests.
-3. Nightly encrypted off-server backup to Bunny Storage, plus one test restore (§7.11). Check whether the Risved user can create a scoped app role (§7.6).
+3. Nightly encrypted off-server backup plus test restore (§7.11, ADR 0007). Built and tested end to end locally; **needs you:**
+   1. In Bunny, create a **new storage zone with no pull zone** (e.g. `rebuild-backups`, EU region).
+   2. Run `npm run backup:keygen`. Put the private key in your password manager and delete the file.
+   3. In Risved, set `BACKUP_STORAGE_ZONE`, `BACKUP_STORAGE_KEY` (that zone's password), `BACKUP_AGE_RECIPIENT` (the printed `age1…` key) and `BACKUP_ON_BOOT=true`. Redeploy.
+   4. The log should show `[backup] Uploaded db-….json.gz.age` and `[db] Connected as … createrole=…` (the §7.6 answer). Then unset `BACKUP_ON_BOOT`.
+   5. Locally: put the backup zone's name and password in `.env`, then run `npm run db:restore -- --latest --identity <key file>`. It should end with "Test restore passed".
 4. ✅ Notion → Postgres import with field-by-field reconciliation (§2.3). **Ran on Risved on 2026-09-24:** 844 rows, every data check PASS, logos 136/151 on Bunny.
-   - **Needs you:** upload these 15 logos as files directly into Notion `LOGO` (their links are dead, point to web pages, or block servers), then re-run the import:
-     - dead links: GuruWalk, Almenr, Hostwire, Fate, Abeam, Semble, Hotel Hideaway
-     - expired LinkedIn image links: Ernit, BRYGHT
-     - web pages, not images: MoSo, MyLifeWith
-     - host blocks downloads: Nexus Mods, Depop, and from Risved's server also PeoplePerHour and Clyx
+   - **Accepted (2026-09-24):** 15 platforms stay without a logo. Their Notion links are dead, point to web pages, or block servers: GuruWalk, Almenr, Hostwire, Fate, Abeam, Semble, Hotel Hideaway, Ernit, BRYGHT, MoSo, MyLifeWith, Nexus Mods, Depop, PeoplePerHour, Clyx. The directory doesn't show logos today.
 5. ✅ Directory read path behind `DIRECTORY_SOURCE` with Notion fallback (§2.4). Parity: 583/589 cards identical, and the rest are explained.
 6. **Go live on Risved** (needs you):
    1. ✅ Set `NOTION_IMPORT=true`, redeployed, and checked the `[notion-import]` log (2026-09-24). **Unset it now.**
@@ -49,10 +50,10 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 - [x] Directory renders from Postgres, public columns only; counts match Notion; category filters work
 - [x] No contact PII or internal fields in page source (all 385 contact emails, 272 names and 141 notes scanned)
 - [x] Slugs generated and stable across re-runs (there are no platform URLs yet, so none can break)
-- [ ] Logos load from Bunny: 136/151 on Risved, and 15 need replacing in Notion
+- [x] Logos load from Bunny: 136/151. The other 15 are accepted without a logo (dead or blocked source links)
 - [ ] The build no longer depends on Notion for the directory: after step 6 (Notion remains the fallback until retired, §9.5)
-- [ ] Nightly off-server backup has run, plus one test restore (step 3)
-- [ ] §7.6 app role outcome recorded (step 3)
+- [ ] Nightly off-server backup has run on Risved, plus one test restore (step 3; verified locally against a stand-in Bunny zone)
+- [ ] §7.6 app role outcome recorded (step 3.4)
 
 ## Open items (from plan §9)
 1. Platform-association rigor (self-serve vs approval).

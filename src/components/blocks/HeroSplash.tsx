@@ -64,6 +64,15 @@ export default function HeroSplash(props: HeroSplashProps) {
         class="absolute inset-0 bg-dark/40 mix-blend-multiply pointer-events-none z-20"
         aria-hidden="true"
       />
+      {/* Top gradient — keeps the transparent header's nav legible on bright images */}
+      <div
+        class="absolute top-0 left-0 w-full h-1/2 pointer-events-none z-20"
+        aria-hidden="true"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(34,34,62,0.75) 0%, rgba(34,34,62,0.4) 40%, transparent 100%)",
+        }}
+      />
       {/* Bottom gradient — extra contrast for CTA text in the lower third */}
       <div
         class="absolute bottom-0 left-0 w-full h-1/3 pointer-events-none z-20"

@@ -2,7 +2,6 @@ import { mkdtemp, mkdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join } from "node:path";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { useStorage } from "nitropack/runtime";
 import { getDb } from "./db";
 import { formatImport, runNotionImport } from "./import";
 
@@ -13,6 +12,11 @@ import { formatImport, runNotionImport } from "./import";
  * runtime container holds only .output/, so the drizzle/ folder ships as a
  * Nitro server asset (see app.config.ts). The migrator reads a folder, so
  * the assets are written to a temp dir first.
+ *
+ * In dev, vinxi doesn't build the Nitro runtime: it loads this plugin in a
+ * bare Vite server, where `nitropack/runtime` can't resolve its virtual
+ * modules. So `nitropack/runtime` is only imported in production, and dev
+ * reads the same drizzle/ folder straight from disk.
  *
  * With NOTION_IMPORT=true it then syncs the Notion directory into Postgres
  * and logs the reconciliation (plan §2.3). That's the only way to import
@@ -31,21 +35,12 @@ export default function migrateDb() {
 }
 
 async function runMigrations() {
-  const assets = useStorage("assets:migrations");
-  const dir = await mkdtemp(join(tmpdir(), "rebuild-migrations-"));
   try {
-    for (const key of await assets.getKeys()) {
-      const path = join(dir, ...key.split(":"));
-      await mkdir(dirname(path), { recursive: true });
-      await writeFile(path, (await assets.getItemRaw(key)) as string | Buffer);
-    }
-    await migrate(getDb(), { migrationsFolder: dir });
+    await withMigrationsFolder((dir) => migrate(getDb(), { migrationsFolder: dir }));
     console.log("[db] Migrations applied.");
   } catch (err) {
     console.error("[db] Migration failed:", err);
     return;
-  } finally {
-    await rm(dir, { recursive: true, force: true });
   }
 
   if (process.env.NOTION_IMPORT !== "true") return;
@@ -56,5 +51,28 @@ async function runMigrations() {
     console.log(`[notion-import] ${ok ? "Reconciliation passed." : "Reconciliation found problems (see above)."}`);
   } catch (err) {
     console.error("[notion-import] Failed:", err);
+  }
+}
+
+/**
+ * Run `fn` with a folder holding the drizzle/ migrations. Nitro's build
+ * replaces `process.env.NODE_ENV` with "production", so the dev branch is
+ * dropped from the server bundle and the Nitro import never reaches Vite.
+ */
+async function withMigrationsFolder(fn: (dir: string) => Promise<void>) {
+  if (process.env.NODE_ENV !== "production") return fn("drizzle");
+
+  const { useStorage } = await import("nitropack/runtime");
+  const assets = useStorage("assets:migrations");
+  const dir = await mkdtemp(join(tmpdir(), "rebuild-migrations-"));
+  try {
+    for (const key of await assets.getKeys()) {
+      const path = join(dir, ...key.split(":"));
+      await mkdir(dirname(path), { recursive: true });
+      await writeFile(path, (await assets.getItemRaw(key)) as string | Buffer);
+    }
+    await fn(dir);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
   }
 }

@@ -1281,6 +1281,7 @@ fonts, no third-party icon packages.
 | ⓘ         | U+24D8  | Info / help     | Directory tooltip                          |
 | ↓         | U+2193  | Select arrow    | Every `<select>`                           |
 | →         | U+2192  | Navigate / link | CTA buttons, read-more links               |
+| ✓         | U+2713  | Done / complete | Progress board (done tiles)                |
 
 ### Rules
 
@@ -1810,6 +1811,10 @@ Insights posts should use the `lighter`
 variant for topic tags when tag data is
 added to the data model.
 
+The progress board uses size `md` for
+status: `green` "Shipped", `orange` "In
+progress" and `lighter` "Planned".
+
 ### Chips / Pills
 
 Interactive toggle elements for
@@ -1980,6 +1985,79 @@ reference):
   `<CardMedia aspect="square" placeholder="muted">`,
   followed by the name, specialty and
   bio.
+
+### Progress board
+
+A grid of outcomes, each marked done, in
+progress or planned. It's a block
+(`src/components/blocks/ProgressBoard.tsx`,
+registered as `ProgressBoard`), so any
+page can place it. Its first use is
+"What We Are Shipping"
+(`src/data/shipping.ts`).
+
+```tsx
+import { shipping } from "~/data/shipping";
+
+{ type: "ProgressBoard", props: shipping }
+```
+
+| Prop | Values | Required |
+| --- | --- | --- |
+| `title` | Section heading (`h2`) | yes |
+| `intro` | One or two sentences under the heading | no |
+| `items` | `ProgressItem[]`, rendered in the given order | yes |
+
+Each `ProgressItem` has a `title` and a
+`status` (`done`, `in-progress` or
+`planned`), plus optional `note`,
+`href`, `image` and `imageAlt`. Content
+lives in JSON and goes through
+`parseProgressItems`
+(`src/lib/progressItems.ts`). It
+rejects unknown fields and statuses, so
+a typo fails the tests instead of
+rendering. There are no percentages and
+no grouping, by design.
+
+**Tile anatomy:**
+
+- An outlined `Card` with `CardMedia`
+  (video aspect) on top and a `p-sm`
+  body under a 2px `dark` rule.
+- **Media:** the image when there is
+  one. Otherwise the item's number
+  (`01`, `02`…, `text-5xl`) on a tint
+  that follows status: `green-light`
+  for done, `orange-light` for in
+  progress, `white` for planned.
+- **Checkbox:** a 2px `dark` square in
+  the top-right corner of the media,
+  holding ✓ when done. It's a visual
+  marker, not a form control, and is
+  `aria-hidden`.
+- **Title:** `h3`, `text-xl`.
+- **Status:** a `Badge` (see Badges),
+  then the `note` in `text-sm
+  text-darker` when set.
+- **Links:** with `href` the whole card
+  becomes the link (`Card as="a"`). The
+  title underlines on hover, and → sits
+  after it.
+
+**Layout:** an `<ol>`, since the order
+means something. It's one column on
+phone, `md:grid-cols-3` and
+`xl:grid-cols-5` (five columns are too
+narrow at `lg`), with `gap-md`. A short
+last row stays left-aligned.
+
+**Accessibility:** status is always
+text in the badge. Color, the tint and
+the checkbox are extras. The number,
+checkbox and arrow are `aria-hidden`,
+so a linked tile reads as its title and
+status.
 
 ### Header
 

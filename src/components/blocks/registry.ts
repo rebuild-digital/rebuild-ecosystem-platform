@@ -8,6 +8,7 @@ import InsightsPreview from "./InsightsPreview";
 import GatheringsPreview from "./GatheringsPreview";
 import Engage from "./Engage";
 import HalfCircle from "./HalfCircle";
+import ProgressBoard from "./ProgressBoard";
 
 export interface BlockDefinition {
   type: string;
@@ -27,6 +28,7 @@ const registry: Record<string, Component<any>> = {
   GatheringsPreview,
   Engage,
   HalfCircle,
+  ProgressBoard,
 };
 
 export function getBlock(type: string): Component<any> | undefined {

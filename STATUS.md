@@ -14,7 +14,7 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 - **Hosting:** Hetzner via Risved. **DNS:** Cloudflare → Bunny (registration stays at GoDaddy).
 - **DB:** Risved Postgres add-on + Drizzle (ADR 0005; Scaleway is the fallback). **Auth:** Better Auth, magic-link, invite-only.
 - **Email:** Scaleway TEM. **Media:** Bunny Storage. **CMS (later):** Decap. **Analytics:** Pirsch now, Umami optional later.
-- **Curation:** Drizzle Studio (solo, Phase 2) → Directus (team/PII, from Phase 3) → optional custom admin later.
+- **Curation:** Notion + re-import until our own `/admin` ships in Phase 3.5 (ADR 0008; Directus dropped).
 
 ## Phase status
 | Phase | What | Status |
@@ -44,6 +44,8 @@ Authoritative plan: `REBUILD_PLATFORM_TRANSITION_PLAN.md`. Agent conventions: `A
 6. **Go live on Risved** (needs you):
    1. ✅ Set `NOTION_IMPORT=true`, redeployed, and checked the `[notion-import]` log (2026-09-24). **Unset it now.**
    2. Set `DIRECTORY_SOURCE=postgres`, redeploy, and check `/directory` (no `[directory]` fallback lines in the log).
+
+**Curation until Phase 3.5 (ADR 0008):** the team keeps editing in Notion. To publish changes, set `NOTION_IMPORT=true` in Risved, redeploy, check the `[notion-import]` log, then unset it.
 
 **Phase 2 verification (plan §Phase 2)**
 - [x] Directory renders from Postgres, public columns only; counts match Notion; category filters work

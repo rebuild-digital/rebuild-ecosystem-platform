@@ -30,6 +30,7 @@ Plus a fourth, deliberately deferred: an editorial **CMS (Decap)** for insights/
 | ORM | **Drizzle** | Typed schema + migrations; native Postgres; works with Better Auth. |
 | Auth | **Better Auth**, magic-link (passwordless), invite-only | Self-hostable library (runs in-app, on your infra — sovereignty unaffected by its Vercel ownership); official SolidStart integration. |
 | Transactional email | **Scaleway TEM** | EU (France), ~€0.25/1,000, API+SMTP; sends magic links + notifications. |
+| Curation admin | **Custom SolidStart `/admin`**, gated by a Better Auth admin role (Phase 3.5) | Replaces Notion as the directory's editing UI. Our own MIT code: no vendor licence or roadmap to depend on, and per-field access is just which columns the server code selects. See ADR 0008 (replaces the earlier Directus plan). |
 | Editorial CMS | **Decap** (deferred phase) | Git-based, framework-agnostic admin (drops into SolidStart cleanly), zero extra datastore, clone-and-go for open-sourcing. |
 | CDN / assets / fonts | **Bunny** (existing) | EU-founded; already in use. |
 | Analytics | **Pirsch** now; **Umami** (self-hosted) optional later | Pirsch is already EU (Germany). Umami is the self-hostable upgrade if you want to own it — MIT, cookieless, single Node+Postgres container on Risved. Not urgent. |
@@ -59,7 +60,7 @@ The single most important conceptual split in this project. Conflating these is 
 - **Storage:** **Postgres** (Risved-managed container), via Drizzle.
 - **Tooling:** SolidStart server routes + Better Auth.
 - **Lifecycle:** live, concurrent, user-mutable; backed up off the server by our own nightly job (§7.11).
-- **Public vs internal fields:** even within Plane B, not every field is public. The directory table alone carries **contact PII** (contact name + email) and **curation-only fields** (priority, notes, status) that must never render publicly. So the split is not just "content vs app data" — it's also **public columns vs admin-only columns within a single table**. This is what makes field-level permissions (Directus) matter, not just table-level ones.
+- **Public vs internal fields:** even within Plane B, not every field is public. The directory table alone carries **contact PII** (contact name + email) and **curation-only fields** (priority, notes, status) that must never render publicly. So the split is not just "content vs app data" — it's also **public columns vs admin-only columns within a single table**. This is what makes field-level permissions matter, not just table-level ones. Every server read, public page or admin screen, selects only the columns its audience may see.
 
 ### The crucial reframing
 The **directory is Plane B, not Plane A.** It currently lives in Notion as if it were editorial content, but the moment ecosystem participants can edit their own platform profiles, it becomes user-editable application data. **So the directory migrates from Notion → Postgres, NOT into the CMS.** The CMS only ever touches Plane A (insights/pages).
@@ -223,7 +224,7 @@ platform_categories: { platformId → platforms.id,
 - **`status`** = publication lifecycle, from the **PUBLISHED checkbox**. Enum: `published | draft`. Migration: checkbox **checked → `published`**, unchecked → `draft`. The public directory query filters `where status = 'published'` — reproducing exactly what the checkbox did.
 - **`priority`** = curation triage, from the **PRIORITY select** (confirmed single-select). Enum, from Notion's `Top | Next | Last | Save 4 Later | Discarded`: `top | next | last | save_for_later | discarded`. Never public; drives the team's backlog ordering only.
 
-This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a Directus saved-view filter (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
+This keeps the model faithful and lossless. Note that `discarded` platforms are also `draft` (so they never render publicly); if you want them excluded from the working backlog view too, that's a saved view in the curation admin (`priority != discarded`), not a schema change. **CATEGORY is confirmed multi-select**, so the many-to-many join is exactly right — this also explains the old directory filter's `.includes()`.
 
 ### 2.3 Migrate data (dry-run first, then reconcile)
 - **Dry run against a copy, never straight to production.** `npm run db:import-notion` imports the live Notion data into a throwaway in-memory Postgres (PGlite), reconciles, then imports again to prove re-runs change nothing (`-- --database-url` targets your local Postgres instead). The code lives in `src/server/import/`. It reads **all** Notion rows (drafts carry curation data too), maps them per §2.2, and upserts on `notionId`. Slugs are generated once and never change afterwards. Rows that disappear from Notion are reported, never deleted.
@@ -252,11 +253,11 @@ This keeps Postgres small, media on the CDN, and nothing dependent on a third pa
 
 Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (views, the Published checkbox, the backlog). This is the plan for the second job.
 
-- **Now, solo (Phase 2):** use **local Drizzle Studio** (`drizzle-kit studio`). Zero setup, free, correct while you're the only editor and before any user PII exists.
-- **Graduate to Directus at Phase 3** — triggered by either **team members needing curation access** or **auth introducing user PII**, whichever comes first. Rationale: Drizzle Studio (and Drizzle Gateway) grant **blanket, all-tables** database access with no per-user roles; once teammates are involved and/or `users` holds PII, that's inappropriate — and note the platforms table *already* holds contact PII from day one. **Directus** solves this: point it at the same Postgres (it introspects the tables and adds only its own system tables, without modifying your schema), then use **role + field-level permissions** to scope curators to the platforms/categories collections and hide the PII/internal columns. It also restores the Notion-like experience: saved filtered **views** (backlog / in-review / published), a **status** control, and layouts (table/kanban/gallery).
-  - **Data-model note for the status workflow:** the `status` enum + saved filters in Directus *are* your Notion "views." No extra modelling needed beyond §2.2.
-- **Destination (post-launch):** an optional **custom SolidStart `/admin`** (gated by a Better Auth admin role) keeps everything in one MIT codebase for the open-source blueprint. Build it when the crunch eases; Directus bridges until then.
-- License/sovereignty notes: Directus is **BSL 1.1** (source-available, free under €/$5M finances) — fine for Rebuild, but not OSI-open-source, so flag it in the blueprint. Self-host on Hetzner so data stays EU regardless of vendor incorporation. Drizzle Studio is not open-source either; Drizzle Gateway is a small paid, alpha tool — hence Directus is the better team destination.
+- **Now, until the curation admin ships (Phase 2 → 3.5): the team keeps editing in Notion.** Changes reach the site when the import runs again (`NOTION_IMPORT=true`, redeploy; re-runs only update rows, §2.3). Drizzle Studio isn't an option: Risved's database is reachable only from inside Risved (ADR 0005).
+- **Then: our own curation admin at `/admin` (§3.5, ADR 0008).** It needs logins, so it comes after Better Auth and its admin role (Phase 3). It replaces Notion's admin job with what the team actually uses: saved **views** (backlog / in review / published), search, an edit form with **status**, priority and categories, logo upload to Bunny, adding a platform, and a small **change log**.
+  - **Data-model note for the status workflow:** the `status` enum plus saved filters *are* your Notion "views." No extra modelling needed beyond §2.2.
+- **Why not Directus (the earlier plan):** it's made by a US company under a source-available licence (BSL 1.1) the vendor can change. Self-hosting would have kept the data in the EU, but not the tool's future. We found no European equivalent that edits existing tables in place: Strapi (FR) and Baserow (NL) want their own tables, and Budibase (UK) is a heavy extra stack. A small admin in our own MIT codebase keeps the blueprint fully open and dependency-free (ADR 0008).
+- **When the admin goes live, curation stops in Notion.** A later import would overwrite admin edits, so `NOTION_IMPORT` is retired at that point, and Notion with it (§9.5).
 
 ### Verification
 - Directory renders identically from Postgres (public columns only); counts match Notion; category filters work; slugs/URLs unchanged; logos load from Bunny (not Notion); no contact PII or internal fields exposed in page source or API; build no longer depends on Notion for the directory; **the nightly off-server backup has run and one test restore succeeded**; the §7.6 role outcome is recorded.
@@ -273,7 +274,7 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
 ### 3.0 Scope guardrails
 - **Group one only:** ecosystem participants (platform builders, founders, investors, pioneers, media). Group two (general public) is a separate, later feature set — **do not build it now.**
 - **Invite-only enrollment:** there is **no "Create your account" CTA and no public signup page.** Accounts come into existence only via an invite.
-- **Curation-tool graduation trigger:** this phase introduces `users` + PII into the DB. That is the hard cutoff for retiring blanket-DB access (Drizzle Studio/Gateway) for anyone but you and moving team curation to **Directus with scoped roles** (see §2.5). Do not give teammates Drizzle Studio access after this phase.
+- **Curation access:** this phase introduces `users` + PII into the database. Nobody gets blanket database access (there is none from outside Risved anyway). Team members curate only through the **curation admin (§3.5)**, whose server code exposes exactly the columns each role may see.
 - **Passwordless:** magic link is the primary (and initial only) method. Passkey upgrade can be added later.
 - **Security & PII gate:** this phase does not ship to production until the **Security, PII & compliance checklist (§7)** has been walked and its items are in place. Auth is the point where real personal data goes live, so §7 is a hard gate here, not a nice-to-have.
 
@@ -292,7 +293,7 @@ Notion was doing two jobs: the datastore (now Postgres) **and** the admin UI (vi
              expiresAt, createdAt }
   ```
 - **Gate account creation on a valid invite:** magic-link sign-in is only issued to emails with a valid pending invite (or existing users). No open self-registration path exists.
-- Admin path (minimal for now): a protected route/action to create invites and send the invite email via Scaleway TEM.
+- Admin path: a protected `/admin/invites` route/action to create invites and send the invite email via Scaleway TEM. It's the first screen of the admin area that §3.5 extends.
 
 ### 3.3 App data model additions (Plane B)
 ```ts
@@ -327,8 +328,21 @@ user_badges: { userId → user.id, badgeId → badges.id,
 - **Event registration:** logged-in users register for events; streamlined vs. the anonymous form since identity is known.
 - Protect routes via Better Auth session checks in SolidStart server load/actions.
 
+### 3.5 Curation admin (replaces Notion as the directory's editor; ADR 0008)
+Ships as its own sequence of small PRs **after** 3.1–3.2, since it needs sign-in and an admin role.
+- **Access:** `/admin/*` requires a signed-in user with the `admin` (or later `curator`) role, checked in every server function, not just in the UI. Roles are assigned by an admin, never self-served.
+- **Screens, matching what the team uses in Notion today:**
+  - platform list with saved views (backlog = drafts by priority, in review, published, discarded hidden) and search by name
+  - edit form: public fields, status, priority, categories (ordered), notes, contact fields, and logo upload to Bunny (§2.3a)
+  - add a platform (slug generated once, as in the import)
+- **Field access by design:** server functions select and update named columns per role. There's no generic "edit any column" endpoint. Contact PII is visible only to roles that need it.
+- **Change log (§7.10):** an `audit_log` table (user id, time, table, row id, changed **field names**). Values of PII fields are never logged.
+- **Built from `DESIGN.md` components** (forms, cards, chips); any new component gets documented there in the same PR.
+- **Cut-over:** when the team switches, stop `NOTION_IMPORT` for good and archive the Notion database (§2.5, §9.5).
+
 ### Verification
 - Invite → magic-link email (via Scaleway TEM) → sign-in works end to end; no path exists to self-register without an invite; profile edits persist and render; platform association appears after approval; event registration writes correctly; sessions/cookies correct on the staging domain (production domain verified after Phase 4); sign-out works.
+- **Curation admin (3.5):** `/admin` is unreachable without the admin role (server functions reject too, not just the UI); a curator can find, edit, publish and unpublish a platform and reorder its categories, and the public directory reflects it; the change log records who changed which fields, never PII values; no admin response carries columns the role may not see.
 
 ### Rollback
 - Auth is additive (new tables, new gated routes). Feature-flag the logged-in surfaces; the public site is unaffected if disabled.
@@ -377,7 +391,7 @@ Do this the moment the site or email misbehaves after cutover. It reverses the o
 **Goal:** give the team a git-based editing UI for Plane A (insights + page copy), writing into the block schema. Can run parallel to or after Phase 3.
 
 ### 5.1 Setup
-- Add Decap's static admin SPA at `/admin` with a config that mirrors the block schema (collections for insights + page singletons; the block list as a typed/variable-type list widget so editors add and reorder blocks).
+- Add Decap's static admin SPA at `/admin/content` (the rest of `/admin` is the curation admin, §3.5) with a config that mirrors the block schema (collections for insights + page singletons; the block list as a typed/variable-type list widget so editors add and reorder blocks).
 - **Git-auth backend:** since you're off Netlify, wire Decap's GitHub/GitLab backend via an OAuth client (a small OAuth proxy). Document this in the blueprint — it's the one setup wrinkle.
 
 ### 5.2 Content model
@@ -474,7 +488,7 @@ Risved's add-on gives you **one** database user, likely the owner of the databas
 Rate-limit the auth, magic-link, and invite endpoints to stop email enumeration and abuse. Better Auth has rate-limiting config; enable it. Risved/Nitro can add a coarse layer too.
 
 ### 7.10 Audit logging (kept deliberately light)
-No bespoke audit system — that *would* be bloat at this scale. You get enough from: **Directus's built-in activity log** (curation changes) and **Better Auth's events** (sign-ins, etc.). That's sufficient; revisit only if a real need appears.
+Kept deliberately small: the curation admin's **`audit_log` table** (who changed which fields of which row, when; field names only, never PII values; §3.5) plus **Better Auth's events** (sign-ins, etc.). That's sufficient; revisit only if a real need appears.
 
 ### 7.11 Backups
 Risved backs up only its own configuration, **not** the Postgres volume, so backups are ours. A **nightly logical backup** (`pg_dump` or equivalent), **encrypted**, shipped **off the server** to Bunny Storage (EU), keeping e.g. 14 daily + 8 weekly copies. On Risved Cloud there's no SSH, so the job runs inside the app or a sibling Risved project (mechanism decided in Phase 2). **Do one test restore** into a scratch DB so you know it works *before* you depend on it. No point-in-time recovery: the worst case loses up to a day of writes. Backups contain PII, so they inherit the retention rules above.
@@ -509,7 +523,7 @@ Commit the provided **`AGENTS.md`** (canonical conventions: stack, the two data 
 Full error monitoring can be deferred. But do the **cheap, high-value half at Phase 4**: an **uptime monitor** hitting `rebuild.net` every minute (so you learn about a bad DNS/deploy immediately), plus watch Risved's build/deploy logs. Add EU-hosted **error monitoring later** (e.g. self-hosted GlitchTip, a Sentry-compatible OSS option, on Risved) once auth is live and errors matter more. Not a launch blocker.
 
 ### 8.5 Decision log (ADRs)
-Keep a lightweight `docs/decisions/` folder — one short markdown file per significant choice (why SolidStart, why Risved Postgres, why Decap, why Directus-for-curation, the badge display-opt-in rule). Each: context → decision → consequences. This is what makes the open-source blueprint legible to future contributors and reminds *you* why later. This whole plan is effectively ADR #0.
+Keep a lightweight `docs/decisions/` folder — one short markdown file per significant choice (why SolidStart, why Risved Postgres, why Decap, why a custom curation admin, the badge display-opt-in rule). Each: context → decision → consequences. This is what makes the open-source blueprint legible to future contributors and reminds *you* why later. This whole plan is effectively ADR #0.
 
 ---
 
@@ -517,9 +531,9 @@ Keep a lightweight `docs/decisions/` folder — one short markdown file per sign
 
 1. **Platform association rigor** (Phase 3.3): self-serve claim vs. admin approval vs. lightweight verification? Affects the approval UI.
 2. **Event-registration fields** (Phase 3.3): reuse the existing gathering-form fields (identity group, contribution, etc.), or a streamlined logged-in version?
-3. **Admin surface** (Phase 3.2): how invites get created initially — a minimal protected route is assumed; confirm who administers it.
+3. **Admin roles** (Phase 3.2, 3.5): who administers invites, and who gets curator access to the directory admin.
 4. **Postgres capacity** (Phase 2.1): the database shares the Risved server with the app. Watch memory/disk; if it outgrows the box or needs HA, move to Scaleway (see §2 contingencies).
-5. **Notion retirement** (post-Phase 2): confirm Notion is fully decommissioned as a directory source once Postgres is verified.
+5. **Notion retirement** (at the 3.5 cut-over): Notion stays the team's editor until the curation admin ships, then it's archived and the import removed.
 6. **Which external datasets** (Phase 3.3 badges): confirm the list of datasets to transfer into Postgres for badge matching (letter signees + any others).
 
 ---

@@ -291,7 +291,7 @@ export default function Directory() {
                         </Show>
 
                         {/* Category badges + country */}
-                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-xs lg:gap-0">
+                        <div class="flex flex-col lg:flex-row lg:flex-wrap justify-between items-start gap-xs">
                           <Show when={builder.category.length > 0}>
                             <div class="flex gap-xs flex-wrap">
                               <For each={builder.category}>

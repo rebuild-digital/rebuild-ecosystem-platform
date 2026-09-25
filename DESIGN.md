@@ -1277,7 +1277,8 @@ fonts, no third-party icon packages.
 | Character | Unicode | Use             | Component(s)                               |
 | --------- | ------- | --------------- | ------------------------------------------ |
 | ✕         | U+2715  | Dismiss / close | FormSidebar, Header (mobile), filter pills |
-| +         | U+002B  | Open / expand   | Header (mobile menu toggle)                |
+| +         | U+002B  | Open / expand   | Header (mobile menu toggle), AccordionItem |
+| −         | U+2212  | Close / collapse | AccordionItem (open row)                  |
 | ⓘ         | U+24D8  | Info / help     | Directory tooltip                          |
 | ↓         | U+2193  | Select arrow    | Every `<select>`                           |
 | →         | U+2192  | Navigate / link | CTA buttons, read-more links               |
@@ -1986,6 +1987,46 @@ reference):
   followed by the name, specialty and
   bio.
 
+### Accordion
+
+`AccordionItem` (`src/components/Accordion.tsx`)
+is one expandable row, built on native
+`<details>`/`<summary>`. It works
+without JS, and the browser handles
+keyboard toggling and the expanded
+state. Used by `FaqAccordion` and the
+progress board's phone rows.
+
+```tsx
+import AccordionItem from "~/components/Accordion";
+
+<div class="divide-y-2 divide-dark border-2 border-dark">
+  <AccordionItem summaryClass="gap-sm px-lg py-md" summary={<span>…</span>}>
+    <div class="px-lg pb-md">…</div>
+  </AccordionItem>
+</div>
+```
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `summary` | The always-visible row content | required |
+| `marker` | `start` or `end`: where the +/− sits | `start` |
+| `summaryClass` | Padding, gap and alignment for the row | none |
+
+- **Marker:** + (U+002B) when closed,
+  − (U+2212) when open, `text-3xl`,
+  `aria-hidden`.
+- **Frame:** rows sit in a
+  `border-2 border-dark` list with
+  `divide-y-2 divide-dark`.
+- **Focus:** the summary gets the
+  standard focus ring (2px
+  `blue-shade`, 2px offset).
+- **Summary content:** keep it to text
+  and badges. Don't put links or
+  buttons in the summary, since they
+  would nest inside its button role.
+
 ### Progress board
 
 A grid of outcomes, each marked done, in
@@ -2046,18 +2087,39 @@ no grouping, by design.
   after it.
 
 **Layout:** an `<ol>`, since the order
-means something. It's one column on
-phone, `md:grid-cols-3` and
-`xl:grid-cols-5` (five columns are too
-narrow at `lg`), with `gap-md`. A short
-last row stays left-aligned.
+means something.
+
+- **Phone (below `md`):** a compact
+  list in a `border-2 border-dark`
+  frame with `divide-y-2 divide-dark`
+  rows. Each row shows the checkbox,
+  the title (`text-lg`) and the status
+  badge. A row with a `note`, `href` or
+  `image` is an `AccordionItem` (marker
+  at the end) that opens to show the
+  image, the note and a "View
+  {title} →" link, indented to line up
+  with the title. Rows with nothing to
+  reveal are plain and have no marker.
+- **Tablet and up:** the tile grid,
+  `md:grid-cols-3` and `xl:grid-cols-5`
+  (five columns are too narrow at
+  `lg`), with `gap-md`. A short last
+  row stays left-aligned.
+
+Both lists render on the server, and CSS
+(`md:hidden` / `hidden md:grid`) shows
+one. `display: none` also hides the
+other from assistive tech.
 
 **Accessibility:** status is always
 text in the badge. Color, the tint and
 the checkbox are extras. The number,
 checkbox and arrow are `aria-hidden`,
 so a linked tile reads as its title and
-status.
+status. On phone, the row's summary
+reads the same way and announces
+whether it's expanded.
 
 ### Header
 

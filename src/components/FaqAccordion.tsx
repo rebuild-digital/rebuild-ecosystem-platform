@@ -1,4 +1,5 @@
-import { For, Show } from "solid-js";
+import { For } from "solid-js";
+import AccordionItem from "~/components/Accordion";
 
 interface FaqItem {
   question: string;
@@ -37,28 +38,18 @@ export default function FaqAccordion(props: FaqAccordionProps) {
       <div class="divide-y-2 divide-dark border-2 border-dark">
         <For each={props.items}>
           {(item) => (
-            <details class="group">
-              <summary class="flex items-center gap-sm sm:gap-lg px-lg py-md cursor-pointer list-none">
-                <span
-                  class="text-3xl w-6 shrink-0 transition-transform transition-rebuild group-open:hidden"
-                  aria-hidden="true"
-                >
-                  +
-                </span>
-                <span
-                  class="text-3xl w-6 shrink-0 hidden group-open:inline"
-                  aria-hidden="true"
-                >
-                  −
-                </span>
+            <AccordionItem
+              summaryClass="gap-sm sm:gap-lg px-lg py-md"
+              summary={
                 <span class="text-lg sm:text-xl leading-tight">
                   {item.question}
                 </span>
-              </summary>
+              }
+            >
               <div class="px-lg pb-md">
                 <p class="text-sm sm:text-base text-dark">{item.answer}</p>
               </div>
-            </details>
+            </AccordionItem>
           )}
         </For>
       </div>

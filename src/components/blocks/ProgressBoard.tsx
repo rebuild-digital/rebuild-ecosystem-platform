@@ -2,6 +2,7 @@ import { For, Show, createUniqueId } from "solid-js";
 import Section from "~/components/Section";
 import Card, { CardMedia } from "~/components/Card";
 import Badge from "~/components/Badge";
+import AccordionItem from "~/components/Accordion";
 import type { ProgressItem, ProgressStatus } from "~/lib/progressItems";
 
 export interface ProgressBoardProps {
@@ -19,9 +20,127 @@ const STATUS: Record<
   planned: { label: "Planned", badge: "lighter", tint: "bg-white" },
 };
 
+const hasDetails = (item: ProgressItem) =>
+  Boolean(item.note || item.href || item.image);
+
+/** Visual marker only; the status badge carries the meaning. */
+function Checkbox(props: { done: boolean; class?: string }) {
+  return (
+    <span
+      aria-hidden="true"
+      class={`size-lg shrink-0 flex items-center justify-center bg-white border-2 border-dark text-xl leading-none text-dark ${props.class ?? ""}`}
+    >
+      {props.done ? "✓" : ""}
+    </span>
+  );
+}
+
+function StatusBadge(props: { status: ProgressStatus }) {
+  return (
+    <Badge color={STATUS[props.status].badge}>
+      {STATUS[props.status].label}
+    </Badge>
+  );
+}
+
+/** Phone: a compact list; rows with a note, link or image expand. */
+function ProgressRow(props: { item: ProgressItem }) {
+  const summary = () => (
+    <>
+      <Checkbox done={props.item.status === "done"} />
+      <span class="flex-1 min-w-0 space-y-xs">
+        <span class="block text-lg leading-tight text-dark">
+          {props.item.title}
+        </span>
+        <StatusBadge status={props.item.status} />
+      </span>
+    </>
+  );
+  const rowClass = "gap-sm p-sm";
+
+  return (
+    <Show
+      when={hasDetails(props.item)}
+      fallback={<div class={`flex items-center ${rowClass}`}>{summary()}</div>}
+    >
+      <AccordionItem marker="end" summaryClass={rowClass} summary={summary()}>
+        <div class="pl-2xl pr-sm pb-sm space-y-sm">
+          <Show when={props.item.image}>
+            <CardMedia
+              src={props.item.image}
+              alt={props.item.imageAlt ?? ""}
+              sizes="100vw"
+            />
+          </Show>
+          <Show when={props.item.note}>
+            <p class="text-base text-darker">{props.item.note}</p>
+          </Show>
+          <Show when={props.item.href}>
+            <a
+              href={props.item.href}
+              class="inline-block text-lg text-dark underline hover:text-blue-shade transition-rebuild"
+            >
+              View {props.item.title}
+              <span aria-hidden="true">{" →"}</span>
+            </a>
+          </Show>
+        </div>
+      </AccordionItem>
+    </Show>
+  );
+}
+
+/** Tablet and up: a tile grid. */
+function ProgressTile(props: { item: ProgressItem; number: number }) {
+  const status = () => STATUS[props.item.status];
+
+  return (
+    <Card
+      as={props.item.href ? "a" : "div"}
+      href={props.item.href}
+      class="group flex flex-col w-full no-underline"
+    >
+      <CardMedia
+        src={props.item.image}
+        alt={props.item.imageAlt ?? ""}
+        sizes="(min-width: 1280px) 20vw, 33vw"
+        fallback={
+          <span
+            aria-hidden="true"
+            class={`absolute inset-0 flex items-end p-sm text-5xl leading-none text-dark ${status().tint}`}
+          >
+            {String(props.number).padStart(2, "0")}
+          </span>
+        }
+      >
+        <Checkbox
+          done={props.item.status === "done"}
+          class="absolute top-sm right-sm"
+        />
+      </CardMedia>
+
+      <div class="flex flex-col flex-1 gap-sm p-sm border-t-2 border-dark">
+        <h3 class="text-xl font-normal text-dark group-hover:underline transition-rebuild">
+          {props.item.title}
+          <Show when={props.item.href}>
+            <span aria-hidden="true">{" →"}</span>
+          </Show>
+        </h3>
+        <div class="mt-auto space-y-xs">
+          <StatusBadge status={props.item.status} />
+          <Show when={props.item.note}>
+            <p class="text-sm text-darker">{props.item.note}</p>
+          </Show>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
 /**
- * A grid of outcomes, each marked done, in progress or planned. Items render
- * in the order given (see DESIGN.md §Progress board).
+ * A set of outcomes, each marked done, in progress or planned, in the order
+ * given: a compact list on phones, a tile grid from `md` (see DESIGN.md
+ * §Progress board). Both render on the server; CSS shows one of them.
  */
 export default function ProgressBoard(props: ProgressBoardProps) {
   const headingId = createUniqueId();
@@ -37,58 +156,23 @@ export default function ProgressBoard(props: ProgressBoardProps) {
         </Show>
       </div>
 
-      <ol class="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-5 gap-md">
+      <ol class="md:hidden border-2 border-dark divide-y-2 divide-dark">
         <For each={props.items}>
-          {(item, index) => {
-            const status = () => STATUS[item.status];
-            return (
-              <li class="flex">
-                <Card
-                  as={item.href ? "a" : "div"}
-                  href={item.href}
-                  class="group flex flex-col w-full no-underline"
-                >
-                  <CardMedia
-                    src={item.image}
-                    alt={item.imageAlt ?? ""}
-                    sizes="(min-width: 1280px) 20vw, (min-width: 768px) 33vw, 100vw"
-                    fallback={
-                      <span
-                        aria-hidden="true"
-                        class={`absolute inset-0 flex items-end p-sm text-5xl leading-none text-dark ${status().tint}`}
-                      >
-                        {String(index() + 1).padStart(2, "0")}
-                      </span>
-                    }
-                  >
-                    <span
-                      aria-hidden="true"
-                      class="absolute top-sm right-sm size-lg flex items-center justify-center bg-white border-2 border-dark text-xl leading-none text-dark"
-                    >
-                      {item.status === "done" ? "✓" : ""}
-                    </span>
-                  </CardMedia>
+          {(item) => (
+            <li>
+              <ProgressRow item={item} />
+            </li>
+          )}
+        </For>
+      </ol>
 
-                  <div class="flex flex-col flex-1 gap-sm p-sm border-t-2 border-dark">
-                    <h3 class="text-xl font-normal text-dark group-hover:underline transition-rebuild">
-                      {item.title}
-                      <Show when={item.href}>
-                        <span aria-hidden="true">{"\u00a0→"}</span>
-                      </Show>
-                    </h3>
-                    <div class="mt-auto space-y-xs">
-                      <Badge color={status().badge}>
-                        {status().label}
-                      </Badge>
-                      <Show when={item.note}>
-                        <p class="text-sm text-darker">{item.note}</p>
-                      </Show>
-                    </div>
-                  </div>
-                </Card>
-              </li>
-            );
-          }}
+      <ol class="hidden md:grid md:grid-cols-3 xl:grid-cols-5 gap-md">
+        <For each={props.items}>
+          {(item, index) => (
+            <li class="flex">
+              <ProgressTile item={item} number={index() + 1} />
+            </li>
+          )}
         </For>
       </ol>
     </Section>

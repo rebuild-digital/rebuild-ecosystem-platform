@@ -35,18 +35,6 @@ const TILE_COLOR: Record<ProgressColor, string> = {
 const hasDetails = (item: ProgressItem) =>
   Boolean(item.note || item.href || item.image);
 
-/** Visual marker only; the status badge carries the meaning. */
-function Checkbox(props: { done: boolean; class?: string }) {
-  return (
-    <span
-      aria-hidden="true"
-      class={`size-lg shrink-0 flex items-center justify-center bg-white border-2 border-dark text-xl leading-none text-dark ${props.class ?? ""}`}
-    >
-      {props.done ? "✓" : ""}
-    </span>
-  );
-}
-
 function StatusBadge(props: { status: ProgressStatus }) {
   return (
     <Badge color={STATUS[props.status].badge}>
@@ -58,15 +46,12 @@ function StatusBadge(props: { status: ProgressStatus }) {
 /** Phone: a compact list; rows with a note, link or image expand. */
 function ProgressRow(props: { item: ProgressItem }) {
   const summary = () => (
-    <>
-      <Checkbox done={props.item.status === "done"} />
-      <span class="flex-1 min-w-0 space-y-xs">
-        <span class="block text-lg leading-tight text-dark">
-          {props.item.title}
-        </span>
-        <StatusBadge status={props.item.status} />
+    <span class="flex-1 min-w-0 space-y-xs">
+      <span class="block text-lg leading-tight text-dark">
+        {props.item.title}
       </span>
-    </>
+      <StatusBadge status={props.item.status} />
+    </span>
   );
   const rowClass = "gap-sm p-sm";
 
@@ -76,7 +61,7 @@ function ProgressRow(props: { item: ProgressItem }) {
       fallback={<div class={`flex items-center ${rowClass}`}>{summary()}</div>}
     >
       <AccordionItem marker="end" summaryClass={rowClass} summary={summary()}>
-        <div class="pl-2xl pr-sm pb-sm space-y-sm">
+        <div class="px-sm pb-sm space-y-sm">
           <Show when={props.item.image}>
             <CardMedia
               src={props.item.image}
@@ -126,12 +111,7 @@ function ProgressTile(props: { item: ProgressItem; number: number }) {
             {String(props.number).padStart(2, "0")}
           </span>
         }
-      >
-        <Checkbox
-          done={props.item.status === "done"}
-          class="absolute top-md right-md"
-        />
-      </CardMedia>
+      />
 
       <div class="flex flex-col flex-1 gap-sm p-md">
         <h3

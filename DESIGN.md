@@ -1282,7 +1282,6 @@ fonts, no third-party icon packages.
 | ⓘ         | U+24D8  | Info / help     | Directory tooltip                          |
 | ↓         | U+2193  | Select arrow    | Every `<select>`                           |
 | →         | U+2192  | Navigate / link | CTA buttons, read-more links               |
-| ✓         | U+2713  | Done / complete | Progress board (done tiles)                |
 
 ### Rules
 
@@ -2074,13 +2073,9 @@ no grouping, by design.
   one. Otherwise the item's number
   (`01`, `02`…, `text-5xl`, `p-md`) on
   the light stop of the item's `color`
-  (`bg-blue-light` by default).
-- **Checkbox:** a 2px `dark` square in
-  the top-right corner of the media
-  (`top-md right-md`),
-  holding ✓ when done. It's a visual
-  marker, not a form control, and is
-  `aria-hidden`.
+  (`bg-blue-light` by default). There's
+  no separate done marker: the status
+  badge already says it.
 - **Title:** `h3`, `text-xl`.
 - **Status:** a `Badge` (see Badges),
   then the `note` in `text-sm
@@ -2097,14 +2092,13 @@ means something.
 - **Phone (below `md`):** a compact
   list in a `border-2 border-dark`
   frame with `divide-y-2 divide-dark`
-  rows. Each row shows the checkbox,
-  the title (`text-lg`) and the status
-  badge. A row with a `note`, `href` or
+  rows. Each row shows the title
+  (`text-lg`) and the status badge. A row with a `note`, `href` or
   `image` is an `AccordionItem` (marker
   at the end) that opens to show the
   image, the note and a "View
-  {title} →" link, indented to line up
-  with the title. Rows with nothing to
+  {title} →" link, lined up with the
+  title. Rows with nothing to
   reveal are plain and have no marker.
 - **Tablet and up:** the tile grid,
   `md:grid-cols-3` and `xl:grid-cols-5`
@@ -2128,9 +2122,9 @@ one. `display: none` also hides the
 other from assistive tech.
 
 **Accessibility:** status is always
-text in the badge. Color, the tint and
-the checkbox are extras. The number,
-checkbox and arrow are `aria-hidden`,
+text in the badge. The tile color is an
+extra. The number and arrow are
+`aria-hidden`,
 so a linked tile reads as its title and
 status. On phone, the row's summary
 reads the same way and announces

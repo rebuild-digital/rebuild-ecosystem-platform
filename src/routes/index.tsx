@@ -13,6 +13,7 @@ import splashImages from "~/data/splashImages";
 import { carouselSlides } from "~/data/carousel";
 import { programmes } from "~/data/programmes";
 import { gatherings } from "~/data/gatherings";
+import { shipping } from "~/data/shipping";
 import { getBuilders } from "~/data/builders";
 import { getAllInsights } from "~/data/insights";
 import { guardServer } from "~/lib/guardServer";
@@ -120,6 +121,12 @@ export default function Home() {
 				{
 					type: "GatheringsPreview",
 					props: { gatherings },
+				},
+				{
+					type: "ProgressBoard",
+					props: shipping,
+					wrapperClass:
+						"pb-3xl md:pb-6xl",
 				},
 				{
 					type: "Engage",

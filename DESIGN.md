@@ -1281,7 +1281,8 @@ fonts, no third-party icon packages.
 | Character | Unicode | Use             | Component(s)                               |
 | --------- | ------- | --------------- | ------------------------------------------ |
 | ✕         | U+2715  | Dismiss / close | FormSidebar, Header (mobile), filter pills |
-| +         | U+002B  | Open / expand   | Header (mobile menu toggle)                |
+| +         | U+002B  | Open / expand   | Header (mobile menu toggle), AccordionItem |
+| −         | U+2212  | Close / collapse | AccordionItem (open row)                  |
 | ⓘ         | U+24D8  | Info / help     | Directory tooltip                          |
 | ↓         | U+2193  | Select arrow    | Every `<select>`                           |
 | →         | U+2192  | Navigate / link | CTA buttons, read-more links               |
@@ -1814,6 +1815,10 @@ Insights posts should use the `lighter`
 variant for topic tags when tag data is
 added to the data model.
 
+The progress board uses size `md` for
+status: `green` "Shipped", `orange` "In
+progress" and `lighter` "Planned".
+
 ### Chips / Pills
 
 Interactive toggle elements for
@@ -1984,6 +1989,155 @@ reference):
   `<CardMedia aspect="square" placeholder="muted">`,
   followed by the name, specialty and
   bio.
+
+### Accordion
+
+`AccordionItem` (`src/components/Accordion.tsx`)
+is one expandable row, built on native
+`<details>`/`<summary>`. It works
+without JS, and the browser handles
+keyboard toggling and the expanded
+state. Used by `FaqAccordion` and the
+progress board's phone rows.
+
+```tsx
+import AccordionItem from "~/components/Accordion";
+
+<div class="divide-y-2 divide-dark border-2 border-dark">
+  <AccordionItem summaryClass="gap-sm px-lg py-md" summary={<span>…</span>}>
+    <div class="px-lg pb-md">…</div>
+  </AccordionItem>
+</div>
+```
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `summary` | The always-visible row content | required |
+| `marker` | `start` or `end`: where the +/− sits | `start` |
+| `summaryClass` | Padding, gap and alignment for the row | none |
+
+- **Marker:** + (U+002B) when closed,
+  − (U+2212) when open, `text-3xl`,
+  `aria-hidden`.
+- **Frame:** rows sit in a
+  `border-2 border-dark` list with
+  `divide-y-2 divide-dark`.
+- **Focus:** the summary gets the
+  standard focus ring (2px
+  `blue-shade`, 2px offset).
+- **Summary content:** keep it to text
+  and badges. Don't put links or
+  buttons in the summary, since they
+  would nest inside its button role.
+
+### Progress board
+
+A grid of outcomes, each marked done, in
+progress or planned. It's a block
+(`src/components/blocks/ProgressBoard.tsx`,
+registered as `ProgressBoard`), so any
+page can place it. Its first use is
+"What We Are Shipping"
+(`src/data/shipping.ts`).
+
+```tsx
+import { shipping } from "~/data/shipping";
+
+{ type: "ProgressBoard", props: shipping }
+```
+
+| Prop | Values | Required |
+| --- | --- | --- |
+| `title` | Section heading (`h2`) | yes |
+| `intro` | One or two sentences under the heading | no |
+| `items` | `ProgressItem[]`, rendered in the given order | yes |
+
+Each `ProgressItem` has a `title` and a
+`status` (`done`, `in-progress` or
+`planned`), plus optional `note`,
+`href`, `image`, `imageAlt` and `color`
+(a brand hue: `red`, `blue`, `green`,
+`blush`, `blonde` or `orange`). Content
+lives in JSON and goes through
+`parseProgressItems`
+(`src/lib/progressItems.ts`). It
+rejects unknown fields, statuses and
+colors, so
+a typo fails the tests instead of
+rendering. There are no percentages and
+no grouping, by design.
+
+**Tile anatomy:**
+
+- A `Card` (`variant="plain"`, `bg-white`)
+  with `CardMedia` (video aspect) on
+  top and a `p-md` body directly below
+  it, with no rule in between.
+- **Media:** the image when there is
+  one. Otherwise the item's number
+  (`01`, `02`…, `text-lg lg:text-xl`,
+  h5 then h4 size, `p-md`) on
+  the light stop of the item's `color`
+  (`bg-blue-light` by default). There's
+  no separate done marker: the status
+  badge already says it.
+- **Title:** `h3`, `text-xl`.
+- **Note:** one or two sentences in
+  `text-sm text-darker`, under the
+  title.
+- **Status:** a `Badge` (see Badges),
+  pinned to the bottom of the tile
+  (`mt-auto`) so badges line up across
+  a row, whatever the note length.
+- **Links:** with `href` the whole card
+  becomes the link (`Card as="a"`). The
+  title underlines on hover, and → sits
+  after it. Tiles without `href` don't
+  react to hover at all.
+
+**Layout:** an `<ol>`, since the order
+means something.
+
+- **Phone (below `md`):** a compact
+  list in a `border-2 border-dark`
+  frame with `divide-y-2 divide-dark`
+  rows. Each row shows the title
+  (`text-lg`) and the status badge. A row with a `note`, `href` or
+  `image` is an `AccordionItem` (marker
+  at the end) that opens to show the
+  image, the note and a "View
+  {title} →" link, lined up with the
+  title. Rows with nothing to
+  reveal are plain and have no marker.
+- **Tablet and up:** the tile grid,
+  `md:grid-cols-3` and `xl:grid-cols-5`
+  (five columns are too narrow at
+  `lg`), with **no gap**. Tiles share
+  single 2px borders: the `<ol>` draws
+  the top and left edges
+  (`border-t-2 border-l-2`) and each
+  tile its right and bottom
+  (`border-r-2 border-b-2`). A short
+  last row stays left-aligned and its
+  outline steps in. A focused tile is
+  lifted (`focus-visible:relative
+  focus-visible:z-10`) so its
+  neighbours don't paint over the focus
+  ring.
+
+Both lists render on the server, and CSS
+(`md:hidden` / `hidden md:grid`) shows
+one. `display: none` also hides the
+other from assistive tech.
+
+**Accessibility:** status is always
+text in the badge. The tile color is an
+extra. The number and arrow are
+`aria-hidden`,
+so a linked tile reads as its title and
+status. On phone, the row's summary
+reads the same way and announces
+whether it's expanded.
 
 ### Header
 

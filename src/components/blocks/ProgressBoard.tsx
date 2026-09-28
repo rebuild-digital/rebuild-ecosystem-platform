@@ -106,7 +106,7 @@ function ProgressTile(props: { item: ProgressItem; number: number }) {
         fallback={
           <span
             aria-hidden="true"
-            class={`absolute inset-0 flex items-end p-md text-5xl leading-none text-dark ${TILE_COLOR[props.item.color ?? "blue"]}`}
+            class={`absolute inset-0 flex items-end p-md text-lg lg:text-xl leading-none text-dark ${TILE_COLOR[props.item.color ?? "blue"]}`}
           >
             {String(props.number).padStart(2, "0")}
           </span>
@@ -123,11 +123,12 @@ function ProgressTile(props: { item: ProgressItem; number: number }) {
             <span aria-hidden="true">{" →"}</span>
           </Show>
         </h3>
-        <div class="mt-auto space-y-xs">
+        <Show when={props.item.note}>
+          <p class="text-sm text-darker">{props.item.note}</p>
+        </Show>
+        {/* Pinned to the bottom so badges line up across a row. */}
+        <div class="mt-auto pt-xs">
           <StatusBadge status={props.item.status} />
-          <Show when={props.item.note}>
-            <p class="text-sm text-darker">{props.item.note}</p>
-          </Show>
         </div>
       </div>
     </Card>

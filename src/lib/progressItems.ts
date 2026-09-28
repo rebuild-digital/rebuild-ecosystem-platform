@@ -10,7 +10,7 @@ export type ProgressColor = (typeof PROGRESS_COLORS)[number];
 export interface ProgressItem {
   title: string;
   status: ProgressStatus;
-  /** Short free text for items that aren't done, e.g. "Draft in review". */
+  /** One or two sentences describing the outcome. */
   note?: string;
   /** Internal path ("/…") or https URL. The whole tile becomes the link. */
   href?: string;

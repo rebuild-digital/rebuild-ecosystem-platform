@@ -2071,15 +2071,20 @@ no grouping, by design.
   it, with no rule in between.
 - **Media:** the image when there is
   one. Otherwise the item's number
-  (`01`, `02`…, `text-5xl`, `p-md`) on
+  (`01`, `02`…, `text-lg lg:text-xl`,
+  h5 then h4 size, `p-md`) on
   the light stop of the item's `color`
   (`bg-blue-light` by default). There's
   no separate done marker: the status
   badge already says it.
 - **Title:** `h3`, `text-xl`.
+- **Note:** one or two sentences in
+  `text-sm text-darker`, under the
+  title.
 - **Status:** a `Badge` (see Badges),
-  then the `note` in `text-sm
-  text-darker` when set.
+  pinned to the bottom of the tile
+  (`mt-auto`) so badges line up across
+  a row, whatever the note length.
 - **Links:** with `href` the whole card
   becomes the link (`Card as="a"`). The
   title underlines on hover, and → sits

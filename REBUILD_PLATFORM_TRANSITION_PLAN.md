@@ -178,7 +178,8 @@ Before this phase can be marked done, all of the following must hold:
 - **Never press "Remove"** on the Postgres card in Risved: assume it deletes the volume and the data.
 - **Local development** uses your own local Postgres (Postgres.app, Homebrew or Docker) via `DATABASE_URL`. Tests use **PGlite** (in-process Postgres), so CI needs no database. Schema migrations run **at server boot**: a Nitro plugin (`src/server/migrateDb.ts`) applies the `drizzle/` migrations, which ship inside `.output` as server assets. They never run from a laptop against the real database.
 - **Least-privilege role (§7.6):** check whether the Risved-provided user can create a limited app role. Record the outcome.
-- **Off-server backups (§7.11):** set up the nightly backup job and do one test restore.
+- **Off-server backups (§7.11):** the nightly backup job, plus one test restore (ADR 0007).
+- **Role check (§7.6):** the boot log prints `[db] Connected as … superuser=…, createrole=…`.
 - Add **Drizzle** (`drizzle-orm`, `drizzle-kit`, `postgres`). Schema in `src/server/db/schema.ts`; generate migrations with `npm run db:generate` (CI fails if they drift from the schema).
 
 ### 2.2 Schema (Plane B — directory + taxonomy)
@@ -417,6 +418,9 @@ Maintain in Risved (encrypted), by phase introduced:
 | `BUNNY_STORAGE_ZONE`, `BUNNY_STORAGE_KEY`, `BUNNY_CDN_URL`, `BUNNY_STORAGE_HOST` | 2 | Logo re-hosting (§2.3a): storage zone, its password, its pull-zone URL, region endpoint (default `storage.bunnycdn.com`) |
 | `NOTION_IMPORT` | 2 (temporary) | `true` runs the Notion → Postgres import at boot (§2.3); unset afterwards |
 | `DIRECTORY_SOURCE` | 2 | `postgres` serves the directory from Postgres (§2.4); unset = Notion. Falls back to Notion on errors |
+| `BACKUP_STORAGE_ZONE`, `BACKUP_STORAGE_KEY`, `BACKUP_STORAGE_HOST` | 2 | **Private** Bunny zone for backups (no pull zone), its password, region endpoint (§7.11) |
+| `BACKUP_AGE_RECIPIENT` | 2 | age **public** key (`age1…`) backups are encrypted to. The private key never goes in env |
+| `BACKUP_ON_BOOT` | 2 (temporary) | `true` runs one backup right after startup |
 | `PIRSCH_*` | 1 | Analytics |
 | `MAILERLITE_*` | 1 | Newsletter |
 | `VITE_SITE_URL` | 1 | Site URL (staging → prod) |
@@ -491,7 +495,13 @@ Rate-limit the auth, magic-link, and invite endpoints to stop email enumeration 
 Kept deliberately small: the curation admin's **`audit_log` table** (who changed which fields of which row, when; field names only, never PII values; §3.5) plus **Better Auth's events** (sign-ins, etc.). That's sufficient; revisit only if a real need appears.
 
 ### 7.11 Backups
-Risved backs up only its own configuration, **not** the Postgres volume, so backups are ours. A **nightly logical backup** (`pg_dump` or equivalent), **encrypted**, shipped **off the server** to Bunny Storage (EU), keeping e.g. 14 daily + 8 weekly copies. On Risved Cloud there's no SSH, so the job runs inside the app or a sibling Risved project (mechanism decided in Phase 2). **Do one test restore** into a scratch DB so you know it works *before* you depend on it. No point-in-time recovery: the worst case loses up to a day of writes. Backups contain PII, so they inherit the retention rules above.
+Risved backs up only its own configuration, **not** the Postgres volume, so backups are ours (ADR 0007).
+- **What:** the app itself runs a **nightly logical backup** at 02:00 UTC (`src/server/backupDb.ts`). Every table in the `public` and `drizzle` schemas goes to JSON, then gzip, then **age** encryption to a public key. The server never holds the private key.
+- **Where:** a **private Bunny zone with no pull zone** (`db-backups/db-<UTC time>.json.gz.age`). The job refuses to use the public logo zone.
+- **Retention:** 14 daily + the newest of each of the last 8 weeks.
+- **Setup:** `npm run backup:keygen` creates the key pair. The private key goes in the maintainer's password manager, and the public key into `BACKUP_AGE_RECIPIENT`. `BACKUP_ON_BOOT=true` runs one backup right after a deploy, to check the setup.
+- **Test restore:** `npm run db:restore -- --latest --identity <key file>` downloads the newest backup, restores it into a throwaway Postgres, and checks every table. **Do it once** before you depend on backups, and after schema changes.
+- A backup holds data, not schema. Restore into a database migrated to the same code; the migration records are in the backup. No point-in-time recovery: the worst case loses up to a day of writes. Backups contain PII, so they inherit the retention rules above.
 
 ### 7.12 Breach process (simple, written down once)
 If personal data is exposed or you suspect it:

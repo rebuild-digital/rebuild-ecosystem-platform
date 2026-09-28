@@ -13,6 +13,12 @@ describe("parseProgressItems", () => {
     expect(items[1].note).toBe("Draft in review");
   });
 
+  it("accepts a brand color and rejects anything else", () => {
+    expect(parseProgressItems([{ title: "X", status: "done", color: "blush" }])[0].color).toBe("blush");
+    expect(() => parseProgressItems([{ title: "X", status: "done", color: "purple" }])).toThrow(/color "purple"/);
+    expect(() => parseProgressItems([{ title: "X", status: "done", color: "blue-light" }])).toThrow(/color "blue-light"/);
+  });
+
   it("rejects an unknown status", () => {
     expect(() => parseProgressItems([{ title: "X", status: "shipped" }])).toThrow(/status "shipped"/);
   });

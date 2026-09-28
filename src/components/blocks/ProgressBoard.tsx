@@ -3,21 +3,33 @@ import Section from "~/components/Section";
 import Card, { CardMedia } from "~/components/Card";
 import Badge from "~/components/Badge";
 import AccordionItem from "~/components/Accordion";
-import type { ProgressItem, ProgressStatus } from "~/lib/progressItems";
+import type { ProgressColor, ProgressItem, ProgressStatus } from "~/lib/progressItems";
 
-export interface ProgressBoardProps {
+// A type, not an interface, so `props: shipping` fits BlockDefinition's
+// Record<string, unknown>.
+export type ProgressBoardProps = {
   title: string;
   intro?: string;
   items: ProgressItem[];
-}
+};
 
 const STATUS: Record<
   ProgressStatus,
-  { label: string; badge: "green" | "orange" | "lighter"; tint: string }
+  { label: string; badge: "green" | "orange" | "lighter" }
 > = {
-  done: { label: "Shipped", badge: "green", tint: "bg-green-light" },
-  "in-progress": { label: "In progress", badge: "orange", tint: "bg-orange-light" },
-  planned: { label: "Planned", badge: "lighter", tint: "bg-white" },
+  done: { label: "Shipped", badge: "green" },
+  "in-progress": { label: "In progress", badge: "orange" },
+  planned: { label: "Planned", badge: "lighter" },
+};
+
+/** Light stop behind the number when a tile has no image. */
+const TILE_COLOR: Record<ProgressColor, string> = {
+  red: "bg-red-light",
+  blue: "bg-blue-light",
+  green: "bg-green-light",
+  blush: "bg-blush-light",
+  blonde: "bg-blonde-light",
+  orange: "bg-orange-light",
 };
 
 const hasDetails = (item: ProgressItem) =>
@@ -92,13 +104,15 @@ function ProgressRow(props: { item: ProgressItem }) {
 
 /** Tablet and up: a tile grid. */
 function ProgressTile(props: { item: ProgressItem; number: number }) {
-  const status = () => STATUS[props.item.status];
-
+  // No gap between tiles: the grid draws the top and left edges, and each
+  // tile its right and bottom, so neighbouring borders don't double up. A
+  // focused tile is lifted so its neighbours don't paint over the focus ring.
   return (
     <Card
       as={props.item.href ? "a" : "div"}
       href={props.item.href}
-      class="group flex flex-col w-full no-underline"
+      variant="plain"
+      class="group flex flex-col w-full no-underline bg-white border-r-2 border-b-2 border-dark focus-visible:relative focus-visible:z-10"
     >
       <CardMedia
         src={props.item.image}
@@ -107,7 +121,7 @@ function ProgressTile(props: { item: ProgressItem; number: number }) {
         fallback={
           <span
             aria-hidden="true"
-            class={`absolute inset-0 flex items-end p-sm text-5xl leading-none text-dark ${status().tint}`}
+            class={`absolute inset-0 flex items-end p-md text-5xl leading-none text-dark ${TILE_COLOR[props.item.color ?? "blue"]}`}
           >
             {String(props.number).padStart(2, "0")}
           </span>
@@ -115,12 +129,15 @@ function ProgressTile(props: { item: ProgressItem; number: number }) {
       >
         <Checkbox
           done={props.item.status === "done"}
-          class="absolute top-sm right-sm"
+          class="absolute top-md right-md"
         />
       </CardMedia>
 
-      <div class="flex flex-col flex-1 gap-sm p-sm border-t-2 border-dark">
-        <h3 class="text-xl font-normal text-dark group-hover:underline transition-rebuild">
+      <div class="flex flex-col flex-1 gap-sm p-md">
+        <h3
+          class="text-xl font-normal text-dark"
+          classList={{ "group-hover:underline transition-rebuild": Boolean(props.item.href) }}
+        >
           {props.item.title}
           <Show when={props.item.href}>
             <span aria-hidden="true">{" →"}</span>
@@ -166,7 +183,7 @@ export default function ProgressBoard(props: ProgressBoardProps) {
         </For>
       </ol>
 
-      <ol class="hidden md:grid md:grid-cols-3 xl:grid-cols-5 gap-md">
+      <ol class="hidden md:grid md:grid-cols-3 xl:grid-cols-5 border-t-2 border-l-2 border-dark">
         <For each={props.items}>
           {(item, index) => (
             <li class="flex">

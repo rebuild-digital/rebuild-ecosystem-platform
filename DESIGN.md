@@ -2052,28 +2052,32 @@ import { shipping } from "~/data/shipping";
 Each `ProgressItem` has a `title` and a
 `status` (`done`, `in-progress` or
 `planned`), plus optional `note`,
-`href`, `image` and `imageAlt`. Content
+`href`, `image`, `imageAlt` and `color`
+(a brand hue: `red`, `blue`, `green`,
+`blush`, `blonde` or `orange`). Content
 lives in JSON and goes through
 `parseProgressItems`
 (`src/lib/progressItems.ts`). It
-rejects unknown fields and statuses, so
+rejects unknown fields, statuses and
+colors, so
 a typo fails the tests instead of
 rendering. There are no percentages and
 no grouping, by design.
 
 **Tile anatomy:**
 
-- An outlined `Card` with `CardMedia`
-  (video aspect) on top and a `p-sm`
-  body under a 2px `dark` rule.
+- A `Card` (`variant="plain"`, `bg-white`)
+  with `CardMedia` (video aspect) on
+  top and a `p-md` body directly below
+  it, with no rule in between.
 - **Media:** the image when there is
   one. Otherwise the item's number
-  (`01`, `02`…, `text-5xl`) on a tint
-  that follows status: `green-light`
-  for done, `orange-light` for in
-  progress, `white` for planned.
+  (`01`, `02`…, `text-5xl`, `p-md`) on
+  the light stop of the item's `color`
+  (`bg-blue-light` by default).
 - **Checkbox:** a 2px `dark` square in
-  the top-right corner of the media,
+  the top-right corner of the media
+  (`top-md right-md`),
   holding ✓ when done. It's a visual
   marker, not a form control, and is
   `aria-hidden`.
@@ -2084,7 +2088,8 @@ no grouping, by design.
 - **Links:** with `href` the whole card
   becomes the link (`Card as="a"`). The
   title underlines on hover, and → sits
-  after it.
+  after it. Tiles without `href` don't
+  react to hover at all.
 
 **Layout:** an `<ol>`, since the order
 means something.
@@ -2104,8 +2109,18 @@ means something.
 - **Tablet and up:** the tile grid,
   `md:grid-cols-3` and `xl:grid-cols-5`
   (five columns are too narrow at
-  `lg`), with `gap-md`. A short last
-  row stays left-aligned.
+  `lg`), with **no gap**. Tiles share
+  single 2px borders: the `<ol>` draws
+  the top and left edges
+  (`border-t-2 border-l-2`) and each
+  tile its right and bottom
+  (`border-r-2 border-b-2`). A short
+  last row stays left-aligned and its
+  outline steps in. A focused tile is
+  lifted (`focus-visible:relative
+  focus-visible:z-10`) so its
+  neighbours don't paint over the focus
+  ring.
 
 Both lists render on the server, and CSS
 (`md:hidden` / `hidden md:grid`) shows

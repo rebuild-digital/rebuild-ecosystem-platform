@@ -2,6 +2,11 @@ export const PROGRESS_STATUSES = ["done", "in-progress", "planned"] as const;
 
 export type ProgressStatus = (typeof PROGRESS_STATUSES)[number];
 
+/** Brand hues; a tile without an image uses the hue's light stop. */
+export const PROGRESS_COLORS = ["red", "blue", "green", "blush", "blonde", "orange"] as const;
+
+export type ProgressColor = (typeof PROGRESS_COLORS)[number];
+
 export interface ProgressItem {
   title: string;
   status: ProgressStatus;
@@ -12,10 +17,12 @@ export interface ProgressItem {
   image?: string;
   /** Leave out for decorative images; the tile title already names the item. */
   imageAlt?: string;
+  /** Background behind the number when there's no image. Defaults to blue. */
+  color?: ProgressColor;
 }
 
 const OPTIONAL_KEYS = ["note", "href", "image", "imageAlt"] as const;
-const KNOWN_KEYS = new Set<string>(["title", "status", ...OPTIONAL_KEYS]);
+const KNOWN_KEYS = new Set<string>(["title", "status", "color", ...OPTIONAL_KEYS]);
 
 const isUrl = (value: string) =>
   value.startsWith("/") || value.startsWith("https://");
@@ -54,6 +61,14 @@ export function parseProgressItems(raw: unknown): ProgressItem[] {
     }
 
     const item: ProgressItem = { title, status: status as ProgressStatus };
+    if (record.color !== undefined) {
+      if (!PROGRESS_COLORS.includes(record.color as ProgressColor)) {
+        throw new Error(
+          `${where} ("${title}") has color "${String(record.color)}"; use one of ${PROGRESS_COLORS.join(", ")}`,
+        );
+      }
+      item.color = record.color as ProgressColor;
+    }
     for (const key of OPTIONAL_KEYS) {
       const value = record[key];
       if (value === undefined) continue;
